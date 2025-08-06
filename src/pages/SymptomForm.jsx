@@ -11,9 +11,9 @@ const SymptomForm = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const categories = ["All", ...Array.from(new Set(symptoms.map(s => s.category)))];
-  
-  const filteredSymptoms = selectedCategory === "All"  
-    ? symptoms  
+
+  const filteredSymptoms = selectedCategory === "All"
+    ? symptoms
     : symptoms.filter(s => s.category === selectedCategory);
 
   const handleSymptomChange = (symptomId, checked) => {
@@ -28,7 +28,7 @@ const SymptomForm = () => {
     const selectedSymptomNames = symptoms
       .filter(s => selectedSymptoms.includes(s.id))
       .map(s => s.name);
-    
+
     console.log("Selected symptoms:", selectedSymptomNames);
     alert("Symptoms submitted. See console for details.");
   };
@@ -38,21 +38,26 @@ const SymptomForm = () => {
       {/* Header */}
       <div className="text-center space-y-4">
         <div className="flex items-center justify-center gap-3 mb-4">
-          <div className="p-3 rounded-full bg-primary-light">
-            <Stethoscope className="w-8 h-8 text-primary" />
+          <div className="p-4 rounded-full bg-sky-100 flex items-center justify-center">
+            <Stethoscope className="w-8 h-8 text-sky-600" />
           </div>
+
           <h1 className="text-3xl font-bold text-foreground">Symptom Assessment</h1>
         </div>
-        <p className="text-muted-foreground max-w-2xl mx-auto">
-          Please select all symptoms you are currently experiencing.
+        <p className="text-muted-foreground max-w-2xl mx-auto text-sky-600">
+          Please select all symptoms you are currently experiencing. This information will help healthcare providers better understand your condition.
         </p>
+
       </div>
 
       {/* Category Filter */}
-      <Card className="border-border bg-card shadow-sm">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-lg text-foreground">Filter by Category</CardTitle>
+      <Card className="border border-black/10 bg-white shadow-sm rounded-2xl">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg font-semibold text-gray-800">
+            Filter by Category
+          </CardTitle>
         </CardHeader>
+
         <CardContent>
           <div className="flex flex-wrap gap-2">
             {categories.map((category) => (
@@ -61,7 +66,11 @@ const SymptomForm = () => {
                 variant={selectedCategory === category ? "default" : "outline"}
                 size="sm"
                 onClick={() => setSelectedCategory(category)}
-                className="transition-all duration-200"
+                className={`transition-all duration-200 rounded-full ${selectedCategory === category
+                    ? "bg-sky-500 text-white hover:bg-sky-600"
+                    : "border-gray-300 text-gray-700 hover:bg-gray-100"
+                  }`}
+
               >
                 {category}
               </Button>
@@ -69,6 +78,7 @@ const SymptomForm = () => {
           </div>
         </CardContent>
       </Card>
+
 
       {/* Selected Symptoms Summary */}
       {selectedSymptoms.length > 0 && (
@@ -86,8 +96,8 @@ const SymptomForm = () => {
               {symptoms
                 .filter(s => selectedSymptoms.includes(s.id))
                 .map((symptom) => (
-                  <Badge 
-                    key={symptom.id} 
+                  <Badge
+                    key={symptom.id}
                     variant="default"
                     className="flex items-center gap-1 px-3 py-1"
                   >
@@ -101,7 +111,7 @@ const SymptomForm = () => {
       )}
 
       {/* Symptoms Grid */}
-      <Card className="border-border bg-card shadow-sm">
+      <Card className="border border-black/10 bg-card shadow-sm">
         <CardHeader>
           <CardTitle className="text-xl text-foreground">Select Your Symptoms</CardTitle>
           <CardDescription className="text-muted-foreground">
@@ -109,18 +119,16 @@ const SymptomForm = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {/* Changed grid layout to display 2 columns */}
           <div className="grid grid-cols-2 gap-4">
             {filteredSymptoms.map((symptom) => (
               <div
                 key={symptom.id}
-                className={`
-                  flex items-center space-x-3 p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer
-                  ${selectedSymptoms.includes(symptom.id)
-                    ? 'border-medical-blue bg-medical-blue-light shadow-medical-blue-light/50 shadow-md' // Added blue shadow and light blue background
-                    : 'border-border bg-background hover:border-medical-blue/30 hover:bg-medical-blue-light/20'
-                  }
-                `}
+                className={`flex items-center space-x-3 p-4 rounded-xl border transition-all duration-200 cursor-pointer
+${selectedSymptoms.includes(symptom.id)
+                    ? 'border border-sky-500 bg-sky-100 shadow-sky-200 shadow-md'
+                    : 'border border-black/10 bg-white hover:border-sky-300 hover:bg-sky-50'}
+
+          `}
                 onClick={() => handleSymptomChange(symptom.id, !selectedSymptoms.includes(symptom.id))}
               >
                 <Checkbox
@@ -130,11 +138,11 @@ const SymptomForm = () => {
                   className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                 />
                 <div className="flex items-center gap-2 flex-1">
-                  <div className="text-primary">
+                  <div className="text-blue-600">
                     {symptom.icon}
                   </div>
-                  <label 
-                    htmlFor={symptom.id} 
+                  <label
+                    htmlFor={symptom.id}
                     className="font-medium text-foreground cursor-pointer flex-1"
                   >
                     {symptom.name}
@@ -149,9 +157,10 @@ const SymptomForm = () => {
         </CardContent>
       </Card>
 
+
       {/* Submit Button */}
       <div className="flex justify-center pt-6">
-        <Button 
+        <Button
           onClick={handleSubmit}
           disabled={selectedSymptoms.length === 0}
           size="lg"
