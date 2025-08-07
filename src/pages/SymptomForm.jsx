@@ -1,17 +1,34 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../assets/component/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../assets/component/card";
 import { Checkbox } from "../assets/component/checkbox";
 import { Button } from "../assets/component/button";
 import { Badge } from "../assets/component/badge";
-import { Stethoscope } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion"; // 👈 for animation
+import { AnimatePresence, motion } from "framer-motion";
 import { symptoms } from "./SymptomeData";
+import { Label } from "../assets/component/lable";
+import { Input } from "../assets/component/input";
+import { Stethoscope, User, TrendingUp, Heart, Activity } from "lucide-react";
 
 const SymptomForm = () => {
   const [selectedSymptoms, setSelectedSymptoms] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [patientDetails, setPatientDetails] = useState({
+    name: "",
+    age: "",
+    bloodPressure: "",
+    pulseRate: "",
+  });
 
-  const categories = ["All", ...Array.from(new Set(symptoms.map((s) => s.category)))];
+  const categories = [
+    "All",
+    ...Array.from(new Set(symptoms.map((s) => s.category))),
+  ];
 
   const filteredSymptoms =
     selectedCategory === "All"
@@ -26,13 +43,35 @@ const SymptomForm = () => {
     }
   };
 
-  const handleSubmit = () => {
-    const selectedSymptomNames = symptoms
-      .filter((s) => selectedSymptoms.includes(s.id))
-      .map((s) => s.name);
+  const handlePatientDetailsChange = (e) => {
+    const { id, value } = e.target;
+    setPatientDetails((prevDetails) => ({
+      ...prevDetails,
+      [id]: value,
+    }));
+  };
 
-    console.log("Selected symptoms:", selectedSymptomNames);
-    alert("Symptoms submitted. See console for details.");
+  const handleSubmit = () => {
+    // 1. Format the data for logging
+    const formData = {
+      patientDetails: patientDetails,
+      selectedSymptoms: selectedSymptoms,
+      submissionDate: new Date().toISOString(),
+    };
+
+    // 2. Log the data to the console
+    console.log("Form data ready to be sent:", formData);
+
+    alert("Symptoms submitted. Check the console for details!");
+
+    // Optional: Reset the form after logging
+    setPatientDetails({
+      name: "",
+      age: "",
+      bloodPressure: "",
+      pulseRate: "",
+    });
+    setSelectedSymptoms([]);
   };
 
   return (
@@ -43,27 +82,109 @@ const SymptomForm = () => {
           <div className="p-4 rounded-full bg-sky-100 flex items-center justify-center">
             <Stethoscope className="w-8 h-8 text-sky-600" />
           </div>
-          <h1 className="text-3xl font-bold text-foreground">Symptom Assessment</h1>
+          <h1 className="text-3xl font-bold text-foreground">
+            Symptom Assessment
+          </h1>
         </div>
         <p className="text-muted-foreground max-w-2xl mx-auto text-sky-600">
-          Please select all symptoms you are currently experiencing. This information will help healthcare providers better understand your condition.
+          Please select all symptoms you are currently experiencing. This
+          information will help healthcare providers better understand your
+          condition.
         </p>
       </div>
+
+      {/* Patient Details */}
+      <Card className="border border-black/10 bg-white shadow-sm rounded-2xl">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg font-semibold text-gray-800">
+            Patient Details
+          </CardTitle>
+          <CardDescription className="text-sm text-gray-500">
+            Please provide your personal information.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <Label htmlFor="name" className="flex items-center text-gray-700">
+                <User className="w-4 h-4 mr-2 text-sky-500" />
+                Full Name
+              </Label>
+              <Input
+                id="name"
+                value={patientDetails.name}
+                onChange={handlePatientDetailsChange}
+                placeholder="John Doe"
+                className="focus:ring-sky-500 focus:border-sky-500"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="age" className="flex items-center text-gray-700">
+                <TrendingUp className="w-4 h-4 mr-2 text-sky-500" />
+                Age
+              </Label>
+              <Input
+                id="age"
+                type="number"
+                value={patientDetails.age}
+                onChange={handlePatientDetailsChange}
+                placeholder="30"
+                className="focus:ring-sky-500 focus:border-sky-500"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label
+                htmlFor="bloodPressure"
+                className="flex items-center text-gray-700"
+              >
+                <Heart className="w-4 h-4 mr-2 text-sky-500" />
+                Blood Pressure (mmHg)
+              </Label>
+              <Input
+                id="bloodPressure"
+                value={patientDetails.bloodPressure}
+                onChange={handlePatientDetailsChange}
+                placeholder="120/80"
+                className="focus:ring-sky-500 focus:border-sky-500"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label
+                htmlFor="pulseRate"
+                className="flex items-center text-gray-700"
+              >
+                <Activity className="w-4 h-4 mr-2 text-sky-500" />
+                Pulse Rate (bpm)
+              </Label>
+              <Input
+                id="pulseRate"
+                type="number"
+                value={patientDetails.pulseRate}
+                onChange={handlePatientDetailsChange}
+                placeholder="75"
+                className="focus:ring-sky-500 focus:border-sky-500"
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Category Filter */}
       <Card className="border border-black/10 bg-white shadow-sm rounded-2xl">
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg font-semibold text-gray-800">Filter by Category</CardTitle>
+          <CardTitle className="text-lg font-semibold text-gray-800">
+            Filter by Category
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 hover:cursor-pointer">
             {categories.map((category) => (
               <Button
                 key={category}
                 variant={selectedCategory === category ? "default" : "outline"}
                 size="sm"
                 onClick={() => setSelectedCategory(category)}
-                className={`transition-all duration-200 rounded-full ${
+                className={`transition-all duration-200 rounded-full hover:cursor-pointer ${
                   selectedCategory === category
                     ? "bg-sky-500 text-white hover:bg-sky-600"
                     : "border-gray-300 text-gray-700 hover:bg-gray-100"
@@ -109,7 +230,9 @@ const SymptomForm = () => {
       {/* Symptoms Grid */}
       <Card className="border border-black/10 bg-card shadow-sm">
         <CardHeader>
-          <CardTitle className="text-xl text-foreground">Select Your Symptoms</CardTitle>
+          <CardTitle className="text-xl text-foreground">
+            Select Your Symptoms
+          </CardTitle>
           <CardDescription className="text-muted-foreground">
             Check all symptoms that apply to your current condition
           </CardDescription>
@@ -174,7 +297,7 @@ const SymptomForm = () => {
           onClick={handleSubmit}
           disabled={selectedSymptoms.length === 0}
           size="lg"
-          className="px-8 py-3 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-8 py-3 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover: shadow-lg transition-all duration-200 bg-sky-500 text-white hover:bg-sky-600 focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 rounded-lg hover:cursor-pointer  hover:shadow-lg "
         >
           Submit Symptoms Assessment
         </Button>
