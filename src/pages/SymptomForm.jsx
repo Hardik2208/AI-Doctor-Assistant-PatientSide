@@ -3,31 +3,33 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../as
 import { Checkbox } from "../assets/component/checkbox";
 import { Button } from "../assets/component/button";
 import { Badge } from "../assets/component/badge";
-import { Stethoscope, Heart, Brain, Thermometer, Eye, Ear, X, Syringe, Clipboard, Scan } from "lucide-react";
+import { Stethoscope } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion"; // 👈 for animation
 import { symptoms } from "./SymptomeData";
 
 const SymptomForm = () => {
   const [selectedSymptoms, setSelectedSymptoms] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const categories = ["All", ...Array.from(new Set(symptoms.map(s => s.category)))];
+  const categories = ["All", ...Array.from(new Set(symptoms.map((s) => s.category)))];
 
-  const filteredSymptoms = selectedCategory === "All"
-    ? symptoms
-    : symptoms.filter(s => s.category === selectedCategory);
+  const filteredSymptoms =
+    selectedCategory === "All"
+      ? symptoms
+      : symptoms.filter((s) => s.category === selectedCategory);
 
   const handleSymptomChange = (symptomId, checked) => {
     if (checked) {
       setSelectedSymptoms([...selectedSymptoms, symptomId]);
     } else {
-      setSelectedSymptoms(selectedSymptoms.filter(id => id !== symptomId));
+      setSelectedSymptoms(selectedSymptoms.filter((id) => id !== symptomId));
     }
   };
 
   const handleSubmit = () => {
     const selectedSymptomNames = symptoms
-      .filter(s => selectedSymptoms.includes(s.id))
-      .map(s => s.name);
+      .filter((s) => selectedSymptoms.includes(s.id))
+      .map((s) => s.name);
 
     console.log("Selected symptoms:", selectedSymptomNames);
     alert("Symptoms submitted. See console for details.");
@@ -41,23 +43,18 @@ const SymptomForm = () => {
           <div className="p-4 rounded-full bg-sky-100 flex items-center justify-center">
             <Stethoscope className="w-8 h-8 text-sky-600" />
           </div>
-
           <h1 className="text-3xl font-bold text-foreground">Symptom Assessment</h1>
         </div>
         <p className="text-muted-foreground max-w-2xl mx-auto text-sky-600">
           Please select all symptoms you are currently experiencing. This information will help healthcare providers better understand your condition.
         </p>
-
       </div>
 
       {/* Category Filter */}
       <Card className="border border-black/10 bg-white shadow-sm rounded-2xl">
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg font-semibold text-gray-800">
-            Filter by Category
-          </CardTitle>
+          <CardTitle className="text-lg font-semibold text-gray-800">Filter by Category</CardTitle>
         </CardHeader>
-
         <CardContent>
           <div className="flex flex-wrap gap-2">
             {categories.map((category) => (
@@ -66,11 +63,11 @@ const SymptomForm = () => {
                 variant={selectedCategory === category ? "default" : "outline"}
                 size="sm"
                 onClick={() => setSelectedCategory(category)}
-                className={`transition-all duration-200 rounded-full ${selectedCategory === category
+                className={`transition-all duration-200 rounded-full ${
+                  selectedCategory === category
                     ? "bg-sky-500 text-white hover:bg-sky-600"
                     : "border-gray-300 text-gray-700 hover:bg-gray-100"
-                  }`}
-
+                }`}
               >
                 {category}
               </Button>
@@ -79,10 +76,9 @@ const SymptomForm = () => {
         </CardContent>
       </Card>
 
-
       {/* Selected Symptoms Summary */}
       {selectedSymptoms.length > 0 && (
-        <Card className="border-primary/20 bg-primary-light/30">
+        <Card className="border-primary/20 bg-primary-light/30 transition-all duration-300">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg text-foreground flex items-center gap-2">
               <Badge variant="secondary" className="px-2 py-1">
@@ -94,7 +90,7 @@ const SymptomForm = () => {
           <CardContent>
             <div className="flex flex-wrap gap-2">
               {symptoms
-                .filter(s => selectedSymptoms.includes(s.id))
+                .filter((s) => selectedSymptoms.includes(s.id))
                 .map((symptom) => (
                   <Badge
                     key={symptom.id}
@@ -119,44 +115,58 @@ const SymptomForm = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-4">
-            {filteredSymptoms.map((symptom) => (
-              <div
-                key={symptom.id}
-                className={`flex items-center space-x-3 p-4 rounded-xl border transition-all duration-200 cursor-pointer
-${selectedSymptoms.includes(symptom.id)
-                    ? 'border border-sky-500 bg-sky-100 shadow-sky-200 shadow-md'
-                    : 'border border-black/10 bg-white hover:border-sky-300 hover:bg-sky-50'}
-
-          `}
-                onClick={() => handleSymptomChange(symptom.id, !selectedSymptoms.includes(symptom.id))}
-              >
-                <Checkbox
-                  id={symptom.id}
-                  checked={selectedSymptoms.includes(symptom.id)}
-                  onCheckedChange={(checked) => handleSymptomChange(symptom.id, checked)}
-                  className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-                />
-                <div className="flex items-center gap-2 flex-1">
-                  <div className="text-blue-600">
-                    {symptom.icon}
+          <motion.div
+            layout
+            className="grid grid-cols-2 gap-4 transition-all duration-300"
+          >
+            <AnimatePresence>
+              {filteredSymptoms.map((symptom) => (
+                <motion.div
+                  key={symptom.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  className={`flex items-center space-x-3 p-4 rounded-xl border cursor-pointer transition-all duration-200
+                    ${
+                      selectedSymptoms.includes(symptom.id)
+                        ? "border-sky-500 bg-sky-100 shadow-sky-200 shadow-md"
+                        : "border-black/10 bg-white hover:border-sky-300 hover:bg-sky-50"
+                    }`}
+                  onClick={() =>
+                    handleSymptomChange(
+                      symptom.id,
+                      !selectedSymptoms.includes(symptom.id)
+                    )
+                  }
+                >
+                  <Checkbox
+                    id={symptom.id}
+                    checked={selectedSymptoms.includes(symptom.id)}
+                    onCheckedChange={(checked) =>
+                      handleSymptomChange(symptom.id, checked)
+                    }
+                    className="data-[state=checked]:bg-sky-500 data-[state=checked]:border-sky-500 data-[state=checked]:text-white"
+                  />
+                  <div className="flex items-center gap-2 flex-1">
+                    <div className="text-blue-600">{symptom.icon}</div>
+                    <label
+                      htmlFor={symptom.id}
+                      className="font-medium text-foreground cursor-pointer flex-1"
+                    >
+                      {symptom.name}
+                    </label>
+                    <Badge variant="outline" className="text-xs">
+                      {symptom.category}
+                    </Badge>
                   </div>
-                  <label
-                    htmlFor={symptom.id}
-                    className="font-medium text-foreground cursor-pointer flex-1"
-                  >
-                    {symptom.name}
-                  </label>
-                  <Badge variant="outline" className="text-xs">
-                    {symptom.category}
-                  </Badge>
-                </div>
-              </div>
-            ))}
-          </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
         </CardContent>
       </Card>
-
 
       {/* Submit Button */}
       <div className="flex justify-center pt-6">
