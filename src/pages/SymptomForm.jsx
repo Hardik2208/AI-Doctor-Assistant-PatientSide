@@ -14,6 +14,7 @@ import { symptoms } from "./SymptomeData";
 import { Label } from "../assets/component/lable";
 import { Input } from "../assets/component/input";
 import { Stethoscope, User, TrendingUp, Heart, Activity } from "lucide-react";
+import ReportDisplay from "./ReportDisplay";
 
 const SymptomForm = () => {
   const [selectedSymptoms, setSelectedSymptoms] = useState([]);
@@ -24,6 +25,7 @@ const SymptomForm = () => {
     bloodPressure: "",
     pulseRate: "",
   });
+  const [report, setReport] = useState(null); // State to store the AI report
 
   const categories = [
     "All",
@@ -51,28 +53,54 @@ const SymptomForm = () => {
     }));
   };
 
-  const handleSubmit = () => {
-    // 1. Format the data for logging
+
+  const handleSubmit = async () => {
+    // Check for required fields before submitting
+    if (!patientDetails.name || !patientDetails.age) {
+      alert("Please fill in your name and age.");
+      return;
+    }
+
     const formData = {
-      patientDetails: patientDetails,
-      selectedSymptoms: selectedSymptoms,
-      submissionDate: new Date().toISOString(),
+      name: patientDetails.name,
+      age: patientDetails.age,
+      bloodPressure: patientDetails.bloodPressure, // Send the new field
+      pulseRate: patientDetails.pulseRate, // Send the new field
+      selectedSymptoms: symptoms
+        .filter((s) => selectedSymptoms.includes(s.id))
+        .map((s) => ({ id: s.id, name: s.name, category: s.category })),
     };
 
-    // 2. Log the data to the console
-    console.log("Form data ready to be sent:", formData);
+    console.log("Submitting data to backend:", formData);
 
-    alert("Symptoms submitted. Check the console for details!");
+    try {
+      const response = await fetch("http://localhost:3001/api/reports", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-    // Optional: Reset the form after logging
-    setPatientDetails({
-      name: "",
-      age: "",
-      bloodPressure: "",
-      pulseRate: "",
-    });
-    setSelectedSymptoms([]);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("Success:", result);
+      // You'll now have a full AI report from the backend to display
+      setReport(result.report);
+      alert("Your symptom assessment has been submitted successfully!");
+    } catch (error) {
+      console.error("Error submitting data:", error);
+      alert("There was an error submitting your data. Please try again.");
+    }
   };
+
+  // Conditionally render the report or the form
+  if (report) {
+    return <ReportDisplay reportData={report} />;
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
