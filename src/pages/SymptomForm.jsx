@@ -74,7 +74,7 @@ const SymptomForm = () => {
     console.log("Submitting data to backend:", formData);
 
     try {
-      const response = await fetch("http://localhost:3001/api/reports", {
+      const response = await fetch("https://ai-doctor-assistant-backend-ai-ml.onrender.com/api/reports", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -103,18 +103,18 @@ const SymptomForm = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
+    <div className="max-w-4xl mx-auto p-4 sm:p-6 space-y-6"> {/* Added p-4 for smaller screens */}
       {/* Header */}
       <div className="text-center space-y-4">
         <div className="flex items-center justify-center gap-3 mb-4">
-          <div className="p-4 rounded-full bg-sky-100 flex items-center justify-center">
-            <Stethoscope className="w-8 h-8 text-sky-600" />
+          <div className="p-3 sm:p-4 rounded-full bg-sky-100 flex items-center justify-center"> {/* Adjusted padding */}
+            <Stethoscope className="w-6 h-6 sm:w-8 sm:h-8 text-sky-600" /> {/* Adjusted icon size */}
           </div>
-          <h1 className="text-3xl font-bold text-foreground">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground"> {/* Adjusted font size */}
             Symptom Assessment
           </h1>
         </div>
-        <p className="text-muted-foreground max-w-2xl mx-auto text-sky-600">
+        <p className="text-muted-foreground max-w-2xl mx-auto text-sky-600 text-sm sm:text-base"> {/* Adjusted font size */}
           Please select all symptoms you are currently experiencing. This
           information will help healthcare providers better understand your
           condition.
@@ -268,7 +268,7 @@ const SymptomForm = () => {
         <CardContent>
           <motion.div
             layout
-            className="grid grid-cols-2 gap-4 transition-all duration-300"
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4 transition-all duration-300" // Changed to grid-cols-1 for mobile, sm:grid-cols-2 for small screens and up
           >
             <AnimatePresence>
               {filteredSymptoms.map((symptom) => (
@@ -308,7 +308,7 @@ const SymptomForm = () => {
                     >
                       {symptom.name}
                     </label>
-                    <Badge variant="outline" className="text-xs">
+                    <Badge variant="outline" className="text-xs hidden sm:block"> {/* Hid the badge on smaller screens */}
                       {symptom.category}
                     </Badge>
                   </div>
@@ -325,7 +325,7 @@ const SymptomForm = () => {
           onClick={handleSubmit}
           disabled={selectedSymptoms.length === 0}
           size="lg"
-          className="px-8 py-3 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover: shadow-lg transition-all duration-200 bg-sky-500 text-white hover:bg-sky-600 focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 rounded-lg hover:cursor-pointer  hover:shadow-lg "
+          className="px-6 sm:px-8 py-3 text-base sm:text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover: shadow-lg transition-all duration-200 bg-sky-500 text-white hover:bg-sky-600 focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 rounded-lg hover:cursor-pointer  hover:shadow-lg "
         >
           Submit Symptoms Assessment
         </Button>

@@ -101,7 +101,6 @@ const VocalInputPage = () => {
     const newDetails = { ...patientDetails };
 
     switch (step) {
-      // ... (cases for Name, Age, Blood Pressure, and Temperature are unchanged)
       case 0:
         newDetails.name = transcript.trim();
         break;
@@ -126,7 +125,6 @@ const VocalInputPage = () => {
         }
         break;
       case 4:
-        // This is the key change: append the new transcription to the existing symptoms
         newDetails.symptoms =
           (newDetails.symptoms ? newDetails.symptoms + " " : "") + transcript;
         break;
@@ -176,7 +174,6 @@ const VocalInputPage = () => {
       return;
     }
 
-    // Format the data to match the backend's API
     const formData = {
       name: patientDetails.name,
       age: patientDetails.age,
@@ -193,7 +190,7 @@ const VocalInputPage = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:3001/api/reports", {
+      const response = await fetch("https://ai-doctor-assistant-backend-ai-ml.onrender.com/api/reports", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -207,29 +204,28 @@ const VocalInputPage = () => {
 
       const result = await response.json();
       console.log("Success:", result);
-      setReport(result.report); // Store the AI report in state
+      setReport(result.report);
     } catch (error) {
       console.error("Error submitting data:", error);
       alert("There was an error submitting your data. Please try again.");
     }
   };
 
-  // Conditionally render the report or the form
   if (report) {
     return <ReportDisplay reportData={report} onReset={resetForm} />;
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-50">
-      <div className="absolute top-4 left-4">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 bg-gray-50"> {/* Adjusted padding */}
+      <div className="absolute top-4 left-4 z-10"> {/* Added z-index to keep button on top */}
         <Link to="/">
           <Button>← Go Back</Button>
         </Link>
       </div>
 
-      <Card className="max-w-2xl w-full">
+      <Card className="max-w-md w-full sm:max-w-2xl"> {/* Adjusted max-width for better mobile display */}
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">
+          <CardTitle className="text-xl sm:text-2xl font-bold"> {/* Adjusted font size */}
             Voice Symptom Assessment
           </CardTitle>
           <CardDescription className="text-sm text-gray-500">
@@ -239,7 +235,7 @@ const VocalInputPage = () => {
         <CardContent className="space-y-6">
           <div className="flex justify-center">
             <motion.button
-              className={`w-24 h-24 rounded-full flex items-center justify-center text-white text-4xl shadow-lg transition-all duration-300 ${
+              className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center text-white text-3xl sm:text-4xl shadow-lg transition-all duration-300 ${ // Adjusted size and font
                 isRecording ? "bg-red-500" : "bg-sky-500 hover:bg-sky-600"
               }`}
               onClick={handleMicClick}
@@ -247,86 +243,131 @@ const VocalInputPage = () => {
               transition={{ duration: 1, repeat: Infinity }}
             >
               <Mic
-                className={`w-12 h-12 ${isRecording ? "animate-pulse" : ""}`}
+                className={`w-10 h-10 sm:w-12 sm:h-12 ${isRecording ? "animate-pulse" : ""}`} // Adjusted icon size
               />
             </motion.button>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {step === 0 && (
-              <div className="space-y-1">
-                <Label htmlFor="name" className="flex items-center">
-                  <User className="w-4 h-4 mr-2" />
-                  Full Name
-                </Label>
-                <Input
-                  id="name"
-                  value={patientDetails.name}
-                  onChange={handleInputChange}
-                  readOnly={isRecording}
-                />
-              </div>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key="name"
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-1"
+                >
+                  <Label htmlFor="name" className="flex items-center">
+                    <User className="w-4 h-4 mr-2" />
+                    Full Name
+                  </Label>
+                  <Input
+                    id="name"
+                    value={patientDetails.name}
+                    onChange={handleInputChange}
+                    readOnly={isRecording}
+                  />
+                </motion.div>
+              </AnimatePresence>
             )}
             {step === 1 && (
-              <div className="space-y-1">
-                <Label htmlFor="age" className="flex items-center">
-                  <TrendingUp className="w-4 h-4 mr-2" />
-                  Age
-                </Label>
-                <Input
-                  id="age"
-                  type="number"
-                  value={patientDetails.age}
-                  onChange={handleInputChange}
-                  readOnly={isRecording}
-                />
-              </div>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key="age"
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-1"
+                >
+                  <Label htmlFor="age" className="flex items-center">
+                    <TrendingUp className="w-4 h-4 mr-2" />
+                    Age
+                  </Label>
+                  <Input
+                    id="age"
+                    type="number"
+                    value={patientDetails.age}
+                    onChange={handleInputChange}
+                    readOnly={isRecording}
+                  />
+                </motion.div>
+              </AnimatePresence>
             )}
             {step === 2 && (
-              <div className="space-y-1">
-                <Label htmlFor="bloodPressure" className="flex items-center">
-                  <Heart className="w-4 h-4 mr-2" />
-                  Blood Pressure
-                </Label>
-                <Input
-                  id="bloodPressure"
-                  value={patientDetails.bloodPressure}
-                  onChange={handleInputChange}
-                  readOnly={isRecording}
-                />
-              </div>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key="bp"
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-1"
+                >
+                  <Label htmlFor="bloodPressure" className="flex items-center">
+                    <Heart className="w-4 h-4 mr-2" />
+                    Blood Pressure
+                  </Label>
+                  <Input
+                    id="bloodPressure"
+                    value={patientDetails.bloodPressure}
+                    onChange={handleInputChange}
+                    readOnly={isRecording}
+                  />
+                </motion.div>
+              </AnimatePresence>
             )}
             {step === 3 && (
-              <div className="space-y-1">
-                <Label htmlFor="temperature" className="flex items-center">
-                  <Thermometer className="w-4 h-4 mr-2" />
-                  Temperature
-                </Label>
-                <Input
-                  id="temperature"
-                  value={patientDetails.temperature}
-                  onChange={handleInputChange}
-                  readOnly={isRecording}
-                />
-              </div>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key="temp"
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-1"
+                >
+                  <Label htmlFor="temperature" className="flex items-center">
+                    <Thermometer className="w-4 h-4 mr-2" />
+                    Temperature
+                  </Label>
+                  <Input
+                    id="temperature"
+                    value={patientDetails.temperature}
+                    onChange={handleInputChange}
+                    readOnly={isRecording}
+                  />
+                </motion.div>
+              </AnimatePresence>
             )}
             {step === 4 && (
-              <div className="space-y-1">
-                <Label htmlFor="symptoms" className="flex items-center">
-                  <Activity className="w-4 h-4 mr-2" />
-                  Symptoms
-                </Label>
-                <textarea
-                  id="symptoms"
-                  className="w-full h-32 p-3 text-lg border border-gray-300 rounded-lg focus:outline-none focus:border-sky-500"
-                  value={patientDetails.symptoms}
-                  onChange={handleInputChange}
-                  readOnly={isRecording}
-                />
-              </div>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key="symptoms"
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-1"
+                >
+                  <Label htmlFor="symptoms" className="flex items-center">
+                    <Activity className="w-4 h-4 mr-2" />
+                    Symptoms
+                  </Label>
+                  <textarea
+                    id="symptoms"
+                    className="w-full h-32 p-3 text-lg border border-gray-300 rounded-lg focus:outline-none focus:border-sky-500"
+                    value={patientDetails.symptoms}
+                    onChange={handleInputChange}
+                    readOnly={isRecording}
+                  />
+                </motion.div>
+              </AnimatePresence>
             )}
 
-            <div className="flex justify-between">
+            <div className="flex justify-between mt-6"> {/* Added margin-top */}
               <Button type="button" onClick={handleBack} disabled={step === 0}>
                 Back
               </Button>
