@@ -168,7 +168,7 @@ const Gym = ({ exercisesData }) => {
     return (
         <>
             <Header />
-            <div className="bg-gray-50 py-4 min-h-screen font-sans mt-10">
+            <div className="bg-gray-50 py-4 min-h-screen font-sans mt-20">
                 <div className="max-w-8xl px-4">
                     <h1 className="text-4xl font-extrabold text-gray-900 mb-8">
                         Exercises Guide
