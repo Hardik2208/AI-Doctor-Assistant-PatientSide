@@ -1,6 +1,7 @@
 // LandingPage.jsx
 import React, { useRef } from "react";
-import Header from "../assets/component/Header"; // Import your header component
+import Header from "../assets/component/Header.jsx"; // Import your header component
+import { Link } from "react-router-dom";
 
 const fitnessOptions = [
   {
@@ -115,43 +116,49 @@ export default function LandingPage() {
 
   const scrollLeft = () => {
     if (scrollRef.current) {
-      (scrollRef.current as HTMLElement).scrollBy({ left: -200, behavior: "smooth" });
+      scrollRef.current.scrollBy({ left: -200, behavior: "smooth" });
     }
   };
 
   const scrollRight = () => {
     if (scrollRef.current) {
-      (scrollRef.current as HTMLElement).scrollBy({ left: 200, behavior: "smooth" });
+      scrollRef.current.scrollBy({ left: 200, behavior: "smooth" });
     }
   };
 
   return (
     <>
-      <Header />
+      <div>
+        <Header />
+      </div>
 
-      <div className="w-full py-10 space-y-16 mt-20">
+      <div className="w-full py-5 space-y-16 mt-20">
         {/* Fitness Section */}
         <section>
           <h2 className="text-center text-2xl font-bold mb-8">
             For Your Fitness
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {fitnessOptions.map((item, index) => (
-              <div
-                key={index}
-                className="flex flex-col items-center text-center hover:scale-105 transition-transform"
-              >
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="rounded-xl w-full h-56 object-cover shadow-md"
-                />
-                <h3 className="mt-3 font-semibold">{item.title}</h3>
-              </div>
-            ))}
+            {fitnessOptions.map((item, index) => {
+              const path = `/${item.title.replace(/\s/g, "")}`;
+
+              return (
+                <Link
+                  key={index}
+                  to={path}
+                  className="flex flex-col items-center text-center hover:scale-105 transition-transform"
+                >
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="rounded-xl w-full h-56 object-cover shadow-md"
+                  />
+                  <h3 className="mt-3 font-semibold">{item.title}</h3>
+                </Link>
+              );
+            })}
           </div>
         </section>
-
         {/* Symptoms Section */}
         <section>
           <h2 className="text-center text-2xl font-bold mb-8">
@@ -172,7 +179,6 @@ export default function LandingPage() {
             ))}
           </div>
         </section>
-
         {/* Health Care Options */}
         <section>
           <h2 className="text-center text-2xl font-bold mb-8">
@@ -194,7 +200,6 @@ export default function LandingPage() {
             ))}
           </div>
         </section>
-
         {/* Specialized Healthcare Support */}
         <section>
           <h2 className="text-center text-2xl font-bold mb-8">
@@ -216,7 +221,6 @@ export default function LandingPage() {
             ))}
           </div>
         </section>
-
         {/* Comprehensive Care Section with Arrows */}
         <section className="py-10 bg-gradient-to-r from-blue-50 to-blue-100 relative">
           <div className="max-w-7xl mx-auto px-4">

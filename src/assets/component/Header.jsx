@@ -1,5 +1,6 @@
 import React from "react";
 import { FaMapMarkerAlt, FaSearch, FaMicrophone } from "react-icons/fa";
+import Logo from "../component/Logo.png";
 
 export default function JDHeader() {
   return (
@@ -7,11 +8,10 @@ export default function JDHeader() {
       {/* Logo */}
       <div className="flex items-center space-x-4">
         <img
-          src="https://akam.cdn.jdmagicbox.com/images/icontent/jdrwd/jdlogosvg.svg"
+          src={Logo} 
           alt="Justdial Logo"
-          className="h-6"
+          className="h-16"
         />
-
         {/* Location Input */}
         <div className="flex items-center border rounded-lg px-2 bg-white">
           <FaMapMarkerAlt className="text-gray-500 mr-1" />
