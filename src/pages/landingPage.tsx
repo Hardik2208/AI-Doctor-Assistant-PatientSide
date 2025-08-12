@@ -1,6 +1,6 @@
 // LandingPage.jsx
 import React, { useRef } from "react";
-import Header from "./Header"; // Import your header component
+import Header from "../assets/component/Header"; // Import your header component
 
 const fitnessOptions = [
   {
