@@ -11,6 +11,7 @@ import DietGeneration from "./pages/DietGeneration";
 import Gym from "./pages/Gym";
 import ExerciseDetail from "./pages/ExerciseDetails";
 import YogaDetail from "./pages/YogaDetails";
+import DietPlanDisplay from "./pages/DietPlanDisplay";
 
 // ✅ Single yogaData definition
 import treeMain from "./pages/tree-main.png";
@@ -101,6 +102,7 @@ export default function App() {
         <Route path="/type-input" element={<SymptomForm />} />
         <Route path="/chatbot" element={<Chatbot />} />
         <Route path="/" element={<LandingPage />} />
+        <Route path="/dietDisplay" element={<DietPlanDisplay/>} />
         <Route path="/Yoga" element={<Yoga yogaPoses={yogaData} />} />
         <Route path="/DietGeneration" element={<DietGeneration />} />
         <Route path="/Gym" element={<Gym exercisesData={exercisesData} />} />
