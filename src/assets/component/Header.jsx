@@ -1,60 +1,52 @@
 import React from "react";
-import { FaMapMarkerAlt, FaSearch, FaMicrophone } from "react-icons/fa";
-import Logo from "../component/Logo.png";
+import { FaMapMarkerAlt, FaSearch } from "react-icons/fa";
+import Logo1 from "../component/Logo1.png";
+import Logo2 from "../component/Logo2.png";
 
 export default function JDHeader() {
   return (
-    <header className="fixed top-0 left-0 w-full bg-white shadow-sm py-2 px-4 flex items-center justify-between z-50">
-      {/* Logo */}
-      <div className="flex items-center space-x-4">
-        <img
-          src={Logo} 
-          alt="Justdial Logo"
-          className="h-16"
-        />
-        {/* Location Input */}
-        <div className="flex items-center border rounded-lg px-2 bg-white">
-          <FaMapMarkerAlt className="text-gray-500 mr-1" />
-          <input
-            type="text"
-            defaultValue="Mumbai"
-            className="px-1 py-1 outline-none text-sm"
-          />
+    <header className="fixed top-0 left-0 w-full bg-white text-gray-800 py-4 flex items-center justify-center z-50">
+      <div className="w-11/12 max-w-7xl flex items-center justify-between">
+        {/* Logo Section - Left Side, but aligned centrally */}
+        <div className="flex items-center space-x-2 cursor-pointer">
+          <img src={Logo1} alt="Justdial Logo" className="h-8" />
+          <img src={Logo2} alt="Justdial Logo" className="h-6" />
         </div>
 
-        {/* Search Input */}
-        <div className="flex items-center border rounded-lg overflow-hidden bg-white">
-          <input
-            type="text"
-            placeholder="Doctors"
-            className="px-2 py-1 outline-none text-sm w-48"
-          />
-          <button className="px-2">
-            <FaMicrophone className="text-blue-500" />
-          </button>
-          <button className="bg-orange-500 px-3 py-2 text-white">
-            <FaSearch />
-          </button>
-        </div>
-      </div>
-
-      {/* Right Menu */}
-      <div className="flex items-center space-x-4 text-sm">
-        <div className="flex items-center space-x-1 cursor-pointer">
-          <span>EN</span>
-        </div>
-        <a href="#" className="hover:underline">
-          Advertise
-        </a>
-        <a href="#" className="flex items-center hover:underline">
-          <span className="bg-red-600 text-white text-[10px] px-1 py-0.5 rounded mr-1">
-            BUSINESS
+        {/* Navigation and Icons Section - Right Side, but aligned centrally */}
+        
+        <nav className="flex items-center space-x-6">
+          <div className="flex items-center space-x-4">
+            <button className="text-gray-600 hover:text-orange-500 transition-colors duration-200 p-2 rounded-full hover:bg-orange-100 cursor-pointer">
+              <FaSearch className="text-xl" />
+            </button>
+            <button className="text-gray-600 hover:text-blue-600 transition-colors duration-200 p-2 rounded-full hover:bg-blue-100 cursor-pointer">
+              <FaMapMarkerAlt className="text-xl" />
+            </button>
+          </div>
+          <a
+            href="#"
+            className="text-gray-600 hover:text-blue-600 transition-colors duration-200 relative group hidden md:inline cursor-pointer"
+          >
+            Home
+            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+          </a>
+          <span
+            className="text-gray-600 hover:text-blue-600 transition-colors duration-200 relative group hidden md:inline cursor-pointer"
+          >
+            EN
+            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
           </span>
-          Free Listing
-        </a>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg">
-          Login / Sign Up
-        </button>
+          <a
+            href="#"
+            className="text-gray-600 hover:text-blue-600 transition-colors duration-200 relative group hidden md:inline cursor-pointer"
+          >
+            Login / Sign Up
+            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+          </a>
+          
+          
+        </nav>
       </div>
     </header>
   );

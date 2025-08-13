@@ -2,6 +2,7 @@
 import React, { useRef } from "react";
 import Header from "../assets/component/Header.jsx"; // Import your header component
 import { Link } from "react-router-dom";
+import bg from "../assets/component/bg.png"
 
 const fitnessOptions = [
   {
@@ -131,7 +132,6 @@ export default function LandingPage() {
       <div>
         <Header />
       </div>
-
       <div className="w-full py-5 space-y-16 mt-20">
         {/* Fitness Section */}
         <section>
