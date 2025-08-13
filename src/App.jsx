@@ -5,7 +5,7 @@ import ChoicePage from "./pages/ChoicePage";
 import VocalInputPage from "./pages/VocalInputPage";
 import SymptomForm from "./pages/SymptomForm";
 import Chatbot from "./pages/Chatbot";
-import LandingPage from "./pages/LandingPage";
+import LandingPage from "./pages/landingPage.jsx";
 import Yoga from "./pages/Yoga";
 import DietGeneration from "./pages/DietGeneration";
 import Gym from "./pages/Gym";

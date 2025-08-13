@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import pushupMain from './3.png'; // Importing the main image for Push-ups
-import pushupStep1Thumb from './1.png'; 
-import pushupStep1Full from './1.png';
-import pushupStep2Thumb from './2.png';
-import pushupStep2Full from './2.png';
-import pushupStep3Thumb from './3.png';
-import pushupStep3Full from './3.png';
+import pushupMain from '../assets/component/3.png'; // Importing the main image for Push-ups
+import pushupStep1Thumb from '../assets/component/1.png'; 
+import pushupStep1Full from '../assets/component/1.png';
+import pushupStep2Thumb from '../assets/component/2.png';
+import pushupStep2Full from '../assets/component/2.png';
+import pushupStep3Thumb from '../assets/component/3.png';
+import pushupStep3Full from '../assets/component/3.png';
 import Header from '../assets/component/Header.jsx'; // Import your header component
 
 // --- Data for the exercises (Updated with imported images) ---
