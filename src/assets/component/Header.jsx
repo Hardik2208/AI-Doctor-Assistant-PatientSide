@@ -8,9 +8,9 @@ export default function JDHeader() {
     <header className="fixed top-0 left-0 w-full bg-white text-gray-800 py-4 flex items-center justify-center z-50">
       <div className="w-11/12 max-w-7xl flex items-center justify-between">
         {/* Logo Section - Left Side, but aligned centrally */}
-        <div className="flex items-center space-x-2 cursor-pointer">
-          <img src={Logo1} alt="Justdial Logo" className="h-8" />
-          <img src={Logo2} alt="Justdial Logo" className="h-6" />
+        <div className="flex items-center justify-center space-x-2 cursor-pointer">
+          <img src={Logo2} alt="Justdial Logo" className="h-10 " />
+          <img src={Logo1} alt="Justdial Logo" className="h-10 mt-1" />
         </div>
 
         {/* Navigation and Icons Section - Right Side, but aligned centrally */}

@@ -2,7 +2,9 @@
 import React, { useRef } from "react";
 import Header from "../assets/component/Header.jsx"; // Import your header component
 import { Link } from "react-router-dom";
-import bg from "../assets/component/bg.png"
+import bg from "../assets/component/bg.png";
+
+import { FaStethoscope } from "react-icons/fa";
 
 const fitnessOptions = [
   {
@@ -135,28 +137,45 @@ export default function LandingPage() {
       <div className="w-full py-5 space-y-16 mt-20">
         {/* Fitness Section */}
         <section>
-          <h2 className="text-center text-2xl font-bold mb-8">
-            For Your Fitness
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {fitnessOptions.map((item, index) => {
-              const path = `/${item.title.replace(/\s/g, "")}`;
+          <div>
+            {/* The new flex container for the heading and button */}
+            <div className="flex justify-between items-center max-w-5xl mx-auto mb-8">
+              <h2 className="text-2xl font-bold">For your Fitness</h2>
+              <a href="/choicePage" className="no-underline">
+                <button
+    className="flex items-center justify-center space-x-2 px-6 py-3 text-white rounded-full 
+             bg-gradient-to-r from-blue-500 to-blue-700 
+             hover:from-blue-700 hover:to-blue-500 
+             transition-all duration-500 ease-in-out transform 
+             hover:-translate-y-1 hover:shadow-xl 
+             focus:outline-none focus:ring-4 focus:ring-blue-400/50 hover:cursor-pointer"
+>
+    <FaStethoscope className="text-lg" />
+    <span>Check Your Symptoms</span>
+</button>
+              </a>
+            </div>
 
-              return (
-                <Link
-                  key={index}
-                  to={path}
-                  className="flex flex-col items-center text-center hover:scale-105 transition-transform"
-                >
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="rounded-xl w-full h-56 object-cover shadow-md"
-                  />
-                  <h3 className="mt-3 font-semibold">{item.title}</h3>
-                </Link>
-              );
-            })}
+            {/* The rest of your grid of fitness options */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-5xl mx-auto">
+              {fitnessOptions.map((item, index) => {
+                const path = `/${item.title.replace(/\s/g, "")}`;
+                return (
+                  <a
+                    key={index}
+                    href={path}
+                    className="flex flex-col items-center text-center hover:scale-105 transition-transform no-underline"
+                  >
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="rounded-xl w-full h-56 object-cover shadow-md"
+                    />
+                    <h3 className="mt-3 font-semibold">{item.title}</h3>
+                  </a>
+                );
+              })}
+            </div>
           </div>
         </section>
         {/* Symptoms Section */}
@@ -170,7 +189,7 @@ export default function LandingPage() {
                 key={index}
                 className="flex flex-col items-center text-center hover:scale-105 transition-transform"
               >
-                <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center">
+                <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center hover:cursor-pointer">
                   <img src={item.icon} alt={item.name} className="w-12 h-12" />
                 </div>
                 <h3 className="mt-3 font-semibold">{item.name}</h3>
@@ -188,7 +207,7 @@ export default function LandingPage() {
             {healthCareOptions.map((item, index) => (
               <div
                 key={index}
-                className="flex flex-col items-center text-center hover:scale-105 transition-transform"
+                className="flex flex-col items-center text-center hover:scale-105 transition-transform hover:cursor-pointer"
               >
                 <img
                   src={item.image}
@@ -209,7 +228,7 @@ export default function LandingPage() {
             {healthcareSupport.map((item, index) => (
               <div
                 key={index}
-                className="flex flex-col items-center text-center hover:scale-105 transition-transform"
+                className="flex flex-col items-center text-center hover:scale-105 transition-transform hover:cursor-pointer"
               >
                 <img
                   src={item.image}
@@ -255,7 +274,7 @@ export default function LandingPage() {
                   {comprehensiveCare.map((item, index) => (
                     <div
                       key={index}
-                      className="bg-white rounded-xl shadow-md overflow-hidden hover:scale-105 transition-transform w-48 flex-shrink-0"
+                      className="bg-white rounded-xl shadow-md overflow-hidden hover:scale-105 transition-transform w-48 flex-shrink-0 hover:cursor-pointer"
                     >
                       <img
                         src={item.image}
