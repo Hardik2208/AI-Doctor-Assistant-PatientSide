@@ -136,34 +136,33 @@ export default function LandingPage() {
       </div>
       <div className="w-full py-5 space-y-16 mt-20">
         {/* Fitness Section */}
+
         <section>
           <div>
-            {/* The new flex container for the heading and button */}
             <div className="flex justify-between items-center max-w-5xl mx-auto mb-8">
               <h2 className="text-2xl font-bold">For your Fitness</h2>
-              <a href="/choicePage" className="no-underline">
+              <Link to="/choicePage" className="no-underline">
                 <button
-    className="flex items-center justify-center space-x-2 px-6 py-3 text-white rounded-full 
-             bg-gradient-to-r from-blue-500 to-blue-700 
-             hover:from-blue-700 hover:to-blue-500 
-             transition-all duration-500 ease-in-out transform 
-             hover:-translate-y-1 hover:shadow-xl 
-             focus:outline-none focus:ring-4 focus:ring-blue-400/50 hover:cursor-pointer"
->
-    <FaStethoscope className="text-lg" />
-    <span>Check Your Symptoms</span>
-</button>
-              </a>
+                  className="flex items-center justify-center space-x-2 px-6 py-3 text-white rounded-full 
+                     bg-gradient-to-r from-blue-500 to-blue-700 
+                     hover:from-blue-700 hover:to-blue-500 
+                     transition-all duration-500 ease-in-out transform 
+                     hover:-translate-y-1 hover:shadow-xl 
+                     focus:outline-none focus:ring-4 focus:ring-blue-400/50 hover:cursor-pointer"
+                >
+                  <FaStethoscope className="text-lg" />
+                  <span>Check Your Symptoms</span>
+                </button>
+              </Link>
             </div>
 
-            {/* The rest of your grid of fitness options */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-5xl mx-auto">
               {fitnessOptions.map((item, index) => {
                 const path = `/${item.title.replace(/\s/g, "")}`;
                 return (
-                  <a
+                  <Link
                     key={index}
-                    href={path}
+                    to={path}
                     className="flex flex-col items-center text-center hover:scale-105 transition-transform no-underline"
                   >
                     <img
@@ -172,7 +171,7 @@ export default function LandingPage() {
                       className="rounded-xl w-full h-56 object-cover shadow-md"
                     />
                     <h3 className="mt-3 font-semibold">{item.title}</h3>
-                  </a>
+                  </Link>
                 );
               })}
             </div>
