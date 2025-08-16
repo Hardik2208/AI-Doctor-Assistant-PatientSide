@@ -1,53 +1,69 @@
-import React from "react";
-import { FaMapMarkerAlt, FaSearch } from "react-icons/fa";
-import Logo1 from "../component/Logo1.png";
-import Logo2 from "../component/Logo2.png";
+import React from 'react';
 
-export default function JDHeader() {
-  return (
-    <header className="fixed top-0 left-0 w-full bg-white text-gray-800 py-4 flex items-center justify-center z-50">
-      <div className="w-11/12 max-w-7xl flex items-center justify-between">
-        {/* Logo Section - Left Side, but aligned centrally */}
-        <div className="flex items-center justify-center space-x-2 cursor-pointer">
-          <img src={Logo2} alt="Justdial Logo" className="h-10 " />
-          <img src={Logo1} alt="Justdial Logo" className="h-10 mt-1" />
-        </div>
 
-        {/* Navigation and Icons Section - Right Side, but aligned centrally */}
-        
-        <nav className="flex items-center space-x-6">
-          <div className="flex items-center space-x-4">
-            <button className="text-gray-600 hover:text-orange-500 transition-colors duration-200 p-2 rounded-full hover:bg-orange-100 cursor-pointer">
-              <FaSearch className="text-xl" />
-            </button>
-            <button className="text-gray-600 hover:text-blue-600 transition-colors duration-200 p-2 rounded-full hover:bg-blue-100 cursor-pointer">
-              <FaMapMarkerAlt className="text-xl" />
-            </button>
-          </div>
-          <a
-            href="#"
-            className="text-gray-600 hover:text-blue-600 transition-colors duration-200 relative group hidden md:inline cursor-pointer"
-          >
-            Home
-            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
-          </a>
-          <span
-            className="text-gray-600 hover:text-blue-600 transition-colors duration-200 relative group hidden md:inline cursor-pointer"
-          >
-            EN
-            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
-          </span>
-          <a
-            href="#"
-            className="text-gray-600 hover:text-blue-600 transition-colors duration-200 relative group hidden md:inline cursor-pointer"
-          >
-            Login / Sign Up
-            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
-          </a>
-          
-          
-        </nav>
-      </div>
-    </header>
-  );
-}
+const Header = () => {
+ return (
+ <header className="bg-white shadow-md py-4 px-6 flex items-center justify-between sticky top-0 z-50">
+ {/* Left Section: Logo and Brand */}
+ <div className="flex items-center">
+ <div className="bg-blue-400 text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
+ <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+ <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+ </svg>
+ </div>
+ <span className="text-xl font-semibold text-green-500">SANCTUA</span>
+ </div>
+
+
+ {/* Center Section: Navigation */}
+ <nav className="hidden md:flex space-x-6">
+ <a href="#home" className="text-gray-700 hover:text-blue-500">Home</a>
+ <a href="#fitness" className="text-gray-700 hover:text-blue-500">Fitness</a>
+ <a href="#symptoms" className="text-gray-700 hover:text-blue-500">Symptoms</a>
+ <a href="#healthcare" className="text-gray-700 hover:text-blue-500">Healthcare</a>
+ </nav>
+
+
+ {/* Right Section: Icons and Buttons */}
+ <div className="flex items-center space-x-4">
+ {/* Search Icon */}
+ <button className="text-gray-500 hover:text-gray-700 focus:outline-none">
+ <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+ <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-6a7 7 0 10-14 0 7 7 0 0014 0z" />
+ </svg>
+ </button>
+ {/* Pin Icon */}
+ <button className="text-gray-500 hover:text-gray-700 focus:outline-none">
+ <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+ <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+ <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+ </svg>
+ </button>
+ {/* Language Dropdown (Simplified) */}
+ <div className="relative">
+ <button className="border border-gray-300 rounded-md px-2 py-1 text-sm text-gray-700 focus:outline-none">
+ EN
+ </button>
+ {/* Add dropdown functionality here if needed */}
+ </div>
+ {/* Login / Sign Up Button */}
+ <button className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 focus:outline-none">
+ Login / Sign Up
+ </button>
+ </div>
+
+
+ {/* Mobile Menu Button (Hidden on larger screens) */}
+ <div className="md:hidden">
+ <button className="text-gray-500 hover:text-gray-700 focus:outline-none">
+ <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+ <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+ </svg>
+ </button>
+ </div>
+ </header>
+ );
+};
+
+
+export default Header;
