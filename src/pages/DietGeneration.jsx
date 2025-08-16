@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Header from '../assets/component/Header';
+import Footer from '../assets/component/Footer';
 
 const DietGeneration = () => {
   const [step, setStep] = useState(1);
@@ -204,6 +206,8 @@ const handleGeneratePlan = async () => {
   const progress = (step / 4) * 100;
 
   return (
+    <>
+    <Header />
     <div className="bg-white min-h-screen">
       <div className="bg-gray-50 py-16 px-4 md:px-6 lg:px-8 text-center">
         <span className="inline-flex items-center bg-green-500 text-white rounded-full px-4 py-1.5 text-sm font-medium mb-6">
@@ -246,6 +250,8 @@ const handleGeneratePlan = async () => {
         
       </div>
     </div>
+    <Footer/>
+    </>
   );
 };
 

@@ -15,6 +15,8 @@ import { Label } from "../assets/component/lable";
 import { Input } from "../assets/component/input";
 import { Stethoscope, User, TrendingUp, Heart, Activity } from "lucide-react";
 import ReportDisplay from "./ReportDisplay";
+import Header from "../assets/component/Header";
+import Footer from "../assets/component/Footer";
 
 const SymptomForm = () => {
   const [step, setStep] = useState(1);
@@ -345,6 +347,8 @@ const SymptomForm = () => {
   const progress = (step / 2) * 100;
 
   return (
+    <>
+    <Header />
     <div className="max-w-4xl mx-auto p-4 sm:p-6 space-y-6">
       {/* Header */}
       <div className="text-center space-y-4">
@@ -374,6 +378,8 @@ const SymptomForm = () => {
 
       {renderStep()}
     </div>
+    <Footer />
+    </>
   );
 };
 
