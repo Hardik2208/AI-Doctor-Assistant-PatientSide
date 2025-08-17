@@ -1,7 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 const Header = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   return (
     <header className="bg-white shadow-md py-4 px-6 flex items-center justify-between sticky top-0 z-50">
       {/* Left Section: Logo and Brand */}
@@ -23,12 +29,12 @@ const Header = () => {
         <span className="text-xl font-semibold text-green-500">SANCTUA</span>
       </div>
 
-      {/* Center Section: Navigation */}
+      {/* Center Section: Navigation (Hidden on mobile) */}
       <nav className="hidden md:flex space-x-6">
         <Link to="/" className="text-gray-700 hover:text-blue-500">
           Home
         </Link>
-        <Link to="/Gym" className="text-gray-700 hover:text-blue-500">
+        <Link to="/" className="text-gray-700 hover:text-blue-500">
           Fitness
         </Link>
         <Link to="/type-input" className="text-gray-700 hover:text-blue-500">
@@ -39,10 +45,10 @@ const Header = () => {
         </Link>
       </nav>
 
-      {/* Right Section: Icons and Buttons */}
+      {/* Right Section: Icons and Buttons (Flex container for all elements) */}
       <div className="flex items-center space-x-4">
-        {/* Search Icon */}
-        <button className="text-gray-500 hover:text-gray-700 focus:outline-none">
+        {/* Search Icon (Hidden on mobile) */}
+        <button className="hidden md:block text-gray-500 hover:text-gray-700 focus:outline-none">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5"
@@ -58,8 +64,8 @@ const Header = () => {
             />
           </svg>
         </button>
-        {/* Pin Icon */}
-        <button className="text-gray-500 hover:text-gray-700 focus:outline-none">
+        {/* Pin Icon (Hidden on mobile) */}
+        <button className="hidden md:block text-gray-500 hover:text-gray-700 focus:outline-none">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5"
@@ -81,22 +87,21 @@ const Header = () => {
             />
           </svg>
         </button>
-        {/* Language Dropdown (Simplified) */}
-        <div className="relative">
+        {/* Language Dropdown (Hidden on mobile) */}
+        <div className="relative hidden md:block">
           <button className="border border-gray-300 rounded-md px-2 py-1 text-sm text-gray-700 focus:outline-none">
             EN
           </button>
-          {/* Add dropdown functionality here if needed */}
         </div>
-        {/* Login / Sign Up Button */}
-        <button className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 focus:outline-none">
+        {/* Login / Sign Up Button (Hidden on mobile) */}
+        <button className="hidden md:block bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 focus:outline-none">
           Login / Sign Up
         </button>
       </div>
 
-      {/* Mobile Menu Button (Hidden on larger screens) */}
+      {/* Mobile Menu Button (Visible on smaller screens) */}
       <div className="md:hidden">
-        <button className="text-gray-500 hover:text-gray-700 focus:outline-none">
+        <button onClick={toggleMobileMenu} className="text-gray-500 hover:text-gray-700 focus:outline-none">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6"
@@ -113,6 +118,29 @@ const Header = () => {
           </svg>
         </button>
       </div>
+
+      {/* Mobile Menu Dropdown (Conditionally rendered) */}
+      {isMobileMenuOpen && (
+        <div className="absolute top-16 left-0 w-full bg-white shadow-lg md:hidden">
+          <nav className="flex flex-col space-y-4 p-4 text-center">
+            <Link to="/" className="text-gray-700 hover:text-blue-500">
+              Home
+            </Link>
+            <Link to="/Gym" className="text-gray-700 hover:text-blue-500">
+              Fitness
+            </Link>
+            <Link to="/type-input" className="text-gray-700 hover:text-blue-500">
+              Symptoms
+            </Link>
+            <Link to="/chatbot" className="text-gray-700 hover:text-blue-500">
+              Healthcare
+            </Link>
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 focus:outline-none mt-4">
+              Login / Sign Up
+            </button>
+          </nav>
+        </div>
+      )}
     </header>
   );
 };
