@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import Header from '../assets/component/Header';
+import Footer from '../assets/component/Footer';
 
 const Chatbot = () => {
     const [messages, setMessages] = useState([]);
@@ -41,6 +43,8 @@ const Chatbot = () => {
     };
 
     return (
+        <>
+        <Header/>
         <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg border">
 
             <div className="bg-blue-600 text-white p-4 rounded-t-lg">
@@ -95,6 +99,7 @@ const Chatbot = () => {
                 </div>
             </div>
         </div>
+        <Footer/></>
     );
 };
 

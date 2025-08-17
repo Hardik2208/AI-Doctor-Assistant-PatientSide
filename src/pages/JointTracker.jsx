@@ -8,12 +8,12 @@ const JointTracker = ({ pose, onEndPractice }) => {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
   const [feedback, setFeedback] = useState("Getting ready...");
-  const [duration, setDuration] = useState(0); // State for the session timer
-  const [reps, setReps] = useState(0); // State for repetition counter
+  const [duration, setDuration] = useState(0);
+  const [reps, setReps] = useState(0);
   const [isSessionActive, setIsSessionActive] = useState(true);
   let poseLandmarker;
   let timerInterval = useRef(null);
-  let repCounted = useRef(false); // To prevent double counting reps
+  let repCounted = useRef(false);
 
   // Utility function to calculate the angle between three landmarks
   const getAngle = (A, B, C) => {
@@ -26,55 +26,45 @@ const JointTracker = ({ pose, onEndPractice }) => {
     return degrees;
   };
 
-  // Core logic to analyze the pose
   const analyzePose = (landmarks) => {
-    if (!landmarks || landmarks.length < 33) return; // Ensure all landmarks are available
+    // This is the key fix: only run the effect if the pose prop is a valid object
+    if (!pose || !pose.title || !landmarks || landmarks.length < 33) {
+      return; // Exit the function if the pose data is not ready
+    }
 
-    // Analyze pose based on the title passed from the parent component
+    // A helper function to check if a pose is in a starting position
+    const isStartingPosition = (landmarks) => {
+      // Check if hands are near hips and body is relatively straight
+      const wristToHipDistance = Math.abs(landmarks[15].y - landmarks[23].y);
+      return wristToHipDistance < 0.2; // A threshold for a straight posture
+    };
+
     switch (pose.title) {
       case "Tree Pose":
-        // Landmarks: Ankle (28), Knee (26), Hip (24) for right leg
-        //           Ankle (27), Knee (25), Hip (23) for left leg
-        const rightKneeAngle = getAngle(
-          landmarks[24],
-          landmarks[26],
-          landmarks[28]
-        );
-        const leftKneeAngle = getAngle(
+        // Left leg is standing leg, right leg is lifted
+        const leftKneeStraightness = getAngle(
           landmarks[23],
           landmarks[25],
           landmarks[27]
         );
+        const rightHipRotation = getAngle(
+          landmarks[24],
+          landmarks[23],
+          landmarks[25]
+        );
 
-        // Check if the standing leg is straight
-        if (rightKneeAngle > 170 && landmarks[28].visibility > 0.8) {
-          // Check if the other foot is on the inner thigh
-          const leftFootY = landmarks[31].y;
-          const rightKneeY = landmarks[26].y;
-          if (Math.abs(leftFootY - rightKneeY) < 0.1) {
-            setFeedback("Place your foot higher on your inner thigh.");
-          } else {
-            setFeedback("Excellent! Hold the pose.");
-          }
-        } else if (leftKneeAngle > 170 && landmarks[27].visibility > 0.8) {
-          // Same check for the other side
-          const rightFootY = landmarks[32].y;
-          const leftKneeY = landmarks[25].y;
-          if (Math.abs(rightFootY - leftKneeY) < 0.1) {
-            setFeedback("Place your foot higher on your inner thigh.");
-          } else {
-            setFeedback("Excellent! Hold the pose.");
-          }
+        if (leftKneeStraightness < 170) {
+          setFeedback("Straighten your standing leg.");
+        } else if (rightHipRotation < 45) {
+          setFeedback("Open your hip to the side.");
+        } else if (landmarks[28].y < landmarks[23].y) {
+          setFeedback("Place your foot higher on your inner thigh.");
         } else {
-          setFeedback(
-            "Straighten your standing leg and place your foot correctly."
-          );
+          setFeedback("Excellent balance! Hold the pose.");
         }
         break;
 
       case "Child's Pose":
-        // In Child's Pose, the body should be folded forward.
-        // We can check the angle of the hips and knees.
         const hipAngleLeft = getAngle(
           landmarks[11],
           landmarks[23],
@@ -85,84 +75,213 @@ const JointTracker = ({ pose, onEndPractice }) => {
           landmarks[24],
           landmarks[26]
         );
-        const headY = landmarks[0].y;
-        const hipsY = landmarks[24].y;
 
-        if (hipAngleLeft < 90 && hipAngleRight < 90 && headY > hipsY) {
-          setFeedback("Fold your body forward and relax.");
-        } else if (headY > hipsY) {
-          setFeedback("Fold your body forward and relax.");
+        if (hipAngleLeft > 90 || hipAngleRight > 90) {
+          setFeedback("Fold your hips back and rest.");
+        } else if (landmarks[0].y < landmarks[24].y) {
+          setFeedback("Relax your head towards the floor.");
         } else {
-          setFeedback("Keep your hips back and your head down.");
+          setFeedback("Perfect. Hold the pose and breathe.");
         }
         break;
 
       case "Cobra Pose":
-        // In Cobra Pose, the back should be arched, and the chest lifted.
-        const backAngle = getAngle(landmarks[11], landmarks[23], landmarks[24]);
-        if (backAngle < 150) {
-          setFeedback("Lift your chest higher and arch your back.");
+        const hipToShoulderAngle = getAngle(
+          landmarks[12],
+          landmarks[14],
+          landmarks[16]
+        );
+
+        if (hipToShoulderAngle < 150) {
+          setFeedback("Lift your chest higher and gently arch your back.");
+        } else if (landmarks[23].y > landmarks[11].y) {
+          setFeedback("Keep your hips down on the floor.");
         } else {
-          setFeedback("Good form! Hold the pose.");
+          setFeedback("Great form! Keep your shoulders down.");
         }
         break;
 
       case "Mountain Pose":
-        // In Mountain Pose, the body should be straight and stable.
-        const straightness =
-          Math.abs(landmarks[11].x - landmarks[23].x) < 0.05 &&
-          Math.abs(landmarks[12].x - landmarks[24].x) < 0.05;
-        if (straightness) {
-          setFeedback("Stand tall and straight, like a mountain.");
+        const bodyStraightness = getAngle(
+          landmarks[23],
+          landmarks[25],
+          landmarks[27]
+        );
+        const shoulderWidth = Math.abs(landmarks[11].x - landmarks[12].x);
+        const hipWidth = Math.abs(landmarks[23].x - landmarks[24].x);
+
+        if (bodyStraightness < 170) {
+          setFeedback("Stand straight and tall.");
+        } else if (Math.abs(shoulderWidth - hipWidth) > 0.1) {
+          setFeedback("Keep your feet hip-width apart.");
         } else {
-          setFeedback("Stand straight with feet hip-width apart.");
+          setFeedback("Perfect. Stand grounded like a mountain.");
         }
         break;
 
       case "Downward Dog":
-        // In Downward Dog, the body forms an inverted V-shape.
-        const leftHipAngle = getAngle(
+        const hipShoulderAngleLeft = getAngle(
           landmarks[11],
-          landmarks[23],
+          landmarks[13],
           landmarks[25]
         );
-        const rightHipAngleDD = getAngle(
+        const hipShoulderAngleRight = getAngle(
           landmarks[12],
-          landmarks[24],
+          landmarks[14],
           landmarks[26]
         );
 
-        if (leftHipAngle < 150 || rightHipAngleDD < 150) {
-          setFeedback("Lift your hips higher to form an inverted V.");
+        if (hipShoulderAngleLeft < 120 || hipShoulderAngleRight < 120) {
+          setFeedback("Push your hips up higher to form a deeper V.");
         } else if (
           landmarks[11].y > landmarks[15].y ||
           landmarks[12].y > landmarks[16].y
         ) {
-          setFeedback("Push through your hands to straighten your back.");
+          setFeedback("Straighten your back. Push through your hands.");
         } else {
-          setFeedback("Perfect! Hold the pose.");
+          setFeedback("Good form! You are in an inverted V.");
         }
         break;
 
       case "Warrior I":
-        // In Warrior I, the back leg is straight, and the front knee is bent.
         const frontKneeAngle = getAngle(
           landmarks[24],
           landmarks[26],
           landmarks[28]
         );
-        const backLegAngle = getAngle(
+        const backLegStraightness = getAngle(
           landmarks[23],
           landmarks[25],
           landmarks[27]
         );
 
         if (frontKneeAngle > 160) {
-          setFeedback("Bend your front knee.");
-        } else if (backLegAngle < 170) {
+          setFeedback("Bend your front knee to 90 degrees.");
+        } else if (backLegStraightness < 170) {
           setFeedback("Straighten your back leg.");
         } else {
-          setFeedback("Good form! Hold the pose.");
+          setFeedback("You're a warrior! Hold the pose.");
+        }
+        break;
+
+      case "Push-ups":
+        const leftElbowAngle = getAngle(
+          landmarks[11],
+          landmarks[13],
+          landmarks[15]
+        );
+        const rightElbowAngle = getAngle(
+          landmarks[12],
+          landmarks[14],
+          landmarks[16]
+        );
+
+        if (
+          (leftElbowAngle < 90 || rightElbowAngle < 90) &&
+          !repCounted.current
+        ) {
+          setReps((prevReps) => prevReps + 1);
+          repCounted.current = true;
+          setFeedback("Good form! That's one rep.");
+        } else if (
+          leftElbowAngle > 160 &&
+          rightElbowAngle > 160 &&
+          repCounted.current
+        ) {
+          repCounted.current = false;
+          setFeedback("Back to starting position.");
+        } else {
+          setFeedback("Keep your back straight and lower your body.");
+        }
+        break;
+
+      case "Squats":
+        const leftKneeSquat = getAngle(
+          landmarks[23],
+          landmarks[25],
+          landmarks[27]
+        );
+        const rightKneeSquat = getAngle(
+          landmarks[24],
+          landmarks[26],
+          landmarks[28]
+        );
+
+        if (leftKneeSquat < 90 && rightKneeSquat < 90 && !repCounted.current) {
+          setReps((prevReps) => prevReps + 1);
+          repCounted.current = true;
+          setFeedback("Deep squat, excellent!");
+        } else if (
+          leftKneeSquat > 160 &&
+          rightKneeSquat > 160 &&
+          repCounted.current
+        ) {
+          repCounted.current = false;
+          setFeedback("Back to standing. Great rep.");
+        } else {
+          setFeedback("Lower your hips, keep your back straight.");
+        }
+        break;
+
+      case "Deadlifts":
+        const leftBackAngle = getAngle(
+          landmarks[11],
+          landmarks[23],
+          landmarks[25]
+        ); // Shoulder, Hip, Knee
+        const rightBackAngle = getAngle(
+          landmarks[12],
+          landmarks[24],
+          landmarks[26]
+        );
+
+        if (leftBackAngle > 100 || rightBackAngle > 100) {
+          setFeedback("Hinge at your hips and keep your back straight.");
+        } else {
+          setFeedback("Good form! Lift with your legs.");
+        }
+        break;
+
+      case "Pull-ups":
+        const shoulderToHandDistance = Math.abs(
+          landmarks[11].y - landmarks[15].y
+        );
+
+        if (shoulderToHandDistance < 0.15 && !repCounted.current) {
+          setReps((prevReps) => prevReps + 1);
+          repCounted.current = true;
+          setFeedback("Up and hold. Good rep.");
+        } else if (shoulderToHandDistance > 0.3 && repCounted.current) {
+          repCounted.current = false;
+          setFeedback("Fully extend your arms.");
+        } else {
+          setFeedback("Pull yourself up until your chin is over the bar.");
+        }
+        break;
+
+      case "Bench Press":
+        const leftWristShoulderDistance = Math.abs(
+          landmarks[15].x - landmarks[11].x
+        );
+
+        if (leftWristShoulderDistance > 0.2) {
+          setFeedback("Keep your arms in line with your shoulders.");
+        } else {
+          setFeedback("Good form. Press the weight up.");
+        }
+        break;
+
+      case "Plank":
+        const shoulderToAnkleAngle = getAngle(
+          landmarks[11],
+          landmarks[23],
+          landmarks[27]
+        );
+
+        if (shoulderToAnkleAngle < 160) {
+          setFeedback("Keep your body in a straight line. Squeeze your core.");
+        } else {
+          setFeedback("Perfect plank! Hold it steady.");
         }
         break;
 
@@ -173,6 +292,9 @@ const JointTracker = ({ pose, onEndPractice }) => {
   };
 
   useEffect(() => {
+    // This is the key fix: only run the effect if the pose prop is a valid object
+    if (!pose) return;
+
     if (isSessionActive) {
       timerInterval.current = setInterval(() => {
         setDuration((prevDuration) => prevDuration + 1);
@@ -247,22 +369,25 @@ const JointTracker = ({ pose, onEndPractice }) => {
         poseLandmarker.close();
       }
     };
-  }, [isSessionActive, pose.title]);
+  }, [pose]); // The dependency array now correctly uses the pose object
 
   const handleEndPracticeClick = () => {
     setIsSessionActive(false);
 
-    // Collect the real session data
     const sessionData = {
-      exercise: pose.title,
+      exercise: pose?.title,
       sessionDuration: duration,
-      averageScore: 92, // You would calculate this based on form analysis
+      averageScore: 92,
       reps: reps,
       summary: "Workout completed.",
     };
 
     onEndPractice(sessionData);
   };
+
+  if (!pose) {
+    return <div>Loading pose data...</div>;
+  }
 
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center">

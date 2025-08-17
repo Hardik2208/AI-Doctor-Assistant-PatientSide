@@ -1,6 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../assets/component/Header";
 import Footer from "../assets/component/Footer";
+import JointTracker from "./JointTracker"; // Import JointTracker for the practice session
+import { Button } from "../assets/component/button";
+import GymPractice from "./GymPractice"; // Import the new GymPractice component
+import { Card, CardContent, CardHeader, CardTitle } from "../assets/component/card";
+import { Badge } from "../assets/component/badge";
+import { FaStethoscope } from "react-icons/fa";
+
 // Data for all the gym exercises
 const exercises = [
   {
@@ -101,8 +108,7 @@ const exercises = [
   },
 ];
 
-// Reusable component for a single exercise card
-const ExerciseCard = ({ exercise }) => {
+const ExerciseCard = ({ exercise, onSelectExercise }) => {
   if (!exercise || !exercise.targetMuscles) {
     return null;
   }
@@ -169,6 +175,16 @@ const ExerciseCard = ({ exercise }) => {
             ))}
           </div>
         </div>
+
+        {/* Practice button */}
+        <div className="mt-4">
+          <button
+            onClick={() => onSelectExercise(exercise)}
+            className="w-full text-blue-500 font-semibold py-3 rounded-full border border-blue-500 hover:bg-blue-50 transition-colors"
+          >
+            Start Exercise
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -180,40 +196,38 @@ const GymPage = () => {
   const displayOptions = ["Individual Exercises", "Workout Plans"];
   const activeDisplay = "Individual Exercises";
 
+  const [viewMode, setViewMode] = useState("list");
+  const [selectedExercise, setSelectedExercise] = useState(null);
+
+  const handleSelectExercise = (exercise) => {
+    setSelectedExercise(exercise);
+    setViewMode("practice");
+  };
+
+  const handleEndPractice = () => {
+    setViewMode("list");
+    setSelectedExercise(null);
+  };
+
+  // Conditional rendering to switch between the list and practice views
+  if (viewMode === "practice" && selectedExercise) {
+    return (
+      <GymPractice
+        exercise={selectedExercise}
+        onEndPractice={handleEndPractice}
+      />
+    );
+  }
+
   return (
     <>
-    <Header />
-    <div className="bg-white mb-10">
-      <div className="bg-gray-50 py-16 px-4 md:px-6 lg:px-8 text-center">
-        <span className="inline-flex items-center bg-green-500 text-white rounded-full px-4 py-1.5 text-sm font-medium mb-6">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4 mr-2"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-            />
-          </svg>
-          Transform Your Body
-        </span>
-        <h1 className="text-3xl md:text-5xl font-extrabold text-gray-800 leading-tight mb-4">
-          Gym Workouts
-        </h1>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Professional strength training programs designed to help you build
-          muscle, lose fat, and get stronger
-        </p>
-        <div className="flex justify-center items-center space-x-8 text-gray-600 mt-8">
-          <div className="flex items-center space-x-2">
+      <Header />
+      <div className="bg-white mb-10">
+        <div className="bg-gray-50 py-16 px-4 md:px-6 lg:px-8 text-center">
+          <span className="inline-flex items-center bg-green-500 text-white rounded-full px-4 py-1.5 text-sm font-medium mb-6">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 text-gray-500"
+              className="h-4 w-4 mr-2"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -222,92 +236,121 @@ const GymPage = () => {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                d="M14.752 11.168l-3.328-1.664A2 2 0 0010 11.237v1.526a2 2 0 001.424 1.833l3.328 1.664a2 2 0 002.576-1.833V12.986a2 2 0 00-2.576-1.833zM21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
               />
             </svg>
-            <span>Targeted Workouts</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 text-gray-500"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 4v.01M12 8v.01M12 12v.01M12 16v.01M12 20v.01M12 16a9 9 0 01-9-9"
-              />
-            </svg>
-            <span>Progressive Training</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 text-gray-500"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 19V6c0-1.657 1.343-3 3-3s3 1.343 3 3v13M12 19V6a3 3 0 00-3-3m3 3a3 3 0 003 3v13"
-              />
-            </svg>
-            <span>Proven Results</span>
+            Transform Your Body
+          </span>
+          <h1 className="text-3xl md:text-5xl font-extrabold text-gray-800 leading-tight mb-4">
+            Gym Workouts
+          </h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Professional strength training programs designed to help you build
+            muscle, lose fat, and get stronger
+          </p>
+          <div className="flex justify-center items-center space-x-8 text-gray-600 mt-8">
+            <div className="flex items-center space-x-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 text-gray-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M14.752 11.168l-3.328-1.664A2 2 0 0010 11.237v1.526a2 2 0 001.424 1.833l3.328 1.664a2 2 0 002.576-1.833V12.986a2 2 0 00-2.576-1.833zM21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span>Targeted Workouts</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 text-gray-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4v.01M12 8v.01M12 12v.01M12 16v.01M12 20v.01M12 16a9 9 0 01-9-9"
+                />
+              </svg>
+              <span>Progressive Training</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 text-gray-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 19V6c0-1.657 1.343-3 3-3s3 1.343 3 3v13M12 19V6a3 3 0 00-3-3m3 3a3 3 0 003 3v13"
+                />
+              </svg>
+              <span>Proven Results</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Filter Navigation */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 border-b border-gray-200">
-        <div className="flex flex-col md:flex-row items-center justify-between">
-          <div className="flex space-x-2 md:space-x-4 overflow-x-auto pb-2 scrollbar-hide">
-            {categories.map((cat, index) => (
-              <button
+        {/* Filter Navigation */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 border-b border-gray-200">
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            <div className="flex space-x-2 md:space-x-4 overflow-x-auto pb-2 scrollbar-hide">
+              {categories.map((cat, index) => (
+                <button
+                  key={index}
+                  className={`px-4 py-2 rounded-full font-medium transition-colors duration-200 ${
+                    cat === activeCategory
+                      ? "bg-blue-500 text-white"
+                      : "text-gray-600 hover:text-blue-500"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+            <div className="flex space-x-4 mt-4 md:mt-0 text-sm font-medium">
+              {displayOptions.map((option, index) => (
+                <span
+                  key={index}
+                  className={`cursor-pointer ${
+                    option === activeDisplay
+                      ? "border-b-2 border-blue-500 text-blue-500"
+                      : "text-gray-600 hover:text-gray-800"
+                  }`}
+                >
+                  {option}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Exercise Cards */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {exercises.map((exercise, index) => (
+              <ExerciseCard
                 key={index}
-                className={`px-4 py-2 rounded-full font-medium transition-colors duration-200 ${
-                  cat === activeCategory
-                    ? "bg-blue-500 text-white"
-                    : "text-gray-600 hover:text-blue-500"
-                }`}
-              >
-                {cat}
-              </button>
+                exercise={exercise}
+                onSelectExercise={handleSelectExercise}
+              />
             ))}
           </div>
-          <div className="flex space-x-4 mt-4 md:mt-0 text-sm font-medium">
-            {displayOptions.map((option, index) => (
-              <span
-                key={index}
-                className={`cursor-pointer ${
-                  option === activeDisplay
-                    ? "border-b-2 border-blue-500 text-blue-500"
-                    : "text-gray-600 hover:text-gray-800"
-                }`}
-              >
-                {option}
-              </span>
-            ))}
-          </div>
         </div>
       </div>
-
-      {/* Exercise Cards */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {exercises.map((exercise, index) => (
-            <ExerciseCard key={index} exercise={exercise} />
-          ))}
-        </div>
-      </div>
-    </div>
-    <Footer/>
+      <Footer />
     </>
   );
 };
