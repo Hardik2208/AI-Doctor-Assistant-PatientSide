@@ -9,9 +9,8 @@ import LandingPage from "./pages/landingPage.jsx";
 import Yoga from "./pages/Yoga";
 import DietGeneration from "./pages/DietGeneration";
 import Gym from "./pages/Gym";
-import ExerciseDetail from "./pages/ExerciseDetails";
-import YogaDetail from "./pages/YogaDetails";
 import DietPlanDisplay from "./pages/DietPlanDisplay";
+import YogaPractice from "./pages/YogaPractice.jsx"; // Importing the YogaPractice component
 
 
 
@@ -29,8 +28,7 @@ export default function App() {
         <Route path="/Yoga" element={<Yoga/>} />
         <Route path="/DietGeneration" element={<DietGeneration />} />
         <Route path="/Gym" element={<Gym/>} />
-        <Route path="/exercise/:name" element={<ExerciseDetail/>} />
-        <Route path="/yoga/:name" element={<YogaDetail/>} />
+        <Route path="/YogaPractice" element={<YogaPractice />} />
       </Routes>
     </BrowserRouter>
   );
