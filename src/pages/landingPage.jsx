@@ -555,6 +555,62 @@ export default function LandingPage() {
                 </Link>
               </div>
             </div>
+
+            {/* Card 4: Mental Health */}
+            <div className="bg-white rounded-3xl p-6 md:p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between">
+              <div>
+                <div className="flex justify-center mb-4">
+                  {/* Placeholder for the image */}
+                  <div className="bg-green-100 rounded-full w-20 h-20 flex items-center justify-center">
+                    {/* Placeholder icon */}
+                    <span
+                      className="text-4xl"
+                      role="img"
+                      aria-label="Mental Health"
+                    >
+                      🧠
+                    </span>
+                  </div>
+                </div>
+                <div className="text-center mb-4">
+                  <h3 className="text-2xl font-bold text-gray-800">
+                    Mental Health
+                  </h3>
+                  <Rating score="4.9" />
+                </div>
+                <p className="text-center text-gray-600 mb-6">
+                  Guided meditations, mood tracking, and self-assessment tools
+                  for a healthy mind
+                </p>
+                <ul className="list-none space-y-2 mb-8">
+                  <BulletPoint text="Anxiety Relief" />
+                  <BulletPoint text="Mindfulness Exercises" />
+                  <BulletPoint text="Stress Management" />
+                </ul>
+              </div>
+              <div className="mt-auto">
+                <Link
+                  to="/MentalHealth"
+                  className="flex items-center justify-center text-blue-500 font-semibold hover:text-blue-600 transition-colors"
+                >
+                  Explore Mental Health
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 ml-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M17 8l4 4m0 0l-4 4m4-4H3"
+                    />
+                  </svg>
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </div>

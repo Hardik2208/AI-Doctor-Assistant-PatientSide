@@ -10,7 +10,8 @@ import Yoga from "./pages/Yoga";
 import DietGeneration from "./pages/DietGeneration";
 import Gym from "./pages/Gym";
 import DietPlanDisplay from "./pages/DietPlanDisplay";
-import YogaPractice from "./pages/YogaPractice.jsx"; // Importing the YogaPractice component
+import YogaPractice from "./pages/YogaPractice.jsx";
+import MentalHealth from "./pages/MentalHealth.jsx";
 
 
 
@@ -29,6 +30,7 @@ export default function App() {
         <Route path="/DietGeneration" element={<DietGeneration />} />
         <Route path="/Gym" element={<Gym/>} />
         <Route path="/YogaPractice" element={<YogaPractice />} />
+        <Route path="/MentalHealth" element={<MentalHealth />} />
       </Routes>
     </BrowserRouter>
   );
