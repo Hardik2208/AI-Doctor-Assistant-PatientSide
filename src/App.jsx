@@ -12,6 +12,8 @@ import Gym from "./pages/Gym";
 import DietPlanDisplay from "./pages/DietPlanDisplay";
 import YogaPractice from "./pages/YogaPractice.jsx";
 import MentalHealth from "./pages/MentalHealth.jsx";
+import Jumba from "./pages/Jumba.jsx";
+import Meditation from "./pages/Meditation.jsx";
 
 
 
@@ -31,6 +33,8 @@ export default function App() {
         <Route path="/Gym" element={<Gym/>} />
         <Route path="/YogaPractice" element={<YogaPractice />} />
         <Route path="/MentalHealth" element={<MentalHealth />} />
+        <Route path="/Jumba" element={<Jumba />} />
+        <Route path="/Meditation" element={<Meditation />} />
       </Routes>
     </BrowserRouter>
   );
