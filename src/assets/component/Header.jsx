@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import Logo1 from "./Logo1.png"; // Assuming you have a logo image
+import Logo2 from "./Logo2.png"; // Assuming you have a second logo image
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -11,22 +13,9 @@ const Header = () => {
   return (
     <header className="bg-white shadow-md py-4 px-6 flex items-center justify-between sticky top-0 z-50">
       {/* Left Section: Logo and Brand */}
-      <div className="flex items-center">
-        <div className="bg-blue-400 text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </div>
-        <span className="text-xl font-semibold text-green-500">SANCTUA</span>
+      <div className="flex items-center gap-4">
+        <img src={Logo2} alt="" className="w-10"/>
+        <img src={Logo1} alt=""  className="w-20"/>
       </div>
 
       {/* Center Section: Navigation (Hidden on mobile) */}

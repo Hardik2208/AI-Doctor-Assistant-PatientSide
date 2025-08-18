@@ -328,9 +328,7 @@ const BulletPoint = ({ text }) => {
 export default function LandingPage() {
   return (
     <>
-      <div>
-        <Header />
-      </div>
+      <Header />
       <main className="bg-gradient-to-br from-white to-blue-50 py-20 md:py-32">
         <div className="max-w-screen-lg mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Top Tagline */}
