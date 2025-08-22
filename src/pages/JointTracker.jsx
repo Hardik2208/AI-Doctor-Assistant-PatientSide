@@ -27,31 +27,40 @@ const JointTracker = ({ pose, onEndPractice }) => {
   };
 
   const analyzePose = (landmarks) => {
-    // This is the key fix: only run the effect if the pose prop is a valid object
     if (!pose || !pose.title || !landmarks || landmarks.length < 33) {
-      return; // Exit the function if the pose data is not ready
+      return;
     }
 
-    // A helper function to check if a pose is in a starting position
-    const isStartingPosition = (landmarks) => {
-      // Check if hands are near hips and body is relatively straight
-      const wristToHipDistance = Math.abs(landmarks[15].y - landmarks[23].y);
-      return wristToHipDistance < 0.2; // A threshold for a straight posture
+    // Add debug log to see what exercise is being tracked
+    console.log("Tracking exercise:", pose.title);
+
+    // Generic rep counter for gym exercises
+    const countRepsForGymExercise = () => {
+      const leftElbowAngle = getAngle(landmarks[11], landmarks[13], landmarks[15]);
+      const rightElbowAngle = getAngle(landmarks[12], landmarks[14], landmarks[16]);
+      const leftKneeAngle = getAngle(landmarks[23], landmarks[25], landmarks[27]);
+      const rightKneeAngle = getAngle(landmarks[24], landmarks[26], landmarks[28]);
+      
+      // Simple rep counting logic based on arm or leg movement
+      const armMovement = leftElbowAngle < 120 || rightElbowAngle < 120;
+      const legMovement = leftKneeAngle < 120 || rightKneeAngle < 120;
+      
+      if ((armMovement || legMovement) && !repCounted.current) {
+        setReps((prevReps) => prevReps + 1);
+        repCounted.current = true;
+        setFeedback(`Great form! Rep ${reps + 1} completed.`);
+      } else if (!armMovement && !legMovement && repCounted.current) {
+        repCounted.current = false;
+        setFeedback("Return to starting position.");
+      } else {
+        setFeedback("Maintain proper form and control your movement.");
+      }
     };
 
     switch (pose.title) {
       case "Tree Pose":
-        // Left leg is standing leg, right leg is lifted
-        const leftKneeStraightness = getAngle(
-          landmarks[23],
-          landmarks[25],
-          landmarks[27]
-        );
-        const rightHipRotation = getAngle(
-          landmarks[24],
-          landmarks[23],
-          landmarks[25]
-        );
+        const leftKneeStraightness = getAngle(landmarks[23], landmarks[25], landmarks[27]);
+        const rightHipRotation = getAngle(landmarks[24], landmarks[23], landmarks[25]);
 
         if (leftKneeStraightness < 170) {
           setFeedback("Straighten your standing leg.");
@@ -65,16 +74,8 @@ const JointTracker = ({ pose, onEndPractice }) => {
         break;
 
       case "Child's Pose":
-        const hipAngleLeft = getAngle(
-          landmarks[11],
-          landmarks[23],
-          landmarks[25]
-        );
-        const hipAngleRight = getAngle(
-          landmarks[12],
-          landmarks[24],
-          landmarks[26]
-        );
+        const hipAngleLeft = getAngle(landmarks[11], landmarks[23], landmarks[25]);
+        const hipAngleRight = getAngle(landmarks[12], landmarks[24], landmarks[26]);
 
         if (hipAngleLeft > 90 || hipAngleRight > 90) {
           setFeedback("Fold your hips back and rest.");
@@ -86,11 +87,7 @@ const JointTracker = ({ pose, onEndPractice }) => {
         break;
 
       case "Cobra Pose":
-        const hipToShoulderAngle = getAngle(
-          landmarks[12],
-          landmarks[14],
-          landmarks[16]
-        );
+        const hipToShoulderAngle = getAngle(landmarks[12], landmarks[14], landmarks[16]);
 
         if (hipToShoulderAngle < 150) {
           setFeedback("Lift your chest higher and gently arch your back.");
@@ -102,11 +99,7 @@ const JointTracker = ({ pose, onEndPractice }) => {
         break;
 
       case "Mountain Pose":
-        const bodyStraightness = getAngle(
-          landmarks[23],
-          landmarks[25],
-          landmarks[27]
-        );
+        const bodyStraightness = getAngle(landmarks[23], landmarks[25], landmarks[27]);
         const shoulderWidth = Math.abs(landmarks[11].x - landmarks[12].x);
         const hipWidth = Math.abs(landmarks[23].x - landmarks[24].x);
 
@@ -120,23 +113,12 @@ const JointTracker = ({ pose, onEndPractice }) => {
         break;
 
       case "Downward Dog":
-        const hipShoulderAngleLeft = getAngle(
-          landmarks[11],
-          landmarks[13],
-          landmarks[25]
-        );
-        const hipShoulderAngleRight = getAngle(
-          landmarks[12],
-          landmarks[14],
-          landmarks[26]
-        );
+        const hipShoulderAngleLeft = getAngle(landmarks[11], landmarks[13], landmarks[25]);
+        const hipShoulderAngleRight = getAngle(landmarks[12], landmarks[14], landmarks[26]);
 
         if (hipShoulderAngleLeft < 120 || hipShoulderAngleRight < 120) {
           setFeedback("Push your hips up higher to form a deeper V.");
-        } else if (
-          landmarks[11].y > landmarks[15].y ||
-          landmarks[12].y > landmarks[16].y
-        ) {
+        } else if (landmarks[11].y > landmarks[15].y || landmarks[12].y > landmarks[16].y) {
           setFeedback("Straighten your back. Push through your hands.");
         } else {
           setFeedback("Good form! You are in an inverted V.");
@@ -144,16 +126,8 @@ const JointTracker = ({ pose, onEndPractice }) => {
         break;
 
       case "Warrior I":
-        const frontKneeAngle = getAngle(
-          landmarks[24],
-          landmarks[26],
-          landmarks[28]
-        );
-        const backLegStraightness = getAngle(
-          landmarks[23],
-          landmarks[25],
-          landmarks[27]
-        );
+        const frontKneeAngle = getAngle(landmarks[24], landmarks[26], landmarks[28]);
+        const backLegStraightness = getAngle(landmarks[23], landmarks[25], landmarks[27]);
 
         if (frontKneeAngle > 160) {
           setFeedback("Bend your front knee to 90 degrees.");
@@ -165,29 +139,16 @@ const JointTracker = ({ pose, onEndPractice }) => {
         break;
 
       case "Push-ups":
-        const leftElbowAngle = getAngle(
-          landmarks[11],
-          landmarks[13],
-          landmarks[15]
-        );
-        const rightElbowAngle = getAngle(
-          landmarks[12],
-          landmarks[14],
-          landmarks[16]
-        );
+        const leftElbowAngle = getAngle(landmarks[11], landmarks[13], landmarks[15]);
+        const rightElbowAngle = getAngle(landmarks[12], landmarks[14], landmarks[16]);
 
-        if (
-          (leftElbowAngle < 90 || rightElbowAngle < 90) &&
-          !repCounted.current
-        ) {
+        console.log("Push-ups angles:", leftElbowAngle, rightElbowAngle, "repCounted:", repCounted.current);
+
+        if ((leftElbowAngle < 110 && rightElbowAngle < 110) && !repCounted.current) {
           setReps((prevReps) => prevReps + 1);
           repCounted.current = true;
           setFeedback("Good form! That's one rep.");
-        } else if (
-          leftElbowAngle > 160 &&
-          rightElbowAngle > 160 &&
-          repCounted.current
-        ) {
+        } else if ((leftElbowAngle > 150 && rightElbowAngle > 150) && repCounted.current) {
           repCounted.current = false;
           setFeedback("Back to starting position.");
         } else {
@@ -196,26 +157,14 @@ const JointTracker = ({ pose, onEndPractice }) => {
         break;
 
       case "Squats":
-        const leftKneeSquat = getAngle(
-          landmarks[23],
-          landmarks[25],
-          landmarks[27]
-        );
-        const rightKneeSquat = getAngle(
-          landmarks[24],
-          landmarks[26],
-          landmarks[28]
-        );
+        const leftKneeSquat = getAngle(landmarks[23], landmarks[25], landmarks[27]);
+        const rightKneeSquat = getAngle(landmarks[24], landmarks[26], landmarks[28]);
 
         if (leftKneeSquat < 90 && rightKneeSquat < 90 && !repCounted.current) {
           setReps((prevReps) => prevReps + 1);
           repCounted.current = true;
           setFeedback("Deep squat, excellent!");
-        } else if (
-          leftKneeSquat > 160 &&
-          rightKneeSquat > 160 &&
-          repCounted.current
-        ) {
+        } else if (leftKneeSquat > 160 && rightKneeSquat > 160 && repCounted.current) {
           repCounted.current = false;
           setFeedback("Back to standing. Great rep.");
         } else {
@@ -224,16 +173,8 @@ const JointTracker = ({ pose, onEndPractice }) => {
         break;
 
       case "Deadlifts":
-        const leftBackAngle = getAngle(
-          landmarks[11],
-          landmarks[23],
-          landmarks[25]
-        ); // Shoulder, Hip, Knee
-        const rightBackAngle = getAngle(
-          landmarks[12],
-          landmarks[24],
-          landmarks[26]
-        );
+        const leftBackAngle = getAngle(landmarks[11], landmarks[23], landmarks[25]);
+        const rightBackAngle = getAngle(landmarks[12], landmarks[24], landmarks[26]);
 
         if (leftBackAngle > 100 || rightBackAngle > 100) {
           setFeedback("Hinge at your hips and keep your back straight.");
@@ -243,9 +184,7 @@ const JointTracker = ({ pose, onEndPractice }) => {
         break;
 
       case "Pull-ups":
-        const shoulderToHandDistance = Math.abs(
-          landmarks[11].y - landmarks[15].y
-        );
+        const shoulderToHandDistance = Math.abs(landmarks[11].y - landmarks[15].y);
 
         if (shoulderToHandDistance < 0.15 && !repCounted.current) {
           setReps((prevReps) => prevReps + 1);
@@ -260,9 +199,7 @@ const JointTracker = ({ pose, onEndPractice }) => {
         break;
 
       case "Bench Press":
-        const leftWristShoulderDistance = Math.abs(
-          landmarks[15].x - landmarks[11].x
-        );
+        const leftWristShoulderDistance = Math.abs(landmarks[15].x - landmarks[11].x);
 
         if (leftWristShoulderDistance > 0.2) {
           setFeedback("Keep your arms in line with your shoulders.");
@@ -272,11 +209,7 @@ const JointTracker = ({ pose, onEndPractice }) => {
         break;
 
       case "Plank":
-        const shoulderToAnkleAngle = getAngle(
-          landmarks[11],
-          landmarks[23],
-          landmarks[27]
-        );
+        const shoulderToAnkleAngle = getAngle(landmarks[11], landmarks[23], landmarks[27]);
 
         if (shoulderToAnkleAngle < 160) {
           setFeedback("Keep your body in a straight line. Squeeze your core.");
@@ -286,13 +219,14 @@ const JointTracker = ({ pose, onEndPractice }) => {
         break;
 
       default:
-        setFeedback("Pose not recognized. Follow the instructions.");
+        // FIXED: Generic handler for ALL gym exercises
+        console.log("Using generic gym exercise handler for:", pose.title);
+        countRepsForGymExercise();
         break;
     }
   };
 
   useEffect(() => {
-    // This is the key fix: only run the effect if the pose prop is a valid object
     if (!pose) return;
 
     if (isSessionActive) {
@@ -336,24 +270,13 @@ const JointTracker = ({ pose, onEndPractice }) => {
       if (video && poseLandmarker) {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
-        const poseLandmarkerResult = poseLandmarker.detectForVideo(
-          video,
-          performance.now()
-        );
+        const poseLandmarkerResult = poseLandmarker.detectForVideo(video, performance.now());
         canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
 
         if (poseLandmarkerResult.landmarks) {
           for (const landmarks of poseLandmarkerResult.landmarks) {
-            drawConnectors(
-              canvasCtx,
-              landmarks,
-              PoseLandmarker.POSE_CONNECTIONS,
-              { color: "#00FF00", lineWidth: 4 }
-            );
-            drawLandmarks(canvasCtx, landmarks, {
-              color: "#FF0000",
-              lineWidth: 2,
-            });
+            drawConnectors(canvasCtx, landmarks, PoseLandmarker.POSE_CONNECTIONS, { color: "#00FF00", lineWidth: 4 });
+            drawLandmarks(canvasCtx, landmarks, { color: "#FF0000", lineWidth: 2 });
             analyzePose(landmarks);
           }
         }
@@ -369,10 +292,13 @@ const JointTracker = ({ pose, onEndPractice }) => {
         poseLandmarker.close();
       }
     };
-  }, [pose]); // The dependency array now correctly uses the pose object
+  }, [pose]);
 
-  const handleEndPracticeClick = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleEndPracticeClick = async () => {
     setIsSessionActive(false);
+    setIsLoading(true);
 
     const sessionData = {
       exercise: pose?.title,
@@ -380,9 +306,20 @@ const JointTracker = ({ pose, onEndPractice }) => {
       averageScore: 92,
       reps: reps,
       summary: "Workout completed.",
+      // Add more data from your exercise object
+      difficulty: pose?.difficulty,
+      targetMuscles: pose?.targetMuscles,
+      sets: pose?.sets,
+      recommendedReps: pose?.reps,
     };
 
-    onEndPractice(sessionData);
+    try {
+      await onEndPractice(sessionData);
+    } catch (error) {
+      console.error('Error ending practice:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (!pose) {
@@ -396,14 +333,35 @@ const JointTracker = ({ pose, onEndPractice }) => {
       <div className="absolute bottom-4 left-4 bg-white p-2 rounded-lg shadow-md">
         <p className="text-gray-800">{feedback}</p>
       </div>
+      
+      {/* Stats overlay */}
+      <div className="absolute top-4 left-4 bg-white p-2 rounded-lg shadow-md">
+        <div className="text-sm text-gray-800">
+          <div>Time: {Math.floor(duration / 60)}:{(duration % 60).toString().padStart(2, '0')}</div>
+          <div>Reps: {reps}</div>
+        </div>
+      </div>
+
       <div className="absolute top-4 right-4">
         <button
           onClick={handleEndPracticeClick}
-          className="px-4 py-2 bg-red-500 text-white rounded-lg"
+          disabled={isLoading}
+          className={`px-4 py-2 rounded-lg ${
+            isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-500 hover:bg-red-600'
+          } text-white`}
         >
-          End Practice
+          {isLoading ? 'Processing...' : 'Check Results'}
         </button>
       </div>
+
+      {isLoading && (
+        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-4 rounded-lg flex items-center">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500 mr-3"></div>
+            <span>Processing workout...</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

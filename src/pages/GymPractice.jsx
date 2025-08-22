@@ -5,11 +5,20 @@ import { Card, CardContent, CardHeader, CardTitle } from '../assets/component/ca
 import { Badge } from '../assets/component/badge';
 
 const GymPractice = ({ exercise, onEndPractice }) => {
+  // Simple end practice - just closes without loader
+  const handleSimpleEndPractice = () => {
+    onEndPractice(); // Just close the practice
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-8 flex flex-col items-center">
       <div className="flex justify-between items-center w-full max-w-7xl mb-6">
         <h1 className="text-4xl font-bold text-gray-800">{exercise.title}</h1>
-        <Button onClick={onEndPractice} className="bg-gray-500 hover:bg-gray-600 text-white">
+        {/* This button just closes practice - no loader */}
+        <Button 
+          onClick={handleSimpleEndPractice} 
+          className="bg-gray-500 hover:bg-gray-600 text-white"
+        >
           End Practice
         </Button>
       </div>
@@ -17,7 +26,7 @@ const GymPractice = ({ exercise, onEndPractice }) => {
       <div className="flex flex-col lg:flex-row gap-8 w-full max-w-7xl">
         {/* Live Camera and Joint Tracking (Left Half) */}
         <div className="relative flex-1 bg-gray-800 rounded-xl overflow-hidden shadow-lg aspect-video min-h-[400px]">
-          {/* This is the key fix: pass the `exercise` prop as `pose` */}
+          {/* JointTracker has its own "Check Results" button with loader */}
           <JointTracker pose={exercise} onEndPractice={onEndPractice} />
         </div>
         
