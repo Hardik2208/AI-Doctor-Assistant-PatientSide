@@ -18,7 +18,7 @@ import { Button } from "../assets/component/button.jsx";
 import { Badge } from "../assets/component/badge.jsx";
 import { Checkbox } from "../assets/component/checkbox";
 import { AnimatePresence, motion } from "framer-motion";
-import axios from 'axios';
+// import axios from 'axios';
 
 const DietForm = () => {
   const navigate = useNavigate();
