@@ -4,6 +4,7 @@ import Header from "../assets/component/Header.jsx"; // Import your header compo
 import { Link } from "react-router-dom";
 import bg from "../assets/component/bg.png";
 import Footer from "../assets/component/Footer.jsx"; // Import your footer component
+import Chatbot from "./Chatbot.jsx";
 import {
   HeartIcon,
   ShieldCheckIcon,
@@ -328,6 +329,7 @@ const BulletPoint = ({ text }) => {
 export default function LandingPage() {
   return (
     <>
+    <Chatbot/>
       <Header />
       <main className="bg-gradient-to-br from-white to-blue-50 py-20 md:py-32">
         <div className="max-w-screen-lg mx-auto px-4 sm:px-6 lg:px-8 text-center">
