@@ -1,9 +1,13 @@
 // src/pages/ChoicePage.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Header from '../assets/component/Header';
+import Footer from '../assets/component/Footer';
 
 const ChoicePage = () => {
   return (
+    <>
+    <Header/>
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-50">
       <h1 className="text-2xl font-bold mb-8">How would you like to input your symptoms?</h1>
       <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
@@ -21,6 +25,7 @@ const ChoicePage = () => {
         </Link>
       </div>
     </div>
+    <Footer/></>
   );
 };
 
