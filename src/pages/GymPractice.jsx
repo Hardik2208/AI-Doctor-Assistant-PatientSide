@@ -1,20 +1,70 @@
-import React from 'react';
+import React,{useState} from 'react';
 import JointTracker from './JointTracker';
 import { Button } from '../assets/component/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../assets/component/card';
 import { Badge } from '../assets/component/badge';
+import GymReportDisplay from './GymReportDisplay';
 
 const GymPractice = ({ exercise, onEndPractice }) => {
+  const [showReport, setShowReport] = useState(false);
+  const [reportData, setReportData] = useState(null);
+
+
   // Simple end practice - just closes without loader
   const handleSimpleEndPractice = () => {
     onEndPractice(); // Just close the practice
   };
 
+  // Use your EXISTING /yoga/report API endpoint for gym exercises too
+  const handleJointTrackerEndPractice = async (sessionData) => {
+    console.log("🔍 GymPractice received session data:", sessionData);
+    
+    try {
+      // Use the EXISTING yoga/report endpoint - it works for any exercise
+      const response = await fetch('http://localhost:3001/api/yoga/report', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(sessionData),
+      });
+      
+      console.log("🔍 API Response status:", response.status);
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Report generated:', data);
+        setShowReport(true);
+        setReportData(data.report);
+
+      } else {
+        console.log("❌ API Response not ok:", await response.text());
+         
+      }
+
+
+    } catch (error) {
+      console.error('Error ending practice:', error);
+      // Still close practice even if report fails
+      onEndPractice();
+    }
+  };
+  // Handle when user wants to start a new session from the report
+const handleResetFromReport = () => {
+setShowReport(false);
+setReportData(null);
+onEndPractice(); // Go back to exercise list
+};
+
+// If showing report, display the report component
+if (showReport && reportData) {
+return <GymReportDisplay reportData={reportData} onReset={handleResetFromReport} />;
+}
+
   return (
     <div className="min-h-screen bg-gray-100 p-8 flex flex-col items-center">
       <div className="flex justify-between items-center w-full max-w-7xl mb-6">
         <h1 className="text-4xl font-bold text-gray-800">{exercise.title}</h1>
-        {/* This button just closes practice - no loader */}
         <Button 
           onClick={handleSimpleEndPractice} 
           className="bg-gray-500 hover:bg-gray-600 text-white"
@@ -24,13 +74,11 @@ const GymPractice = ({ exercise, onEndPractice }) => {
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8 w-full max-w-7xl">
-        {/* Live Camera and Joint Tracking (Left Half) */}
         <div className="relative flex-1 bg-gray-800 rounded-xl overflow-hidden shadow-lg aspect-video min-h-[400px]">
-          {/* JointTracker has its own "Check Results" button with loader */}
-          <JointTracker pose={exercise} onEndPractice={onEndPractice} />
+          {/* Pass exercise as pose prop and the handler function */}
+          <JointTracker pose={exercise} onEndPractice={handleJointTrackerEndPractice} />
         </div>
         
-        {/* Exercise Details and Instructions (Right Half) */}
         <div className="flex-1 bg-white p-6 rounded-xl shadow-lg">
           <Card className="shadow-none border-none">
             <CardHeader className="p-0 mb-4">
