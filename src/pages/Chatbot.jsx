@@ -21,7 +21,7 @@ const Chatbot = () => {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:3001/api/chatbot', {
+            const response = await fetch('http://localhost:3001/api/Chatbot', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
