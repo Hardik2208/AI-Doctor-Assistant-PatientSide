@@ -1,8 +1,11 @@
 import React from 'react';
 import { useState } from 'react';
+import { supabase } from "../supabaseClient";
+import { useNavigate } from "react-router-dom";
 
 
 const LoginForm = () => {
+    const navigate = useNavigate();
   const [currentState, setCurrentState] = useState("Sign up");
   const [formData, setFormData] = useState({ email: '', password: '',fullName:'' });
   const [errors, setErrors] = useState({});
@@ -18,24 +21,53 @@ const LoginForm = () => {
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newErrors = {};
-    if (!formData.email) newErrors.email = 'Email is required';
-    if (!formData.password) newErrors.password = 'Password is required';
-    
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const newErrors = {};
+  if (!formData.email) newErrors.email = 'Email is required';
+  if (!formData.password) newErrors.password = 'Password is required';
+
+  if (Object.keys(newErrors).length > 0) {
+    setErrors(newErrors);
+    return;
+  }
+
+  if (currentState === "Sign up") {
+    const { data, error } = await supabase.auth.signUp({
+      email: formData.email,
+      password: formData.password,
+      options: {
+        emailRedirectTo: "http://localhost:5173/Jumba", 
+        data: {
+          full_name: formData.fullName,
+          bio: bio
+        }
+      }
+    });
+    if (error) {
+      console.error("Sign up error:", error.message);
+      alert(error.message);
+    } else {
+      console.log("User signed up:", data);
+      alert("Check your email to confirm your account");
     }
-       else if (currentState==="Sign up" && !isDataSubmit) {
-      setIsDataSubmit(true);
+  }
+  else if (currentState === "login") {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: formData.email,
+      password: formData.password,
+    });
+    if (error) {
+      console.error("Login error:", error.message);
+      alert(error.message);
+    } else {
+      console.log("User logged in:", data);
+      navigate("/"); 
+      alert("Login successful!");
     }
-    
-    console.log('form data:', formData);
-    // Send login request here
-  };
-  
+  }
+};
+
 
   return (
     <div className="flex items-center justify-center h-screen bg-green-100">
