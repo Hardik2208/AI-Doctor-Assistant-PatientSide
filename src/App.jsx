@@ -14,6 +14,7 @@ import YogaPractice from "./pages/YogaPractice.jsx";
 import MentalHealth from "./pages/MentalHealth.jsx";
 import Jumba from "./pages/Jumba.jsx";
 import Meditation from "./pages/Meditation.jsx";
+import LoginForm from "./pages/Login.jsx";
 
 
 
@@ -35,6 +36,7 @@ export default function App() {
         <Route path="/MentalHealth" element={<MentalHealth />} />
         <Route path="/Jumba" element={<Jumba />} />
         <Route path="/Meditation" element={<Meditation />} />
+        <Route path="/login" element={<LoginForm />} />
       </Routes>
     </BrowserRouter>
   );
