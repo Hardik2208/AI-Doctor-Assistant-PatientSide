@@ -21,7 +21,7 @@ const Chatbot = () => {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:3001/api/Chatbot', {
+            const response = await fetch('https://ai-doctor-assistant-backend-ai-ml.onrender.com/api/chatbot', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

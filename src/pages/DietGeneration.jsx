@@ -86,7 +86,7 @@ const handleSubmit = async () => {
   console.log ("dietDatat")
     try {
       const response = await axios.post(
-        "http://localhost:3001/api/generate-diet-plan", // change port if needed
+        "https://ai-doctor-assistant-backend-ai-ml.onrender.com/api/generate-diet-plan", // change port if needed
         { userDietData: UserDietData }
       );
 // Navigate to diet plan page with data
