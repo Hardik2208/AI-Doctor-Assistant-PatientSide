@@ -132,7 +132,7 @@ const Header = () => {
             <Link to="/chatbot" className="text-gray-700 hover:text-blue-500">
               Healthcare
             </Link>
-            <button className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 focus:outline-none mt-4">
+            <button onClick={loginPage} className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 focus:outline-none mt-4">
               Login / Sign Up
             </button>
           </nav>
