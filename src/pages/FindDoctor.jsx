@@ -109,26 +109,22 @@ export default function FindDoctor() {
       <section className="bg-white py-16">
         <div className="max-w-6xl mx-auto px-4">
           {/* Search & Filter */}
-          {/* <div className="bg-gradient-to-r from-cyan-50 to-white border rounded-2xl shadow-md p-6 text-gray-800 -mt-12 relative z-10"> */}
-          <div className="bg-gradient-to-r from-cyan-50 to-white border border-white rounded-2xl shadow-md p-6 text-gray-800 -mt-12 relative z-10">
-
-            {/* Search Box */}
-            <div className="flex items-center gap-3 border rounded-lg px-4 py-3 bg-white shadow-sm">
-              <Search className="w-5 h-5 text-cyan-600" />
+          <div className="bg-white border rounded-2xl shadow-md p-6 text-gray-800 -mt-12 relative z-10">
+            <div className="flex items-center gap-3 border rounded-lg px-4 py-3 bg-gray-50">
+              <Search className="w-5 h-5 text-gray-500" />
               <input
                 type="text"
                 placeholder="Search doctors by name, specialty, or location..."
-                className="flex-1 bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400"
+                className="flex-1 bg-transparent outline-none text-sm"
               />
-              <div className="flex items-center gap-1 text-gray-600 text-sm cursor-pointer hover:text-cyan-600 transition-colors">
+              <div className="flex items-center gap-1 text-gray-600 text-sm cursor-pointer">
                 <Filter className="w-4 h-4" />
                 <span>Filter by:</span>
               </div>
             </div>
 
-            {/* Categories */}
             <div className="flex flex-wrap gap-3 mt-4">
-              <span className="px-4 py-2 rounded-full bg-cyan-500 text-white text-sm cursor-pointer shadow-sm">
+              <span className="px-4 py-2 rounded-full bg-cyan-500 text-white text-sm cursor-pointer">
                 All Doctors
               </span>
               <span className="px-4 py-2 rounded-full bg-gray-100 text-gray-700 text-sm cursor-pointer hover:bg-gray-200">
@@ -146,7 +142,6 @@ export default function FindDoctor() {
             </div>
           </div>
 
-
           {/* Doctors Section */}
           <div className="mt-16 text-left">
             <h3 className="text-2xl font-semibold text-gray-900">
@@ -160,22 +155,19 @@ export default function FindDoctor() {
               {doctors.map((doc) => (
                 <div
                   key={doc.id}
-                  className="bg-white rounded-xl shadow-md p-5 flex flex-col"
+                  className="bg-white rounded-xl shadow-md p-5 flex flex-col transition-all duration-300 hover:shadow-xl w-full"
                 >
-                  <div className="flex items-start gap-4">
+                  {/* Doctor Info clickable */}
+                  <Link to={`/doctor/${doc.id}`} className="flex items-start gap-4">
                     <img
                       src={doc.img}
                       alt={doc.name}
                       className="w-16 h-16 rounded-full object-cover"
                     />
                     <div>
-                      {/* ✅ Doctor name clickable */}
-                      <Link
-                        to={`/doctor/${doc.id}`}
-                        className="text-lg font-semibold text-blue-600 hover:underline"
-                      >
+                      <h2 className="text-lg font-semibold text-blue-600">
                         {doc.name}
-                      </Link>
+                      </h2>
                       <p className="text-cyan-600 font-medium">
                         {doc.specialty}
                       </p>
@@ -183,7 +175,7 @@ export default function FindDoctor() {
                         ⭐ {doc.rating} • {doc.experience}
                       </p>
                     </div>
-                  </div>
+                  </Link>
 
                   <div className="mt-3 text-gray-600 text-sm space-y-1">
                     <p className="flex items-center gap-2">
@@ -194,7 +186,7 @@ export default function FindDoctor() {
                       <Clock className="w-4 h-4 text-cyan-500" />
                       {doc.time}
                     </p>
-                    <p className="flex items-center gap-2">
+                    <p className="flex items-center gap-2 flex-wrap">
                       <Calendar className="w-4 h-4 text-cyan-500" />
                       {doc.days.map((d, i) => (
                         <span
@@ -208,12 +200,18 @@ export default function FindDoctor() {
                     <p className="text-green-600 font-semibold">{doc.fees}</p>
                   </div>
 
+                  {/* Action Buttons */}
                   <div className="flex gap-3 mt-4">
-                    <button className="flex-1 bg-gradient-to-r from-cyan-400 to-teal-500 text-white py-2 rounded-lg flex items-center justify-center gap-2 font-medium hover:opacity-90">
+                    <button
+                      onClick={() => alert(`Booking appointment with ${doc.name}`)}
+                      className="flex-1 bg-gradient-to-r from-cyan-400 to-teal-500 text-white py-2 rounded-lg flex items-center justify-center gap-2 font-medium transition-all duration-300 hover:from-cyan-500 hover:to-teal-600"
+                    >
                       <Calendar className="w-4 h-4" /> Book Appointment
                     </button>
-                    <button className="border border-gray-300 py-2 px-4 rounded-lg font-medium flex items-center justify-center gap-2 
-    transition-all duration-300 hover:text-white hover:border-transparent hover:bg-gradient-to-r hover:from-purple-500 hover:to-purple-700">
+                    <button
+                      onClick={() => alert(`Generating report for ${doc.name}`)}
+                      className="border border-gray-300 py-2 px-4 rounded-lg font-medium flex items-center justify-center gap-2 transition-all duration-300 hover:text-white hover:border-transparent hover:bg-gradient-to-r hover:from-purple-500 hover:to-purple-700"
+                    >
                       📄 Generate Report
                     </button>
                   </div>
