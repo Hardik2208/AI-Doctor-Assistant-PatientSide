@@ -2,8 +2,16 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Logo1 from "./Logo1.png"; // Assuming you have a logo image
 import Logo2 from "./Logo2.png"; // Assuming you have a second logo image
+import { useNavigate } from "react-router-dom";
+import LoginForm from "../../pages/Login";
 
 const Header = () => {
+  const navigate= useNavigate();
+  
+  
+    const loginPage = () => {
+      navigate("/login");
+    };
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -83,7 +91,7 @@ const Header = () => {
           </button>
         </div>
         {/* Login / Sign Up Button (Hidden on mobile) */}
-        <button className="hidden md:block bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 focus:outline-none">
+        <button onClick={loginPage}  className="hidden md:block bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 focus:outline-none">
           Login / Sign Up
         </button>
       </div>
@@ -124,7 +132,7 @@ const Header = () => {
             <Link to="/chatbot" className="text-gray-700 hover:text-blue-500">
               Healthcare
             </Link>
-            <button className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 focus:outline-none mt-4">
+            <button onClick={loginPage} className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 focus:outline-none mt-4">
               Login / Sign Up
             </button>
           </nav>

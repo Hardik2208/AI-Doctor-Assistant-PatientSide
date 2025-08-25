@@ -14,6 +14,7 @@ import YogaPractice from "./pages/YogaPractice.jsx";
 import MentalHealth from "./pages/MentalHealth.jsx";
 import Jumba from "./pages/Jumba.jsx";
 import Meditation from "./pages/Meditation.jsx";
+import LoginForm from "./pages/Login.jsx";
 
 import FindDoctor from "./pages/FindDoctor.jsx";
 import DoctorDetails from "./pages/DoctorDetails.jsx";  // ✅ ab import ho gaya
@@ -39,6 +40,9 @@ export default function App() {
         {/* Doctor pages */}
         <Route path="/find-doctor" element={<FindDoctor />} />
         <Route path="/doctor/:id" element={<DoctorDetails />} /> {/* ✅ new page */}
+
+        {/* Login page */}
+        <Route path="/login" element={<LoginForm />} />
       </Routes>
     </BrowserRouter>
   );

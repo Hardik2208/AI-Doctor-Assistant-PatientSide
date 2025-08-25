@@ -213,7 +213,8 @@ const YogaPage = () => {
   const handleEndPractice = async (sessionData) => {
     try {
       const response = await axios.post(
-        "https://ai-doctor-assistant-backend-ai-ml.onrender.com/api/yoga/report",
+       `${process.env.REACT_APP_API_BASE_URL || "https://ai-doctor-assistant-backend-ai-ml.onrender.com"}/api/generate-diet-plan`
+,
         sessionData
       );
       const result = response.data;
