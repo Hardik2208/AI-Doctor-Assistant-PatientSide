@@ -21,13 +21,18 @@ const Chatbot = () => {
         setLoading(true);
 
         try {
-            const response = await fetch('https://ai-doctor-assistant-backend-ai-ml.onrender.com/api/chatbot', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ prompt: input })
-            });
+const response = await fetch(
+ `${process.env.REACT_APP_API_BASE_URL || "https://ai-doctor-assistant-backend-ai-ml.onrender.com"}/api/generate-diet-plan`
+,
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ prompt: input }),
+  }
+);
+
 
             const data = await response.json();
             
