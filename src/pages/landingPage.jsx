@@ -61,7 +61,7 @@ const symptoms = [
   },
   {
     title: "Body Aches",
-    description: "General muscle and joint discomfort",
+    description: "General muscle and joint pain/discomfort",
     specialist: "General",
     iconColor: "bg-purple-100",
     icon: (
@@ -150,7 +150,7 @@ const symptoms = [
   },
   {
     title: "Skin Allergy",
-    description: "Skin irritation and allergic reactions",
+    description: "Skin irritation and mild allergic reactions",
     specialist: "Dermatologists",
     iconColor: "bg-indigo-100",
     icon: (
@@ -172,7 +172,7 @@ const symptoms = [
   },
   {
     title: "Eye Infections",
-    description: "Various eye conditions and infections",
+    description: "Various eye conditions and common infections",
     specialist: "Ophthalmologists",
     iconColor: "bg-yellow-100",
     icon: (
