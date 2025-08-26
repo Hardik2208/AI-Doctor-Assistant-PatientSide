@@ -1,5 +1,7 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import Header from "../assets/component/Header";
+import Footer from "../assets/component/Footer.jsx";
 import {
   ArrowLeft,
   User,
@@ -128,6 +130,8 @@ const DoctorProfile = () => {
   }
 
   return (
+   <>
+   <Header></Header>
    <div className="bg-[#F0F2F5] min-h-screen p-6 md:p-10 font-sans">
   {/* Full width container */}
   <div className="w-full bg-white rounded-xl shadow-lg p-6 md:p-10">
@@ -320,6 +324,8 @@ const DoctorProfile = () => {
         </div>
       </div>
     </div>
+    <Footer></Footer>
+    </>
   );
 };
 

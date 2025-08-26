@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import Header from "../assets/component/Header";
+import Footer from "../assets/component/Footer.jsx";
 export default function FindDoctor() {
   const doctors = [
     {
@@ -65,6 +67,7 @@ export default function FindDoctor() {
 
   return (
     <>
+    <Header></Header>
       {/* Gradient Section (Heading + Stats) */}
       <section className="bg-gradient-to-r from-teal-400 via-blue-400 to-purple-500 text-white py-16">
         <div className="max-w-6xl mx-auto text-center px-4">
@@ -221,6 +224,7 @@ export default function FindDoctor() {
           </div>
         </div>
       </section>
+      <Footer></Footer>
     </>
   );
 }
