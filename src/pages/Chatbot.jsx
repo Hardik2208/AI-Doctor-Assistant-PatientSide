@@ -22,7 +22,7 @@ const Chatbot = () => {
 
         try {
 const response = await fetch(
- `${process.env.REACT_APP_API_BASE_URL || "https://ai-doctor-assistant-backend-ai-ml.onrender.com"}/api/generate-diet-plan`
+ `${process.env.REACT_APP_API_BASE_URL || "https://ai-doctor-assistant-backend-ai-ml.onrender.com"}/api/chatbot`
 ,
   {
     method: "POST",
