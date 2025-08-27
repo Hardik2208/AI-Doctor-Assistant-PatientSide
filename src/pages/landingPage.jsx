@@ -367,7 +367,7 @@ export default function LandingPage({user}) {
               to="/"
               className="bg-white hover:bg-gray-100 text-blue-500 font-semibold py-3 px-6 rounded-full shadow-md transition-colors duration-300"
             >
-              Explore Healthcare Options
+              Community Support
             </Link>
           </div>
 
