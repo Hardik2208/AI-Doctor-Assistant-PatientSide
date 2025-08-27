@@ -8,10 +8,10 @@ import Chatbot from "./Chatbot.jsx";
 import {
   HeartIcon,
   ShieldCheckIcon,
-  BadgeCheckIcon,
+  CheckBadgeIcon,
   UserGroupIcon,
-} from "@heroicons/react/solid";
-import { ArrowRightIcon } from "@heroicons/react/outline";
+} from "@heroicons/react/24/solid";
+import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import { FaStethoscope } from "react-icons/fa";
 
 const symptoms = [
@@ -326,11 +326,11 @@ const BulletPoint = ({ text }) => {
   );
 };
 
-export default function LandingPage() {
+export default function LandingPage({user}) {
   return (
     <>
     <Chatbot/>
-      <Header />
+      <Header user={user} />
       <main className="bg-gradient-to-br from-white to-blue-50 py-20 md:py-32">
         <div className="max-w-screen-lg mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Top Tagline */}
@@ -378,7 +378,7 @@ export default function LandingPage() {
               Secure & Confidential
             </div>
             <div className="inline-flex items-center">
-              <BadgeCheckIcon className="h-4 w-4 mr-1" />
+              <CheckBadgeIcon className="h-4 w-4 mr-1" />
               Medically Verified
             </div>
             <div className="inline-flex items-center">

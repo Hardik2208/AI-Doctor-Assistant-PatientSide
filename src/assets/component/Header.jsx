@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; 
 import { Link } from "react-router-dom";
 import Logo1 from "./Logo1.png"; // Assuming you have a logo image
 import Logo2 from "./Logo2.png"; // Assuming you have a second logo image
 import { useNavigate } from "react-router-dom";
-import LoginForm from "../../pages/Login";
+import { supabase } from "../../supabaseClient"; // import supabase client
 
-const Header = () => {
+
+
+const Header = ({user}) => {
+
+
   const navigate= useNavigate();
   
   
@@ -43,9 +47,10 @@ const Header = () => {
       </nav>
 
       {/* Right Section: Icons and Buttons (Flex container for all elements) */}
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-4 ">
         {/* Search Icon (Hidden on mobile) */}
-        <button className="hidden md:block text-gray-500 hover:text-gray-700 focus:outline-none">
+          <div className="flex right-10 relative  " >
+        <button className=" hidden md:block text-gray-500 hover:text-gray-700 focus:outline-none px-3  relative left-2 ">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5"
@@ -62,7 +67,7 @@ const Header = () => {
           </svg>
         </button>
         {/* Pin Icon (Hidden on mobile) */}
-        <button className="hidden md:block text-gray-500 hover:text-gray-700 focus:outline-none">
+        <button className="hidden md:block text-gray-500 hover:text-gray-700 focus:outline-none px-3">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5"
@@ -86,14 +91,34 @@ const Header = () => {
         </button>
         {/* Language Dropdown (Hidden on mobile) */}
         <div className="relative hidden md:block">
-          <button className="border border-gray-300 rounded-md px-2 py-1 text-sm text-gray-700 focus:outline-none">
+          <button className="px-3 border border-gray-300 rounded-md px-2 py-1 text-sm text-gray-700 focus:outline-none">
             EN
           </button>
         </div>
+
+        </div>
         {/* Login / Sign Up Button (Hidden on mobile) */}
-        <button onClick={loginPage}  className="hidden md:block bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 focus:outline-none">
-          Login / Sign Up
-        </button>
+       {user ? (<div>
+          <span className="relative right-10 top-3 hidden md:block font-medium text-gray-700">
+            {user.user_metadata?.full_name || user.email}
+          </span>
+              <button
+      onClick={async () => {
+        await supabase.auth.signOut();
+      }}
+      className="bg-red-500 text-white px-3 py-1 bottom-3 relative rounded-full hover:bg-red-600"
+    >
+      Logout
+    </button>
+  </div>
+        ) : (
+          <button
+            onClick={loginPage}
+            className="hidden md:block bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600"
+          >
+            Login / Sign Up
+          </button>
+        )}
       </div>
 
       {/* Mobile Menu Button (Visible on smaller screens) */}
@@ -132,9 +157,14 @@ const Header = () => {
             <Link to="/chatbot" className="text-gray-700 hover:text-blue-500">
               Healthcare
             </Link>
-            <button onClick={loginPage} className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 focus:outline-none mt-4">
-              Login / Sign Up
-            </button>
+            {user ? (
+              <span className="text-gray-700 font-medium">{user.user_metadata?.full_name || user.email}</span>
+            ) : (
+              <button onClick={loginPage}
+                className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 mt-4">
+                Login / Sign Up
+              </button>
+            )}
           </nav>
         </div>
       )}
