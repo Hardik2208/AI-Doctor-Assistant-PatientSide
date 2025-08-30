@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ScrollToTop from "./assets/component/Srolltotop.js";
 
 
 import ChoicePage from "./pages/ChoicePage";
@@ -46,6 +47,7 @@ export default function App() {
   }, []);
   return (
     <BrowserRouter>
+    <ScrollToTop/>
       <Routes>
         <Route path="/choicePage" element={<ChoicePage />} />
         <Route path="/vocal-input" element={<VocalInputPage />} />
