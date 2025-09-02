@@ -36,13 +36,13 @@ const Header = ({user}) => {
         <Link to="/" className="text-gray-700 hover:text-blue-500">
           Home
         </Link>
-        <Link to="/" className="text-gray-700 hover:text-blue-500">
+        <Link to="/WellnessJourneyPage" className="text-gray-700 hover:text-blue-500">
           Fitness
         </Link>
         <Link to="/type-input" className="text-gray-700 hover:text-blue-500">
           Symptoms
         </Link>
-        <Link to="/chatbot" className="text-gray-700 hover:text-blue-500">
+        <Link to="/WellnessJourneyPage" className="text-gray-700 hover:text-blue-500">
           Healthcare
         </Link>
       </nav>
