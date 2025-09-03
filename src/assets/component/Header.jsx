@@ -176,7 +176,7 @@ const Header = ({user}) => {
               Symptoms
             </Link>
             <Link 
-              to="/chatbot" 
+              to="/WellnessJourneyPage" 
               className="text-gray-700 hover:text-blue-500 py-2 text-center"
               onClick={() => setIsMobileMenuOpen(false)}
             >
