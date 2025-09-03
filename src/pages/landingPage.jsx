@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import bg from "../assets/component/bg.png";
 import Footer from "../assets/component/Footer.jsx"; // Import your footer component
 import Chatbot from "./Chatbot.jsx";
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from "react";
 import {
   HeartIcon,
   ShieldCheckIcon,
@@ -18,187 +20,64 @@ import LandingVdo from "../assets/component/landingvdo.jsx";
 const symptoms = [
   {
     title: "Fever",
-    description: "High body temperature and related symptoms",
-    specialist: "General",
-    iconColor: "bg-blue-100",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-8 w-8 text-blue-500"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-        />
-      </svg>
-    ),
+    description:
+      "Fever is a temporary increase in body temperature, often due to an infection. It can be accompanied by chills, sweating, dehydration, and fatigue. Most fevers resolve on their own, but persistent or high fever may require medical attention.",
+    specialist: "General Physician",
+    bgImage: "/images/quicksymptom/fever.jpg", 
   },
   {
     title: "Gastric / Colic Pain",
-    description: "Abdominal discomfort and digestive issues",
-    specialist: "Gastroenterologists",
-    iconColor: "bg-green-100",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-8 w-8 text-green-500"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M13 10V3L4 14h7v7l9-11h-7z"
-        />
-      </svg>
-    ),
+    description:
+      "Gastric pain can result from indigestion, acid reflux, or more serious gastrointestinal issues. Symptoms may include bloating, nausea, heartburn, or cramping. A gastroenterologist can help diagnose and treat persistent abdominal discomfort.",
+    specialist: "Gastroenterologist",
+    bgImage: "https://images.pexels.com/photos/4498154/pexels-photo-4498154.jpeg", // woman holding stomach
   },
   {
     title: "Body Aches",
-    description: "General muscle and joint pain/discomfort",
-    specialist: "General",
-    iconColor: "bg-purple-100",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-8 w-8 text-purple-500"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M9 17.294c-.218.06-2.126-.403-2.126-.403-.648-.28-1.574-.535-2.222-.816.321-1.096.398-1.854.444-2.26.24-.316.536-.59.851-.837.283-.22.569-.414.851-.59a2.38 2.38 0 001.077-.923 2.14 2.14 0 00.124-2.31c.214-.427.524-.803.9-1.121.376-.32.793-.574 1.25-.765.457-.19.928-.278 1.41-.26.482.017.953.118 1.41.309.457.19.874.463 1.25.795.376.332.686.732.9 1.189a2.14 2.14 0 00.124 2.311c.148.163.31.332.48.513.29.317.587.616.851.905.315.315.591.667.83 1.05.239.382.433.79.582 1.22.148.428.24 1.02.26 1.76l.01.27c-.012.44-.04.877-.087 1.314-.046.438-.11.875-.19 1.312a2.44 2.44 0 01-1.157 1.944c-.218.156-.475.29-.757.404-.282.115-.595.208-.92.278-.325.07-.665.11-1.01.125l-.32.01c-.345-.015-.685-.055-1.01-.125-.325-.07-.64-.163-.92-.278a2.44 2.44 0 01-1.157-1.944z"
-        />
-      </svg>
-    ),
+    description:
+      "Body aches are generalized pain in muscles or joints, often linked to viral infections, overexertion, or stress. Rest, hydration, and mild pain relievers may help, but persistent aches could signal an underlying condition.",
+    specialist: "General Physician",
+    bgImage: "/images/quicksymptom/ache.jpg", // person holding back
     isHighlighted: true,
   },
   {
     title: "Dust Allergy",
-    description: "Respiratory reactions to environmental allergens",
-    specialist: "Doctors",
-    iconColor: "bg-yellow-100",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-8 w-8 text-yellow-500"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-        />
-      </svg>
-    ),
+    description:
+      "Dust allergy can cause sneezing, coughing, itchy eyes, and difficulty breathing due to exposure to dust mites or particles. Preventive steps include regular cleaning and using air filters. Severe symptoms may require allergy medications.",
+    specialist: "Allergist / Immunologist",
+    bgImage: "https://images.pexels.com/photos/3768911/pexels-photo-3768911.jpeg", // dust floating in sunlight
   },
   {
     title: "Migraine",
-    description: "Severe headaches with additional symptoms",
-    specialist: "Migraine",
-    iconColor: "bg-purple-100",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-8 w-8 text-purple-500"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M9.663 17.43A8.001 8.001 0 0112 15c2.21 0 4.218.895 5.66 2.364M9.663 17.43A8.001 8.001 0 0012 17a8.001 8.001 0 002.337-.57M9.663 17.43c-2.42-2.38-3.663-5.32-3.663-8.43C6 4.67 8.686 2 12 2s6 2.67 6 6.91a8.001 8.001 0 01-3.663-1.07M12 17v2m-2-2v-2m4 2v-2m-2 2v2"
-        />
-      </svg>
-    ),
+    description:
+      "Migraines are severe headaches often accompanied by nausea, sensitivity to light and sound, or visual disturbances. Identifying triggers and lifestyle adjustments, along with prescribed medications, can help manage symptoms.",
+    specialist: "Neurologist",
+    bgImage: "https://images.pexels.com/photos/5380302/pexels-photo-5380302.jpeg", // woman with hand on head
   },
   {
     title: "Cough",
-    description: "Persistent or acute coughing symptoms",
-    specialist: "General",
-    iconColor: "bg-green-100",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-8 w-8 text-green-500"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M4 6h16M4 12h16m-7 6h7"
-        />
-      </svg>
-    ),
+    description:
+      "A cough may be caused by infections, allergies, or irritants. It can be dry or productive (with phlegm). Persistent cough lasting more than a few weeks should be evaluated by a doctor to rule out chronic conditions.",
+    specialist: "Pulmonologist / General Physician",
+    bgImage: "/images/quicksymptom/cough.jpg", // person covering mouth
   },
   {
     title: "Skin Allergy",
-    description: "Skin irritation and mild allergic reactions",
-    specialist: "Dermatologists",
-    iconColor: "bg-indigo-100",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-8 w-8 text-indigo-500"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-    ),
+    description:
+      "Skin allergies can present as rashes, redness, itching, or swelling. Common causes include food, medications, or environmental triggers. A dermatologist can help diagnose and recommend treatment, including topical creams or antihistamines.",
+    specialist: "Dermatologist",
+    bgImage: "https://images.pexels.com/photos/674977/pexels-photo-674977.jpeg", // red rash on skin
   },
   {
     title: "Eye Infections",
-    description: "Various eye conditions and common infections",
-    specialist: "Ophthalmologists",
-    iconColor: "bg-yellow-100",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-8 w-8 text-yellow-500"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-        />
-      </svg>
-    ),
+    description:
+      "Eye infections like conjunctivitis cause redness, itching, pain, and discharge. Proper hygiene and timely medical care are essential to prevent worsening. An ophthalmologist may prescribe eye drops or other treatment.",
+    specialist: "Ophthalmologist",
+    bgImage: "https://images.pexels.com/photos/4587971/pexels-photo-4587971.jpeg", // close-up of irritated eye
   },
 ];
+
+
 
 const careOptions = [
   {
@@ -245,6 +124,7 @@ const careOptions = [
 
 
 const Rating = ({ score }) => {
+  
   return (
     <div className="flex items-center text-yellow-400">
       <svg
@@ -270,6 +150,7 @@ const BulletPoint = ({ text }) => {
 };
 
 export default function LandingPage({user}) {
+  const [selectedSymptom, setSelectedSymptom] = useState(null);
   return (
     <>
     <Chatbot/>
@@ -380,11 +261,10 @@ export default function LandingPage({user}) {
     </div>
   ))}
 </div>
-
-
-
         </div>
       </div>
+
+
             <div className="bg-white py-16 px-4 md:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           {/* Header Section */}
@@ -401,51 +281,102 @@ export default function LandingPage({user}) {
             </p>
           </div>
 
-          {/* Symptom Cards with Horizontal Scroll */}
-          <div className="flex space-x-6 overflow-x-scroll pb-4 -mx-4 px-4 sm:px-0 scrollbar-hide">
-            {symptoms.map((symptom, index) => (
-              <div
-                key={index}
-                className={`flex-none w-72 bg-white rounded-2xl p-6 shadow-md border ${
-                  symptom.isHighlighted
-                    ? "border-purple-500"
-                    : "border-gray-200"
-                }
-  hover:shadow-lg transition-shadow duration-300 cursor-pointer`}
-              >
-                <div
-                  className={`p-3 rounded-xl mb-4 inline-block ${symptom.iconColor}`}
-                >
-                  {symptom.icon}
-                </div>
-                <h3 className="text-lg font-bold text-gray-800 mb-1">
-                  {symptom.title}
-                </h3>
-                <p className="text-gray-600 text-sm mb-4">
-                  {symptom.description}
-                </p>
-                <div className="border-t border-gray-200 pt-4 flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-500">
-                    {symptom.specialist}
-                  </span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-gray-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
-              </div>
-            ))}
+{/* Symptom Cards with Horizontal Scroll */}
+<div className="flex space-x-6 overflow-x-scroll pb-4 -mx-4 px-4 sm:px-0 scrollbar-hide">
+  {symptoms.map((symptom, index) => (
+    <motion.div
+      key={index}
+      layoutId={`symptom-${index}`}
+      onClick={() => setSelectedSymptom(symptom)}
+      className="flex-none w-72 h-80 bg-white rounded-2xl shadow-md border hover:shadow-lg transition-shadow duration-300 cursor-pointer overflow-hidden relative"
+      style={{
+        backgroundImage: `url(${symptom.bgImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
+      }}
+    >
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/40 hover:bg-black/30 transition-colors duration-300"></div>
+      
+      {/* Content */}
+      <div className="relative z-10 p-6 h-full flex flex-col justify-end text-white">
+        <motion.h3
+          layoutId={`title-${index}`}
+          className="text-xl font-bold mb-2"
+        >
+          {symptom.title}
+        </motion.h3>
+
+        <div className="border-t border-white/30 pt-4 flex items-center justify-between">
+          <span className="text-sm font-medium text-gray-300">
+            {symptom.specialist}
+          </span>
+        </div>
+      </div>
+    </motion.div>
+  ))}
+</div>
+
+          {/* Modal for expanded symptom view */}
+<AnimatePresence>
+  {selectedSymptom && (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+      onClick={() => setSelectedSymptom(null)}
+    >
+      <motion.div
+        layoutId={`symptom-${symptoms.indexOf(selectedSymptom)}`}
+        className="bg-white rounded-2xl overflow-hidden max-w-2xl w-full"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Background Image Section */}
+        <div
+          className="relative h-64 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${selectedSymptom.bgImage})`,
+          }}
+        >
+          {/* Dark overlay */}
+          <div className="absolute inset-0 bg-black/40"></div>
+
+          {/* Title Overlay */}
+          <div className="relative z-10 p-8 h-full flex flex-col justify-end text-white">
+            <motion.h3
+              layoutId={`title-${symptoms.indexOf(selectedSymptom)}`}
+              className="text-3xl font-bold mb-2"
+            >
+              {selectedSymptom.title}
+            </motion.h3>
           </div>
+        </div>
+
+        {/* Detailed Content Section */}
+        <div className="p-8">
+          <p className="text-gray-600 leading-relaxed mb-6 text-lg">
+            {selectedSymptom.description}
+          </p>
+
+          <div className="flex items-center justify-between border-t pt-4">
+            <span className="text-sm font-medium text-gray-500">
+              Specialist: {selectedSymptom.specialist}
+            </span>
+            <button
+              onClick={() => setSelectedSymptom(null)}
+              className="px-4 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
+
+
         </div>
       </div>
       <Footer />

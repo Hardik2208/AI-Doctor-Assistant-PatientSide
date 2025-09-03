@@ -19,6 +19,7 @@ import Jumba from "./pages/Jumba.jsx";
 import Meditation from "./pages/Meditation.jsx";
 import LoginForm from "./pages/Login.jsx";
 import {supabase } from './supabaseClient.js'
+import WellnessJournerPage from './pages/WellnessJourneyPage.jsx'
 
 import FindDoctor from "./pages/FindDoctor.jsx";
 import DoctorDetails from "./pages/DoctorDetails.jsx";
@@ -61,6 +62,7 @@ export default function App() {
         <Route path="/MentalHealth" element={<MentalHealth />} />
         <Route path="/Jumba" element={<Jumba />} />
         <Route path="/Meditation" element={<Meditation />} />
+        <Route path="/WellnessJourneyPage" element={<WellnessJournerPage />} />
 
         {/* New Fitness page route */}
         <Route path="/fitness" element={<Fitness user={user} />} />

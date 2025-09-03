@@ -33,16 +33,16 @@ const Header = ({user}) => {
 
       {/* Center Section: Navigation (Hidden on mobile) */}
       <nav className="hidden md:flex space-x-6">
-        <Link to="/" className="text-gray-700 hover:text-blue-500">
-          Home
-        </Link>
-        <Link to="/fitness" className="text-gray-700 hover:text-blue-500">
-          Fitness
-        </Link>
+<Link to="/" className="text-gray-700 hover:text-blue-500">
+  Home
+</Link>
+<Link to="/WellnessJourneyPage" className="text-gray-700 hover:text-blue-500">
+  Fitness
+</Link>
         <Link to="/type-input" className="text-gray-700 hover:text-blue-500">
           Symptoms
         </Link>
-        <Link to="/chatbot" className="text-gray-700 hover:text-blue-500">
+        <Link to="/WellnessJourneyPage" className="text-gray-700 hover:text-blue-500">
           Healthcare
         </Link>
       </nav>
@@ -176,7 +176,7 @@ const Header = ({user}) => {
               Symptoms
             </Link>
             <Link 
-              to="/chatbot" 
+              to="/WellnessJourneyPage" 
               className="text-gray-700 hover:text-blue-500 py-2 text-center"
               onClick={() => setIsMobileMenuOpen(false)}
             >

@@ -1,4 +1,17 @@
 import React from 'react'
+import { Link } from "react-router-dom";
+const BulletPoint = ({ text }) => (
+  <li className="flex items-center space-x-2">
+    <span className="text-green-500">✔</span>
+    <span>{text}</span>
+  </li>
+);
+
+const Rating = ({ score }) => (
+  <p className="text-yellow-500 font-semibold">⭐ {score}</p>
+);
+
+
 
 const WellnessJourneyPage = () => {
   return (
