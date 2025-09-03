@@ -1,7 +1,8 @@
-import React from "react";
+// src/App.jsx
+
+import React, { useState, useEffect } from "react"; 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ScrollToTop from "./assets/component/Srolltotop.js";
-
 
 import ChoicePage from "./pages/ChoicePage";
 import VocalInputPage from "./pages/VocalInputPage";
@@ -20,35 +21,33 @@ import LoginForm from "./pages/Login.jsx";
 import {supabase } from './supabaseClient.js'
 
 import FindDoctor from "./pages/FindDoctor.jsx";
-import DoctorDetails from "./pages/DoctorDetails.jsx";  // ✅ ab import ho gaya
-import { useState } from "react";
-import { useEffect } from "react";
-
+import DoctorDetails from "./pages/DoctorDetails.jsx";
+import Fitness from "./pages/Fitness.jsx"; // Fitness page ko import karein
 
 export default function App() {
   const [user, setUser] = useState(null);
   
   useEffect(() => {
-    // ✅ Get user if already logged in
     supabase.auth.getUser().then(({ data }) => {
       setUser(data?.user ?? null);
     });
-  
-    // ✅ Listen for login/logout
+    
     const { data: subscription } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setUser(session?.user ?? null);
       }
     );
-  
+    
     return () => {
       subscription.subscription.unsubscribe();
     };
   }, []);
+  
   return (
     <BrowserRouter>
-    <ScrollToTop/>
+      <ScrollToTop/>
       <Routes>
+        {/* Existing routes */}
         <Route path="/choicePage" element={<ChoicePage />} />
         <Route path="/vocal-input" element={<VocalInputPage />} />
         <Route path="/type-input" element={<SymptomForm />} />
@@ -63,9 +62,12 @@ export default function App() {
         <Route path="/Jumba" element={<Jumba />} />
         <Route path="/Meditation" element={<Meditation />} />
 
+        {/* New Fitness page route */}
+        <Route path="/fitness" element={<Fitness user={user} />} />
+        
         {/* Doctor pages */}
         <Route path="/find-doctor" element={<FindDoctor />} />
-        <Route path="/doctor/:id" element={<DoctorDetails />} /> {/* ✅ new page */}
+        <Route path="/doctor/:id" element={<DoctorDetails />} />
 
         {/* Login page */}
         <Route path="/login" element={<LoginForm />} />

@@ -36,7 +36,7 @@ const Header = ({user}) => {
         <Link to="/" className="text-gray-700 hover:text-blue-500">
           Home
         </Link>
-        <Link to="/" className="text-gray-700 hover:text-blue-500">
+        <Link to="/fitness" className="text-gray-700 hover:text-blue-500">
           Fitness
         </Link>
         <Link to="/type-input" className="text-gray-700 hover:text-blue-500">
@@ -122,11 +122,11 @@ const Header = ({user}) => {
 
         {/* Mobile User Display - Shows username  */}
         {user && (
-  <div className="md:hidden flex items-center space-x-2 max-w-[150px] overflow-hidden">
-    <span className="font-medium text-gray-700 text-sm truncate">
-      Welcome {user.user_metadata?.full_name || user.email.split('@')[0]}!
-    </span>
-  </div>
+          <div className="md:hidden flex items-center space-x-2 max-w-[150px] overflow-hidden">
+            <span className="font-medium text-gray-700 text-sm truncate">
+              Welcome {user.user_metadata?.full_name || user.email.split('@')[0]}!
+            </span>
+          </div>
         )}
 
         {/* Mobile Menu Button (Visible on smaller screens) */}
@@ -162,7 +162,7 @@ const Header = ({user}) => {
               Home
             </Link>
             <Link 
-              to="/Gym" 
+              to="/fitness" 
               className="text-gray-700 hover:text-blue-500 py-2 text-center"
               onClick={() => setIsMobileMenuOpen(false)}
             >
@@ -197,17 +197,16 @@ const Header = ({user}) => {
                 </button>
               </div>
             )}
-                    {user && (
-          <div className="md:hidden justify-center items-center flex items-center space-x-2">
-
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 text-white px-2 py-1 rounded-full justify-center items-center flex hover:bg-red-600 text-xs"
-            >
-              Logout
-            </button>
-          </div>
-        )}
+            {user && (
+              <div className="md:hidden justify-center items-center flex items-center space-x-2">
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-500 text-white px-2 py-1 rounded-full justify-center items-center flex hover:bg-red-600 text-xs"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
           </nav>
         </div>
       )}
