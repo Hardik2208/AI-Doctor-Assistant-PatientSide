@@ -19,7 +19,7 @@ import { Button } from "../assets/component/button.jsx";
 import { Badge } from "../assets/component/badge.jsx";
 import { Checkbox } from "../assets/component/checkbox";
 import { AnimatePresence, motion } from "framer-motion";
-// import axios from 'axios';
+import axios from "axios";
 
 const DietForm = () => {
   const navigate = useNavigate();
@@ -92,7 +92,7 @@ const DietForm = () => {
     console.log("dietDatat");
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL || "https://ai-doctor-assistant-backend-ai-ml.onrender.com"}/api/generate-diet-plan`
+        `${import.meta.env.REACT_APP_API_BASE_URL || "https://ai-doctor-assistant-backend-ai-ml.onrender.com"}/api/generate-diet-plan`
 , // change port if needed
         { userDietData: UserDietData }
       );
