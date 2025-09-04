@@ -18,12 +18,13 @@ import MentalHealth from "./pages/MentalHealth.jsx";
 import Jumba from "./pages/Jumba.jsx";
 import Meditation from "./pages/Meditation.jsx";
 import LoginForm from "./pages/Login.jsx";
-import {supabase } from './supabaseClient.js'
+import { supabase } from './supabaseClient.js'
 import WellnessJournerPage from './pages/WellnessJourneyPage.jsx'
 
 import FindDoctor from "./pages/FindDoctor.jsx";
 import DoctorDetails from "./pages/DoctorDetails.jsx";
-import Fitness from "./pages/Fitness.jsx"; // Fitness page ko import karein
+import Fitness from "./pages/Fitness.jsx"; 
+import SpecialisedDoctor from "./pages/SpecialisedDoctor.jsx";  // ✅ New import
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -70,6 +71,7 @@ export default function App() {
         {/* Doctor pages */}
         <Route path="/find-doctor" element={<FindDoctor />} />
         <Route path="/doctor/:id" element={<DoctorDetails />} />
+        <Route path="/specialised-doctor" element={<SpecialisedDoctor />} /> {/* ✅ New route */}
 
         {/* Login page */}
         <Route path="/login" element={<LoginForm />} />
