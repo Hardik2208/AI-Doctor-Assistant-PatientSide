@@ -5,13 +5,6 @@ import JointTracker from './JointTracker';
 import { Button } from '../assets/component/button';
 import axios from 'axios';
 import YogaReportDisplay from './YogaReportDisplay'; // Assuming you have this component
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../assets/component/card";
-import { Badge } from "../assets/component/badge";
 
 
 // Data for all the yoga poses
@@ -213,7 +206,7 @@ const YogaPage = () => {
   const handleEndPractice = async (sessionData) => {
     try {
       const response = await axios.post(
-       `${process.env.REACT_APP_API_BASE_URL || "https://ai-doctor-assistant-backend-ai-ml.onrender.com"}/api/generate-diet-plan`
+       `${import.meta.env.VITE_APP_API_BASE_URL || "https://ai-doctor-assistant-backend-ai-ml.onrender.com"}/api/yoga/report`
 ,
         sessionData
       );

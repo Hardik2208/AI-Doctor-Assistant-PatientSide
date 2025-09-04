@@ -19,10 +19,14 @@ const Chatbot = () => {
         setMessages(prev => [...prev, userMessage]);
         setInput('');
         setLoading(true);
+        const API_BASE =
+  import.meta.env.VITE_APP_API_BASE_URL ||
+  "http://localhost:3001" || 
+  "https://ai-doctor-assistant-backend-ai-ml.onrender.com";
 
         try {
 const response = await fetch(
- `${process.env.REACT_APP_API_BASE_URL || "https://ai-doctor-assistant-backend-ai-ml.onrender.com"}/api/chatbot`
+ `${API_BASE}/api/chatbot`
 ,
   {
     method: "POST",

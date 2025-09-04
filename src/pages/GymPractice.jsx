@@ -21,13 +21,25 @@ const GymPractice = ({ exercise, onEndPractice }) => {
     
     try {
       // Use the EXISTING yoga/report endpoint - it works for any exercise
-      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL || "https://ai-doctor-assistant-backend-ai-ml.onrender.com"}/api/generate-diet-plan`
+      console.log("📦 Sending to backend:", {
+  exercise: sessionData.pose,
+  sessionDuration: sessionData.time,
+  averageScore: sessionData.formScore,
+  reps: sessionData.count
+});
+
+      const response = await fetch(`${import.meta.env.VITE_APP_API_BASE_URL || "https://ai-doctor-assistant-backend-ai-ml.onrender.com"}/api/yoga/report`
 , {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(sessionData),
+  body: JSON.stringify({
+    exercise: sessionData.exercise,
+    sessionDuration: sessionData.sessionDuration,
+    averageScore: sessionData.averageScore,
+    reps: sessionData.reps
+  }),
       });
       
       console.log("🔍 API Response status:", response.status);
