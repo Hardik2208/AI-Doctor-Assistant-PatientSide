@@ -25,6 +25,8 @@ import FindDoctor from "./pages/FindDoctor.jsx";
 import DoctorDetails from "./pages/DoctorDetails.jsx";
 import Fitness from "./pages/Fitness.jsx"; 
 import SpecialisedDoctor from "./pages/SpecialisedDoctor.jsx";  // ✅ New import
+import ChatRoom from "./pages/ChatRoom.jsx";
+
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -49,6 +51,10 @@ export default function App() {
     <BrowserRouter>
       <ScrollToTop/>
       <Routes>
+        {/* 1-to-1 Chat route */}
+<Route path="/chat/:roomId" element={<ChatRoom />} />
+
+
         {/* Existing routes */}
         <Route path="/choicePage" element={<ChoicePage />} />
         <Route path="/vocal-input" element={<VocalInputPage />} />
