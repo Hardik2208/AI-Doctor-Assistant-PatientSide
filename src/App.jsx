@@ -25,6 +25,8 @@ import FindDoctor from "./pages/FindDoctor.jsx";
 import DoctorDetails from "./pages/DoctorDetails.jsx";
 import Fitness from "./pages/Fitness.jsx"; 
 import SpecialisedDoctor from "./pages/SpecialisedDoctor.jsx";  // ✅ New import
+import CycleTracker from "./pages/CycleTracker.jsx";
+
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -75,6 +77,8 @@ export default function App() {
 
         {/* Login page */}
         <Route path="/login" element={<LoginForm />} />
+        <Route path="/cycle-tracker" element={<CycleTracker />} />
+
       </Routes>
     </BrowserRouter>
   );

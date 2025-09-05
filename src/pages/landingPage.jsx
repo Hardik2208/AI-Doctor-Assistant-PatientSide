@@ -106,7 +106,7 @@ const careOptions = [
     description: "Connect with specialized healthcare professionals for expert medical care and treatment.",
     brief: "Access board-certified specialists across various medical fields including cardiology, dermatology, orthopedics, and more.",
     image: "/images/doctor.jpg",
-    link: "/specialists",
+    link: "/specialised-doctor",
     buttonText: "View Specialists",
     stats: "200+ Specialists"
   },
