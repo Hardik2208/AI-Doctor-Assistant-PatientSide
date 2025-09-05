@@ -81,6 +81,8 @@ export default function App() {
 
         {/* Login page */}
         <Route path="/login" element={<LoginForm />} />
+        <Route path="/cycle-tracker" element={<CycleTracker />} />
+
       </Routes>
     </BrowserRouter>
   );
