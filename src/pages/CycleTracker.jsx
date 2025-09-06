@@ -1,6 +1,4 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import Header from "../assets/component/Header";
-import Footer from "../assets/component/Footer";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 import {
   Droplet,
@@ -23,9 +21,11 @@ import {
   Info,
   Leaf,
   ShieldQuestion,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
-// ------------ Helpers
+// The existing helpers and mock data remain unchanged as they are functional.
 const fmt = (d) => d.toISOString().slice(0, 10);
 const parse = (s) => {
   const [y, m, d] = s.split("-").map(Number);
@@ -36,99 +36,49 @@ const addDays = (d, n) => {
   x.setDate(x.getDate() + n);
   return x;
 };
-const daysBetween = (a, b) => Math.round((b - a) / 86400000);
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 
-// ------------ Colors & styles
-const COLORS = ["#8B5CF6", "#3B82F6", "#EC4899", "#F87171"];
-const PHASE_COLORS = {
-  menstrual: "bg-rose-200 text-rose-800",
-  follicular: "bg-blue-200 text-blue-800",
-  ovulation: "bg-pink-200 text-pink-800",
-  luteal: "bg-violet-200 text-violet-800",
-  none: "bg-gray-100 text-gray-500",
+// Color palette for a softer, premium look
+const GRADIENT_COLORS = ["#6366F1", "#A855F7", "#F472B6", "#F87171"];
+const PHASE_COLORS_NEW = {
+  menstrual: "bg-gradient-to-r from-purple-400 to-pink-500 text-white",
+  follicular: "bg-gradient-to-r from-emerald-400 to-sky-500 text-white",
+  ovulation: "bg-gradient-to-r from-rose-400 to-red-500 text-white",
+  luteal: "bg-gradient-to-r from-indigo-400 to-purple-500 text-white",
+  none: "bg-gray-100 text-gray-700",
 };
 const borderForPhase = {
-  menstrual: "ring-2 ring-rose-400",
-  follicular: "ring-2 ring-blue-400",
-  ovulation: "ring-2 ring-pink-400",
-  luteal: "ring-2 ring-violet-400",
+  menstrual: "ring-2 ring-purple-400/70",
+  follicular: "ring-2 ring-emerald-400/70",
+  ovulation: "ring-2 ring-rose-400/70",
+  luteal: "ring-2 ring-indigo-400/70",
   none: "ring-1 ring-gray-200",
 };
 
-// ------------ Defaults
 const today = new Date();
-const defaultStart = fmt(addDays(today, -10)); // sane default if user didn't select yet
+const defaultStart = fmt(addDays(today, -10));
 
-// ------------ Nearby Stores (mock data for demo)
 const MOCK_STORES = [
-  {
-    id: 1,
-    name: "CareMart Pharmacy",
-    area: "Indore",
-    distanceKm: 1.2,
-    items: [
-      { brand: "Whisper Ultra", price: 85, stock: "In Stock" },
-      { brand: "Stayfree Secure", price: 72, stock: "Low Stock" },
-    ],
-  },
-  {
-    id: 2,
-    name: "Health+ Medicals",
-    area: "Bhopal",
-    distanceKm: 3.5,
-    items: [
-      { brand: "Sofy Antibacteria", price: 95, stock: "In Stock" },
-      { brand: "Nua Pads", price: 159, stock: "Out of Stock" },
-    ],
-  },
-  {
-    id: 3,
-    name: "Apna Store",
-    area: "Jaipur",
-    distanceKm: 0.8,
-    items: [
-      { brand: "Whisper Choice", price: 52, stock: "In Stock" },
-      { brand: "Stayfree Dry-Max", price: 98, stock: "In Stock" },
-    ],
-  },
-  {
-    id: 4,
-    name: "City Chemists",
-    area: "Mumbai",
-    distanceKm: 2.1,
-    items: [
-      { brand: "Paree Super", price: 89, stock: "Low Stock" },
-      { brand: "Kotex Overnight", price: 120, stock: "In Stock" },
-    ],
-  },
+  { id: 1, name: "CareMart Pharmacy", area: "Indore", distanceKm: 1.2, items: [{ brand: "Whisper Ultra", price: 85, stock: "In Stock" }, { brand: "Stayfree Secure", price: 72, stock: "Low Stock" }] },
+  { id: 2, name: "Health+ Medicals", area: "Bhopal", distanceKm: 3.5, items: [{ brand: "Sofy Antibacteria", price: 95, stock: "In Stock" }, { brand: "Nua Pads", price: 159, stock: "Out of Stock" }] },
+  { id: 3, name: "Apna Store", area: "Jaipur", distanceKm: 0.8, items: [{ brand: "Whisper Choice", price: 52, stock: "In Stock" }, { brand: "Stayfree Dry-Max", price: 98, stock: "In Stock" }] },
+  { id: 4, name: "City Chemists", area: "Mumbai", distanceKm: 2.1, items: [{ brand: "Paree Super", price: 89, stock: "Low Stock" }, { brand: "Kotex Overnight", price: 120, stock: "In Stock" }] },
 ];
 
-// =========================================================
 const MenstrualTracker = () => {
-  // ----------- Inputs
   const [lastStart, setLastStart] = useState(defaultStart);
   const [cycleLength, setCycleLength] = useState(28);
   const [periodLength, setPeriodLength] = useState(5);
-
-  // ----------- Calendar view month (defaults to current)
   const [viewYear, setViewYear] = useState(today.getFullYear());
-  const [viewMonth, setViewMonth] = useState(today.getMonth()); // 0-index
-
-  // ----------- Selected day logs
-  // logs[yyyy-mm-dd] = { flow, moods:[], activities:[], other:[], signs:[], energy, notes }
+  const [viewMonth, setViewMonth] = useState(today.getMonth());
   const [logs, setLogs] = useState({});
   const [selectedDate, setSelectedDate] = useState(fmt(today));
-
-  // ----------- Stores search
   const [q, setQ] = useState("");
   const [storeArea, setStoreArea] = useState("");
 
-  // Scroll helpers
   const storesRef = useRef(null);
   const educationRef = useRef(null);
 
-  // ----------- Derived phase schedule for ~6 months horizon
   const schedule = useMemo(() => {
     if (!lastStart) return {};
     const start = parse(lastStart);
@@ -136,20 +86,13 @@ const MenstrualTracker = () => {
     const map = {};
     for (let i = 0; i < horizonDays; i++) {
       const d = addDays(start, i);
-      const dayIdx = i % cycleLength; // 0..cycleLength-1
+      const dayIdx = i % cycleLength;
       let phase = "none";
 
-      // Menstrual: day 0..periodLength-1
       if (dayIdx >= 0 && dayIdx < periodLength) phase = "menstrual";
-
-      // Ovulation day estimation (cycleLength - 14)
-      const ovuIdx = clamp(cycleLength - 14, 10, 20); // typical range
+      const ovuIdx = clamp(cycleLength - 14, 10, 20);
       if (dayIdx === ovuIdx) phase = "ovulation";
-
-      // Follicular: end of bleeding up to day before ovulation
       if (dayIdx >= periodLength && dayIdx < ovuIdx) phase = "follicular";
-
-      // Luteal: after ovulation to end of cycle
       if (dayIdx > ovuIdx) phase = "luteal";
 
       map[fmt(d)] = phase;
@@ -157,7 +100,6 @@ const MenstrualTracker = () => {
     return map;
   }, [lastStart, cycleLength, periodLength]);
 
-  // ----------- Next predicted cycle info
   const predictions = useMemo(() => {
     if (!lastStart) return null;
     const start = parse(lastStart);
@@ -167,21 +109,14 @@ const MenstrualTracker = () => {
     const fertileEnd = addDays(ovulation, 1);
     const periodEnd = addDays(start, periodLength - 1);
     return {
-      current: {
-        start,
-        end: periodEnd,
-      },
-      next: {
-        start: nextStart,
-        end: addDays(nextStart, periodLength - 1),
-      },
+      current: { start, end: periodEnd },
+      next: { start: nextStart, end: addDays(nextStart, periodLength - 1) },
       ovulation,
       fertileStart,
       fertileEnd,
     };
   }, [lastStart, cycleLength, periodLength]);
 
-  // ----------- Phase pie data (dynamic)
   const phaseData = useMemo(() => {
     const ovIdx = clamp(cycleLength - 14, 10, 20);
     const menstrual = clamp(periodLength, 1, 10);
@@ -196,118 +131,80 @@ const MenstrualTracker = () => {
     ];
   }, [cycleLength, periodLength]);
 
-  // ----------- Month grid
   const monthGrid = useMemo(() => {
     const first = new Date(viewYear, viewMonth, 1);
-    const startDay = (first.getDay() + 6) % 7; // make Monday=0
+    const startDay = (first.getDay() + 6) % 7;
     const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
     const cells = [];
-    // Leading blanks
-    for (let i = 0; i < startDay; i++) cells.push(null);
+    for (let i = 0; i < startDay; i++) {
+      cells.push(null);
+    }
     for (let d = 1; d <= daysInMonth; d++) {
       const date = new Date(viewYear, viewMonth, d);
       cells.push(date);
     }
-    // trailing to fill 6 rows grid (42 cells)
-    while (cells.length < 42) cells.push(null);
     return cells;
   }, [viewMonth, viewYear]);
 
-  // ----------- Selection ensure in-view month
   useEffect(() => {
     const sd = parse(selectedDate);
     setViewYear(sd.getFullYear());
     setViewMonth(sd.getMonth());
-  }, []); // only on mount
+  }, []);
 
-  // ----------- Handlers
   const setLog = (dateStr, updater) =>
     setLogs((prev) => {
-      const base = prev[dateStr] ?? {
-        flow: "",
-        moods: [],
-        activities: [],
-        other: [],
-        signs: [],
-        energy: "",
-        notes: "",
-      };
+      const base = prev[dateStr] ?? { flow: "", moods: [], activities: [], other: [], signs: [], energy: "", notes: "" };
       const next = typeof updater === "function" ? updater(base) : updater;
       return { ...prev, [dateStr]: next };
     });
 
-  // ----------- Derived store results
   const filteredStores = useMemo(() => {
     const text = (q || "").toLowerCase().trim();
     const area = (storeArea || "").toLowerCase().trim();
     return MOCK_STORES.filter(
       (s) =>
-        (!text ||
-          s.name.toLowerCase().includes(text) ||
-          s.items.some((i) => i.brand.toLowerCase().includes(text))) &&
+        (!text || s.name.toLowerCase().includes(text) || s.items.some((i) => i.brand.toLowerCase().includes(text))) &&
         (!area || s.area.toLowerCase().includes(area))
     ).sort((a, b) => a.distanceKm - b.distanceKm);
   }, [q, storeArea]);
 
-  // =========================================================
   return (
     <>
       <Header />
-
-      <div className="min-h-screen bg-gray-50 py-8 px-4 md:px-6">
+      <main className="min-h-screen bg-gray-100 text-gray-800 font-sans py-12 px-4 md:px-8">
         {/* Title */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
-            Track Your Menstrual Cycle
+        <section className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 drop-shadow-lg">
+            Flow-Sense
           </h1>
-          <p className="text-gray-600 mt-2">
-            Inputs → Calendar highlights → Predictions → Daily logs → Stores & education.
+          <p className="text-gray-600 mt-3 max-w-lg mx-auto">
+            Your personal cycle companion for tracking, predicting, and understanding your body's rhythm.
           </p>
-          <div className="mt-4 flex gap-3 justify-center flex-wrap">
-            <JumpButton
-              icon={<CalendarDays size={16} />}
-              label="Go to Calendar"
-              onClick={() => {
-                document.getElementById("calendar-section")?.scrollIntoView({ behavior: "smooth" });
-              }}
-            />
-            <JumpButton
-              icon={<NotebookPen size={16} />}
-              label="Go to Logs"
-              onClick={() => {
-                document.getElementById("logs-section")?.scrollIntoView({ behavior: "smooth" });
-              }}
-            />
-            <JumpButton
-              icon={<Store size={16} />}
-              label="Nearby Stores"
-              onClick={() => storesRef.current?.scrollIntoView({ behavior: "smooth" })}
-            />
-            <JumpButton
-              icon={<Info size={16} />}
-              label="Health Education"
-              onClick={() => educationRef.current?.scrollIntoView({ behavior: "smooth" })}
-            />
+          <div className="mt-6 flex gap-3 justify-center flex-wrap">
+            <JumpButton icon={<CalendarDays size={18} />} label="Calendar" onClick={() => document.getElementById("calendar-section")?.scrollIntoView({ behavior: "smooth" })} />
+            <JumpButton icon={<NotebookPen size={18} />} label="Daily Logs" onClick={() => document.getElementById("logs-section")?.scrollIntoView({ behavior: "smooth" })} />
+            <JumpButton icon={<Store size={18} />} label="Nearby Stores" onClick={() => storesRef.current?.scrollIntoView({ behavior: "smooth" })} />
+            <JumpButton icon={<Info size={18} />} label="Health Info" onClick={() => educationRef.current?.scrollIntoView({ behavior: "smooth" })} />
           </div>
-        </div>
+        </section>
 
-        {/* Inputs + Calendar */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6" id="calendar-section">
+        {/* Main Grid: Inputs + Calendar */}
+        <section className="grid grid-cols-1 lg:grid-cols-5 gap-8" id="calendar-section">
           {/* Inputs */}
-          <div className="lg:col-span-2 bg-white shadow-md rounded-2xl p-6 space-y-5">
+          <Card className="lg:col-span-2">
+            <h2 className="text-xl font-semibold mb-6">Your Cycle Details 🩸</h2>
             <InputRow label="Last period start date">
               <input
                 type="date"
                 value={lastStart}
                 onChange={(e) => {
                   setLastStart(e.target.value);
-                  // adjust selected date into this cycle window for better UX
                   setSelectedDate(e.target.value);
                 }}
-                className="w-full mt-2 p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400"
+                className="w-full mt-2 p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
               />
             </InputRow>
-
             <InputRow label="Average cycle length (days)">
               <input
                 type="number"
@@ -315,10 +212,9 @@ const MenstrualTracker = () => {
                 max={40}
                 value={cycleLength}
                 onChange={(e) => setCycleLength(clamp(Number(e.target.value || 28), 20, 40))}
-                className="w-full mt-2 p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400"
+                className="w-full mt-2 p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
               />
             </InputRow>
-
             <InputRow label="Period length (days)">
               <input
                 type="number"
@@ -326,116 +222,96 @@ const MenstrualTracker = () => {
                 max={10}
                 value={periodLength}
                 onChange={(e) => setPeriodLength(clamp(Number(e.target.value || 5), 2, 10))}
-                className="w-full mt-2 p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400"
+                className="w-full mt-2 p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
               />
             </InputRow>
 
-            {/* Predictions */}
-            {predictions && (
-              <div className="rounded-xl bg-gray-50 border p-4">
-                <h4 className="font-semibold text-gray-700 mb-2">Predictions</h4>
-                <ul className="text-sm text-gray-700 space-y-1">
-                  <li>
-                    Current period:{" "}
-                    <span className="font-medium">
-                      {predictions.current.start.toDateString()} → {predictions.current.end.toDateString()}
-                    </span>
-                  </li>
-                  <li>
-                    Ovulation: <span className="font-medium">{predictions.ovulation.toDateString()}</span>
-                  </li>
-                  <li>
-                    Fertile window:{" "}
-                    <span className="font-medium">
-                      {predictions.fertileStart.toDateString()} → {predictions.fertileEnd.toDateString()}
-                    </span>
-                  </li>
-                  <li>
-                    Next period:{" "}
-                    <span className="font-medium">
-                      {predictions.next.start.toDateString()} → {predictions.next.end.toDateString()}
-                    </span>
-                  </li>
-                </ul>
-              </div>
-            )}
+            <div className="rounded-2xl bg-gray-50 border border-gray-200 p-5 mt-8 shadow-inner">
+              <h4 className="font-semibold text-gray-700 mb-3">Predicted Dates</h4>
+              <ul className="text-sm text-gray-700 space-y-2">
+                <li>
+                  <span className="font-medium text-gray-500">Current period: </span>
+                  <span className="font-semibold">
+                    {predictions?.current?.start.toDateString()} → {predictions?.current?.end.toDateString()}
+                  </span>
+                </li>
+                <li>
+                  <span className="font-medium text-gray-500">Ovulation: </span>
+                  <span className="font-semibold">{predictions?.ovulation.toDateString()}</span>
+                </li>
+                <li>
+                  <span className="font-medium text-gray-500">Fertile window: </span>
+                  <span className="font-semibold">
+                    {predictions?.fertileStart.toDateString()} → {predictions?.fertileEnd.toDateString()}
+                  </span>
+                </li>
+                <li>
+                  <span className="font-medium text-gray-500">Next period: </span>
+                  <span className="font-semibold">
+                    {predictions?.next?.start.toDateString()} → {predictions?.next?.end.toDateString()}
+                  </span>
+                </li>
+              </ul>
+            </div>
 
-            {/* Pie chart (with bottom spacing) */}
-            <div className="flex flex-col items-center mb-6">
-              <h4 className="font-semibold text-gray-700 mb-3px">Cycle Overview</h4>
-              <div className="flex justify-center mb-2"></div>
+            <div className="flex flex-col items-center mt-8">
+              <h4 className="font-semibold text-gray-700 mb-3">Cycle Overview</h4>
               <PieChart width={280} height={280}>
                 <Pie
                   data={phaseData}
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  outerRadius={100}
+                  outerRadius={110}
                   dataKey="value"
-                  label={({ percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                 >
                   {phaseData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index]} />
+                    <Cell key={`cell-${index}`} fill={GRADIENT_COLORS[index]} stroke="#fff" strokeWidth={2} />
                   ))}
                 </Pie>
-                <Tooltip />
-                <Legend />
+                <Tooltip formatter={(value, name) => [`${value} days`, name]} />
+                <Legend iconType="circle" />
               </PieChart>
             </div>
-          </div>
+          </Card>
 
           {/* Calendar */}
-          <div className="lg:col-span-3 bg-white shadow-md rounded-2xl p-6">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-semibold text-gray-700 flex items-center gap-2">
-                <CalendarDays size={18} />{" "}
-                {new Date(viewYear, viewMonth, 1).toLocaleString(undefined, {
-                  month: "long",
-                  year: "numeric",
-                })}
+          <Card className="lg:col-span-3 **self-start**">
+            <div className="flex items-center justify-between mb-6">
+              <button
+                className="p-2 rounded-full border border-gray-200 hover:bg-gray-100 transition"
+                onClick={() => { const d = new Date(viewYear, viewMonth - 1, 1); setViewYear(d.getFullYear()); setViewMonth(d.getMonth()); }}
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <h2 className="text-2xl font-bold text-gray-700">
+                {new Date(viewYear, viewMonth, 1).toLocaleString(undefined, { month: "long", year: "numeric" })}
               </h2>
-              <div className="flex gap-2">
-                <button
-                  className="px-3 py-1 rounded-lg border hover:bg-gray-50"
-                  onClick={() => {
-                    const d = new Date(viewYear, viewMonth - 1, 1);
-                    setViewYear(d.getFullYear());
-                    setViewMonth(d.getMonth());
-                  }}
-                >
-                  ←
-                </button>
-                <button
-                  className="px-3 py-1 rounded-lg border hover:bg-gray-50"
-                  onClick={() => {
-                    const d = new Date(viewYear, viewMonth + 1, 1);
-                    setViewYear(d.getFullYear());
-                    setViewMonth(d.getMonth());
-                  }}
-                >
-                  →
-                </button>
-              </div>
+              <button
+                className="p-2 rounded-full border border-gray-200 hover:bg-gray-100 transition"
+                onClick={() => { const d = new Date(viewYear, viewMonth + 1, 1); setViewYear(d.getFullYear()); setViewMonth(d.getMonth()); }}
+              >
+                <ChevronRight size={20} />
+              </button>
             </div>
 
-            {/* Legend */}
-            <div className="flex flex-wrap gap-2 text-xs mt-6 ">
-              
-              <LegendPill colorClass={PHASE_COLORS.menstrual} label="Menstrual" />
-              <LegendPill colorClass={PHASE_COLORS.follicular} label="Follicular" />
-              <LegendPill colorClass={PHASE_COLORS.ovulation} label="Ovulation" />
-              <LegendPill colorClass={PHASE_COLORS.luteal} label="Luteal" />
+            <div className="flex flex-wrap gap-2 text-xs mt-4 justify-center">
+              <LegendPill colorClass={PHASE_COLORS_NEW.menstrual} label="Menstrual" />
+              <LegendPill colorClass={PHASE_COLORS_NEW.follicular} label="Follicular" />
+              <LegendPill colorClass={PHASE_COLORS_NEW.ovulation} label="Ovulation" />
+              <LegendPill colorClass={PHASE_COLORS_NEW.luteal} label="Luteal" />
             </div>
 
-            <div className="grid grid-cols-7 gap-2 text-center text-gray-700 text-sm">
+            <div className="grid grid-cols-7 gap-3 text-center text-gray-700 text-sm mt-6">
               {["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"].map((d, i) => (
-                <div key={i} className="font-semibold">
-                  {d}
-                </div>
+                <div key={i} className="font-semibold text-gray-500">{d}</div>
               ))}
-
               {monthGrid.map((dateObj, i) => {
-                if (!dateObj) return <div key={i} className="p-3 rounded-lg bg-gray-50" />;
+                if (!dateObj) {
+                  // Removed padding to make the cell height zero
+                  return <div key={i} />;
+                }
                 const ds = fmt(dateObj);
                 const phase = schedule[ds] ?? "none";
                 const isSelected = ds === selectedDate;
@@ -445,344 +321,244 @@ const MenstrualTracker = () => {
                   <button
                     key={i}
                     onClick={() => setSelectedDate(ds)}
-                    className={[
-                      "p-2 rounded-lg transition text-sm flex flex-col items-center gap-1",
-                      isSelected ? "bg-gray-900 text-white" : "hover:bg-gray-50 bg-white border",
-                      isSelected ? "" : borderForPhase[phase],
-                    ].join(" ")}
+                    className={`p-3 rounded-xl transition-all text-sm flex flex-col items-center gap-1
+                    ${isSelected ? "bg-gray-900 text-white shadow-lg" : "hover:bg-gray-100 bg-white border border-gray-200"}
+                    ${isSelected ? "" : borderForPhase[phase]}
+                    ${isToday ? "border-2 border-emerald-500" : ""}`}
                     title={phase}
                   >
-                    <span className="font-medium">{dateObj.getDate()}</span>
-                    <span
-                      className={[
-                        "px-2 py-0.5 rounded-full text-[10px] leading-4",
-                        isSelected ? "bg-white/20" : PHASE_COLORS[phase],
-                      ].join(" ")}
-                    >
+                    <span className={`font-medium ${isSelected ? "text-white" : ""}`}>{dateObj.getDate()}</span>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] leading-4 capitalize
+                      ${isSelected ? "bg-white/20" : PHASE_COLORS_NEW[phase]}`}>
                       {phase === "none" ? "" : phase}
                     </span>
-                    {isToday && !isSelected && (
-                      <span className="text-[9px] text-emerald-600">today</span>
-                    )}
+                    {isToday && !isSelected && (<span className="text-[9px] text-emerald-600 font-semibold">today</span>)}
                   </button>
                 );
               })}
             </div>
-          </div>
-        </div>
+          </Card>
+        </section>
 
         {/* Symptoms & Daily Logs */}
-        <div id="logs-section" className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <LogCard title={`Logs: ${selectedDate}`}>
-            <div className="text-xs text-gray-500 mb-3">
+        <section id="logs-section" className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <Card title={`Logs: ${selectedDate}`}>
+            <div className="text-sm text-gray-500 mb-4">
               Select a date from calendar, then tap chips to record. Auto-saved.
             </div>
-
-            {/* Flow (single) */}
-            <ChipGroup
-              title="Menstruation Flow"
-              type="single"
-              value={logs[selectedDate]?.flow || ""}
-              onChange={(val) =>
-                setLog(selectedDate, (b) => ({ ...b, flow: val === b.flow ? "" : val }))
-              }
-              items={[
-                { label: "Light", icon: <Droplet size={16} /> },
-                { label: "Medium", icon: <Droplet size={16} /> },
-                { label: "Heavy", icon: <Droplet size={16} /> },
-                { label: "Spotting", icon: <Droplet size={16} /> },
-              ]}
+            <ChipGroup title="Menstruation Flow" type="single" value={logs[selectedDate]?.flow || ""}
+              onChange={(val) => setLog(selectedDate, (b) => ({ ...b, flow: val === b.flow ? "" : val }))}
+              items={[{ label: "Light", icon: <Droplet size={16} /> }, { label: "Medium", icon: <Droplet size={16} /> }, { label: "Heavy", icon: <Droplet size={16} /> }, { label: "Spotting", icon: <Droplet size={16} /> }]}
               color="red"
             />
-
-            {/* Moods (multi) */}
-            <ChipGroup
-              title="Moods"
-              type="multi"
-              value={logs[selectedDate]?.moods || []}
+            <ChipGroup title="Moods" type="multi" value={logs[selectedDate]?.moods || []}
               onChange={(arr) => setLog(selectedDate, (b) => ({ ...b, moods: arr }))}
-              items={[
-                { label: "Neutral", icon: <Smile size={16} /> },
-                { label: "Happy", icon: <Smile size={16} /> },
-                { label: "Sad", icon: <Frown size={16} /> },
-                { label: "Sensitive", icon: <Heart size={16} /> },
-              ]}
+              items={[{ label: "Neutral", icon: <Smile size={16} /> }, { label: "Happy", icon: <Smile size={16} /> }, { label: "Sad", icon: <Frown size={16} /> }, { label: "Sensitive", icon: <Heart size={16} /> }]}
               color="pink"
             />
-
-            {/* Activities (multi) */}
-            <ChipGroup
-              title="Physical Activity"
-              type="multi"
-              value={logs[selectedDate]?.activities || []}
+            <ChipGroup title="Physical Activity" type="multi" value={logs[selectedDate]?.activities || []}
               onChange={(arr) => setLog(selectedDate, (b) => ({ ...b, activities: arr }))}
-              items={[
-                { label: "Gym", icon: <Dumbbell size={16} /> },
-                { label: "Walking", icon: <Footprints size={16} /> },
-                { label: "Running", icon: <Activity size={16} /> },
-                { label: "Cycling", icon: <Bike size={16} /> },
-              ]}
+              items={[{ label: "Gym", icon: <Dumbbell size={16} /> }, { label: "Walking", icon: <Footprints size={16} /> }, { label: "Running", icon: <Activity size={16} /> }, { label: "Cycling", icon: <Bike size={16} /> }]}
               color="purple"
             />
-
-            {/* Other body symptoms (multi) */}
-            <ChipGroup
-              title="Other Body Symptoms"
-              type="multi"
-              value={logs[selectedDate]?.other || []}
+            <ChipGroup title="Other Body Symptoms" type="multi" value={logs[selectedDate]?.other || []}
               onChange={(arr) => setLog(selectedDate, (b) => ({ ...b, other: arr }))}
-              items={[
-                { label: "Bloating", icon: <Cloud size={16} /> },
-                { label: "Fatigue", icon: <Bed size={16} /> },
-                { label: "Nausea", icon: <AlertCircle size={16} /> },
-                { label: "Insomnia", icon: <Bed size={16} /> },
-              ]}
+              items={[{ label: "Bloating", icon: <Cloud size={16} /> }, { label: "Fatigue", icon: <Bed size={16} /> }, { label: "Nausea", icon: <AlertCircle size={16} /> }, { label: "Insomnia", icon: <Bed size={16} /> }]}
               color="blue"
             />
-
-            {/* Signs (multi) */}
-            <ChipGroup
-              title="Signs"
-              type="multi"
-              value={logs[selectedDate]?.signs || []}
+            <ChipGroup title="Signs" type="multi" value={logs[selectedDate]?.signs || []}
               onChange={(arr) => setLog(selectedDate, (b) => ({ ...b, signs: arr }))}
-              items={[
-                { label: "All Good", icon: <Smile size={16} /> },
-                { label: "Cramps", icon: <AlertCircle size={16} /> },
-                { label: "Headache", icon: <Frown size={16} /> },
-                { label: "Acne", icon: <AlertCircle size={16} /> },
-              ]}
+              items={[{ label: "All Good", icon: <Smile size={16} /> }, { label: "Cramps", icon: <AlertCircle size={16} /> }, { label: "Headache", icon: <Frown size={16} /> }, { label: "Acne", icon: <AlertCircle size={16} /> }]}
               color="violet"
             />
-
-            {/* Energy (single) */}
-            <ChipGroup
-              title="Energy Levels"
-              type="single"
-              value={logs[selectedDate]?.energy || ""}
-              onChange={(val) =>
-                setLog(selectedDate, (b) => ({ ...b, energy: val === b.energy ? "" : val }))
-              }
-              items={[
-                { label: "High", icon: <Zap size={16} /> },
-                { label: "Medium", icon: <Zap size={16} /> },
-                { label: "Low", icon: <Zap size={16} /> },
-                { label: "Exhausted", icon: <Bed size={16} /> },
-              ]}
+            <ChipGroup title="Energy Levels" type="single" value={logs[selectedDate]?.energy || ""}
+              onChange={(val) => setLog(selectedDate, (b) => ({ ...b, energy: val === b.energy ? "" : val }))}
+              items={[{ label: "High", icon: <Zap size={16} /> }, { label: "Medium", icon: <Zap size={16} /> }, { label: "Low", icon: <Zap size={16} /> }, { label: "Exhausted", icon: <Bed size={16} /> }]}
               color="gray"
             />
-
-            {/* Notes */}
-            <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-600 mb-2">
-                Add Personal Notes
-              </label>
+            <div className="mt-6">
+              <label className="block text-sm font-medium text-gray-600 mb-2">Add Personal Notes</label>
               <textarea
                 rows="4"
                 value={logs[selectedDate]?.notes || ""}
-                onChange={(e) =>
-                  setLog(selectedDate, (b) => ({ ...b, notes: e.target.value }))
-                }
+                onChange={(e) => setLog(selectedDate, (b) => ({ ...b, notes: e.target.value }))}
                 placeholder="Write your notes here..."
-                className="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400"
+                className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-400"
               />
             </div>
-          </LogCard>
+          </Card>
 
           {/* Compact summary of today's log */}
-          <LogCard title="Today at a glance">
+          <Card title="Today's Snapshot">
             <SummaryBlock dateStr={selectedDate} logs={logs} schedule={schedule} />
-          </LogCard>
+          </Card>
 
           {/* Education + Phases */}
-          <div className="bg-white shadow-md rounded-2xl p-6" ref={educationRef}>
-            <h3 className="text-lg font-semibold text-gray-700 mb-4">Phases & Health Education</h3>
-
-            <div className="grid grid-cols-2 gap-3 mb-5">
+          <Card innerRef={educationRef}>
+            <h3 className="text-xl font-semibold mb-6">Health Insights & Education</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               <PhaseCard title="Menstrual" text="Day 1–5 • Bleeding • Low energy" color="purple" />
-              <PhaseCard title="Follicular" text="Day 5–13 • High energy • Estrogen rising" color="blue" />
-              <PhaseCard title="Ovulation" text="Day 14 • Peak fertility" color="pink" />
-              <PhaseCard title="Luteal" text="Day 15–28 • PMS likely" color="rose" />
+              <PhaseCard title="Follicular" text="Day 5–13 • High energy • Estrogen rising" color="emerald" />
+              <PhaseCard title="Ovulation" text="Day 14 • Peak fertility" color="rose" />
+              <PhaseCard title="Luteal" text="Day 15–28 • PMS likely" color="indigo" />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              
-              <InfoCard
-                icon={<Leaf />}
-                title="Healthy Period Practices"
-                bullets={[
-                  "Change pads every 4–6 hours",
-                  "Stay hydrated, eat iron-rich foods",
-                  "Gentle movement helps cramps",
-                ]}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <InfoCard icon={<Leaf />} title="Healthy Period Practices"
+                bullets={["Change pads every 4–6 hours", "Stay hydrated, eat iron-rich foods", "Gentle movement helps cramps"]}
               />
-              <InfoCard
-                icon={<ShieldQuestion />}
-                title="Breaking Myths"
-                bullets={[
-                  "Periods ≠ impurity",
-                  "Exercising is safe",
-                  "Pain isn’t ‘normal’ if severe—consult a doctor",
-                ]}
+              <InfoCard icon={<ShieldQuestion />} title="Breaking Myths"
+                bullets={["Periods ≠ impurity", "Exercising is safe", "Pain isn’t ‘normal’ if severe—consult a doctor"]}
               />
-              <InfoCard
-                icon={<Store />}
-                title="Nearby Stores Availability"
-                bullets={[
-                  "Search by brand or area",
-                  "Compare price & stock",
-                  "Sort by distance (auto)",
-                ]}
+              <InfoCard icon={<Store />} title="Nearby Stores Availability"
+                bullets={["Search by brand or area", "Compare price & stock", "Sort by distance (auto)"]}
               />
             </div>
-
-          </div>
-        </div>
+          </Card>
+        </section>
 
         {/* Nearby Stores Availability */}
-        <div ref={storesRef} className="mt-10 bg-white shadow-md rounded-2xl p-6">
-          <div className="flex items-center justify-between gap-3 flex-wrap">
-            <h3 className="text-lg font-semibold text-gray-700 flex items-center gap-2">
-              <Store size={18} /> Nearby Stores Availability
-            </h3>
-            <div className="flex gap-2">
-              <div className="flex items-center gap-2 px-3 py-2 rounded-lg border">
-                <Search size={16} className="shrink-0" />
-                <input
-                  value={q}
-                  onChange={(e) => setQ(e.target.value)}
-                  placeholder="Search brand / store..."
-                  className="outline-none text-sm"
-                />
-              </div>
-              <div className="flex items-center gap-2 px-3 py-2 rounded-lg border">
-                <MapPin size={16} className="shrink-0" />
-                <input
-                  value={storeArea}
-                  onChange={(e) => setStoreArea(e.target.value)}
-                  placeholder="Area / City"
-                  className="outline-none text-sm"
-                />
+        <section ref={storesRef} className="mt-10">
+          <Card>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+              <h3 className="text-xl font-semibold flex items-center gap-3">
+                <Store size={24} className="text-blue-500" /> Nearby Stores Availability
+              </h3>
+              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                <div className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 bg-gray-50 focus-within:ring-2 focus-within:ring-blue-400 transition">
+                  <Search size={18} className="text-gray-400 shrink-0" />
+                  <input
+                    value={q}
+                    onChange={(e) => setQ(e.target.value)}
+                    placeholder="Search brand / store..."
+                    className="bg-transparent outline-none text-sm w-full"
+                  />
+                </div>
+                <div className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 bg-gray-50 focus-within:ring-2 focus-within:ring-blue-400 transition">
+                  <MapPin size={18} className="text-gray-400 shrink-0" />
+                  <input
+                    value={storeArea}
+                    onChange={(e) => setStoreArea(e.target.value)}
+                    placeholder="Area / City"
+                    className="bg-transparent outline-none text-sm w-full"
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredStores.map((s) => (
-              <div key={s.id} className="border rounded-xl p-4 hover:shadow-sm transition">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="font-semibold">{s.name}</div>
-                    <div className="text-xs text-gray-500 flex items-center gap-1">
-                      <MapPin size={14} /> {s.area} • {s.distanceKm} km
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredStores.map((s) => (
+                <div key={s.id} className="border border-gray-200 rounded-2xl p-4 bg-white hover:shadow-lg transition-shadow">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="font-semibold">{s.name}</div>
+                      <div className="text-xs text-gray-500 flex items-center gap-1 mt-1">
+                        <MapPin size={14} /> {s.area} • {s.distanceKm} km
+                      </div>
                     </div>
                   </div>
+                  <div className="mt-3 border-t border-gray-100 pt-3 space-y-2">
+                    {s.items.map((it, idx) => (
+                      <div key={idx} className="flex items-center justify-between text-sm">
+                        <span className="font-medium text-gray-700">{it.brand}</span>
+                        <span className="text-gray-500">₹{it.price}</span>
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium
+                          ${it.stock === "In Stock" ? "bg-emerald-100 text-emerald-700"
+                            : it.stock === "Low Stock" ? "bg-amber-100 text-amber-700"
+                              : "bg-rose-100 text-rose-700"}`}>
+                          {it.stock}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="mt-3 border-t pt-3 space-y-2">
-                  {s.items.map((it, idx) => (
-                    <div key={idx} className="flex items-center justify-between text-sm">
-                      <span className="font-medium">{it.brand}</span>
-                      <span className="text-gray-600">₹{it.price}</span>
-                      <span
-                        className={
-                          "text-xs px-2 py-0.5 rounded-full " +
-                          (it.stock === "In Stock"
-                            ? "bg-emerald-100 text-emerald-700"
-                            : it.stock === "Low Stock"
-                              ? "bg-amber-100 text-amber-700"
-                              : "bg-rose-100 text-rose-700")
-                        }
-                      >
-                        {it.stock}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-            {filteredStores.length === 0 && (
-              <div className="col-span-full text-center text-gray-500">No matches found.</div>
-            )}
-          </div>
-        </div>
+              ))}
+              {filteredStores.length === 0 && (
+                <div className="col-span-full text-center text-gray-500 py-6">No stores found with that name or area.</div>
+              )}
+            </div>
+          </Card>
+        </section>
 
-        {/* Footer actions */}
-        <div className="mt-8 flex flex-wrap gap-3 justify-center">
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              storesRef.current?.scrollIntoView({ behavior: "smooth" });
-            }}
-            className="px-5 py-3 rounded-full bg-blue-500 text-white font-medium shadow hover:bg-blue-600 transition"
-          >
-            Nearby Stores Availability
-          </a>
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              educationRef.current?.scrollIntoView({ behavior: "smooth" });
-            }}
-            className="px-5 py-3 rounded-full bg-pink-500 text-white font-medium shadow hover:bg-pink-600 transition"
-          >
-            Healthy Period Practices
-          </a>
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              educationRef.current?.scrollIntoView({ behavior: "smooth" });
-            }}
-            className="px-5 py-3 rounded-full bg-purple-500 text-white font-medium shadow hover:bg-purple-600 transition"
-          >
-            Breaking Myths (Stigma Busting)
-          </a>
-        </div>
-      </div>
+      </main>
 
       <Footer />
     </>
   );
 };
 
-// ====================== UI Subcomponents ======================
+// ====================== UI Subcomponents (Refined) ======================
+const Header = () => (
+  <header className="sticky top-0 z-50 backdrop-blur-lg bg-white/70 p-4 border-b border-gray-200/50 shadow-sm transition-all duration-300">
+    <div className="container mx-auto flex items-center justify-between">
+      <div className="flex items-center gap-2">
+        <Droplet className="text-blue-500" size={24} />
+        <h1 className="text-xl font-bold text-gray-900">Flow-Sense</h1>
+      </div>
+      <nav>
+        <ul className="flex gap-4 text-sm text-gray-600 font-medium">
+          <li><a href="#calendar-section" className="hover:text-blue-500 transition-colors">Calendar</a></li>
+          <li><a href="#logs-section" className="hover:text-blue-500 transition-colors">Logs</a></li>
+          <li><a href="#stores-availability" className="hover:text-blue-500 transition-colors">Stores</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+);
+
+const Footer = () => (
+  <footer className="bg-gray-900 text-gray-400 p-8 text-center text-sm">
+    <div className="container mx-auto">
+      <p>&copy; 2025 Flow-Sense. All rights reserved.</p>
+      <p className="mt-2">Disclaimer: This is for informational purposes only and not a substitute for professional medical advice.</p>
+    </div>
+  </footer>
+);
+
+const Card = ({ title, children, className = "", innerRef }) => (
+  <div ref={innerRef} className={`bg-white shadow-xl rounded-3xl p-8 border border-gray-200/50 ${className}`}>
+    {title && <h3 className="text-xl font-semibold text-gray-800 mb-6">{title}</h3>}
+    {children}
+  </div>
+);
+
 const JumpButton = ({ icon, label, onClick }) => (
   <button
     onClick={onClick}
-    className="inline-flex items-center gap-2 px-3 py-2 rounded-full border bg-white hover:bg-gray-50"
+    className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium transition-all shadow-sm hover:shadow-md"
   >
-    {icon} <span className="text-sm">{label}</span>
+    {icon} <span className="hidden sm:inline">{label}</span>
   </button>
 );
 
 const InputRow = ({ label, children }) => (
-  <div>
-    <label className="block text-sm font-medium text-gray-600">{label}</label>
+  <div className="mb-5">
+    <label className="block text-sm font-medium text-gray-600 mb-2">{label}</label>
     {children}
   </div>
 );
 
 const LegendPill = ({ colorClass, label }) => (
-  <span className={`px-2 py-1 rounded-full ${colorClass}`}>{label}</span>
+  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${colorClass}`}>{label}</span>
 );
 
-// Reusable chip / pills
 const colorMap = {
-  red: "bg-red-100 text-red-700 hover:bg-red-200",
-  pink: "bg-pink-100 text-pink-700 hover:bg-pink-200",
-  purple: "bg-purple-100 text-purple-700 hover:bg-purple-200",
-  blue: "bg-blue-100 text-blue-700 hover:bg-blue-200",
-  violet: "bg-violet-100 text-violet-700 hover:bg-violet-200",
-  gray: "bg-gray-100 text-gray-700 hover:bg-gray-200",
-  rose: "bg-rose-100 text-rose-700 hover:bg-rose-200",
+  red: "bg-red-100 text-red-700",
+  pink: "bg-pink-100 text-pink-700",
+  purple: "bg-purple-100 text-purple-700",
+  blue: "bg-blue-100 text-blue-700",
+  violet: "bg-violet-100 text-violet-700",
+  gray: "bg-gray-100 text-gray-700",
+  rose: "bg-rose-100 text-rose-700",
+  emerald: "bg-emerald-100 text-emerald-700",
+  indigo: "bg-indigo-100 text-indigo-700",
 };
 
 const Chip = ({ active, onClick, children, color = "gray" }) => (
   <button
     onClick={onClick}
-    className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium transition ${active ? "bg-gray-900 text-white" : colorMap[color]
-      }`}
+    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200
+    ${active ? "bg-gray-900 text-white shadow-md" : `hover:bg-gray-200 ${colorMap[color]}`}`}
   >
     {children}
   </button>
@@ -791,10 +567,9 @@ const Chip = ({ active, onClick, children, color = "gray" }) => (
 const ChipGroup = ({ title, type, value, onChange, items, color }) => {
   const handleClick = (label) => {
     if (type === "single") {
-      onChange(label);
+      onChange(label === value ? "" : label);
       return;
     }
-    // multi
     const set = new Set(value || []);
     if (set.has(label)) set.delete(label);
     else set.add(label);
@@ -802,8 +577,8 @@ const ChipGroup = ({ title, type, value, onChange, items, color }) => {
   };
 
   return (
-    <div className="mb-3">
-      <h3 className="text-sm font-semibold text-gray-700 mb-2">{title}</h3>
+    <div className="mb-5">
+      <h3 className="text-sm font-semibold text-gray-600 mb-2">{title}</h3>
       <div className="flex flex-wrap gap-2">
         {items.map((it, idx) => {
           const active = type === "single" ? value === it.label : (value || []).includes(it.label);
@@ -818,33 +593,25 @@ const ChipGroup = ({ title, type, value, onChange, items, color }) => {
   );
 };
 
-const LogCard = ({ title, children }) => (
-  <div className="bg-white shadow-md rounded-2xl p-6">
-    <h3 className="text-md font-semibold text-gray-800 mb-3">{title}</h3>
-    {children}
-  </div>
-);
-
 const PhaseCard = ({ title, text, color }) => (
-  <div className={`rounded-xl border-l-4 p-4 ${colorMap[color]}`}>
-    <h4 className="font-semibold mb-1">{title}</h4>
+  <div className={`rounded-xl border border-gray-200/50 p-4 transition-all hover:scale-105 shadow-sm hover:shadow-lg ${colorMap[color]}`}>
+    <h4 className="font-bold text-gray-800 mb-1">{title}</h4>
     <p className="text-sm text-gray-600">{text}</p>
   </div>
 );
 
-// ===== InfoCard with click-to-toggle =====
 const InfoCard = ({ icon, title, bullets }) => {
+  const [isHovered, setIsHovered] = useState(false);
   return (
     <div
-      className="rounded-xl border p-4 cursor-pointer shadow-sm hover:shadow-md transition bg-white group"
+      className="rounded-xl border border-gray-200/50 p-4 cursor-pointer shadow-sm hover:shadow-md transition bg-white"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Header */}
       <div className="flex items-center gap-2 text-gray-800 font-semibold mb-2">
         {icon} {title}
       </div>
-
-      {/* Details - hidden by default, show on hover of this card only */}
-      <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1 hidden group-hover:block">
+      <ul className={`list-disc pl-5 text-sm text-gray-700 space-y-1 overflow-hidden transition-all duration-300 ${isHovered ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
         {bullets.map((b, i) => (
           <li key={i}>{b}</li>
         ))}
@@ -853,19 +620,18 @@ const InfoCard = ({ icon, title, bullets }) => {
   );
 };
 
-
 const SummaryBlock = ({ dateStr, logs, schedule }) => {
   const l = logs[dateStr];
   const phase = schedule[dateStr] ?? "none";
   return (
-    <div className="text-sm text-gray-700 space-y-2">
+    <div className="text-sm text-gray-700 space-y-3">
       <div>
         <span className="text-gray-500">Phase: </span>
-        <span className="font-medium capitalize">{phase === "none" ? "—" : phase}</span>
+        <span className="font-semibold capitalize">{phase === "none" ? "—" : phase}</span>
       </div>
       <div>
         <span className="text-gray-500">Flow: </span>
-        <span className="font-medium">{l?.flow || "—"}</span>
+        <span className="font-semibold">{l?.flow || "—"}</span>
       </div>
       <RowList label="Moods" items={l?.moods} />
       <RowList label="Activities" items={l?.activities} />
@@ -873,10 +639,10 @@ const SummaryBlock = ({ dateStr, logs, schedule }) => {
       <RowList label="Signs" items={l?.signs} />
       <div>
         <span className="text-gray-500">Energy: </span>
-        <span className="font-medium">{l?.energy || "—"}</span>
+        <span className="font-semibold">{l?.energy || "—"}</span>
       </div>
-      <div className="border-t pt-2">
-        <div className="text-gray-500">Notes</div>
+      <div className="border-t border-gray-100 pt-3">
+        <div className="text-gray-500 font-medium">Notes</div>
         <div className="text-gray-800">{l?.notes?.trim() || "—"}</div>
       </div>
     </div>
@@ -886,7 +652,7 @@ const SummaryBlock = ({ dateStr, logs, schedule }) => {
 const RowList = ({ label, items }) => (
   <div>
     <span className="text-gray-500">{label}: </span>
-    <span className="font-medium">{items?.length ? items.join(", ") : "—"}</span>
+    <span className="font-semibold">{items?.length ? items.join(", ") : "—"}</span>
   </div>
 );
 

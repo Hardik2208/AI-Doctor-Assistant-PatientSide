@@ -63,7 +63,7 @@ export default function App() {
         <Route path="/Gym" element={<Gym />} />
         <Route path="/YogaPractice" element={<YogaPractice />} />
         <Route path="/MentalHealth" element={<MentalHealth />} />
-        <Route path="/Jumba" element={<Jumba />} />
+        <Route path="/Zumba" element={<Jumba />} />
         <Route path="/Meditation" element={<Meditation />} />
         <Route path="/WellnessJourneyPage" element={<WellnessJournerPage />} />
 
