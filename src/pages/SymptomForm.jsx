@@ -83,7 +83,7 @@ const SymptomForm = () => {
     console.log("Submitting data to backend:", formData);
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL || "https://ai-doctor-assistant-backend-ai-ml.onrender.com"}/api/generate-diet-plan`
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || "https://ai-doctor-assistant-backend-ai-ml.onrender.com"}/api/generate-diet-plan`
 , {
         method: "POST",
         headers: {

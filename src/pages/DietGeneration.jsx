@@ -92,7 +92,7 @@ const DietForm = () => {
     console.log("dietDatat");
     try {
       const response = await axios.post(
-        `${import.meta.env.REACT_APP_API_BASE_URL || "https://ai-doctor-assistant-backend-ai-ml.onrender.com"}/api/generate-diet-plan`
+        `${import.meta.env.VITE_API_BASE_URL || "https://ai-doctor-assistant-backend-ai-ml.onrender.com"}/api/generate-diet-plan`
 , // change port if needed
         { userDietData: UserDietData }
       );

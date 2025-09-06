@@ -28,6 +28,7 @@ import DoctorDetails from "./pages/DoctorDetails.jsx";
 import Fitness from "./pages/Fitness.jsx"; 
 import SpecialisedDoctor from "./pages/SpecialisedDoctor.jsx";  // ✅ New import
 import ChatRoom from "./pages/ChatRoom.jsx";
+import Clinics from "./pages/Clinics.jsx";  // ✅ New import for clinics
 
 
 export default function App() {
@@ -80,6 +81,7 @@ export default function App() {
         <Route path="/find-doctor" element={<FindDoctor />} />
         <Route path="/doctor/:id" element={<DoctorDetails />} />
         <Route path="/specialised-doctor" element={<SpecialisedDoctor />} /> {/* ✅ New route */}
+        <Route path="/clinics" element={<Clinics />} /> {/* ✅ New route for clinics */}
 
         {/* Login page */}
         <Route path="/login" element={<LoginForm />} />
