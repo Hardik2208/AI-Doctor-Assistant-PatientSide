@@ -20,6 +20,8 @@ import Meditation from "./pages/Meditation.jsx";
 import LoginForm from "./pages/Login.jsx";
 import { supabase } from './supabaseClient.js'
 import WellnessJournerPage from './pages/WellnessJourneyPage.jsx'
+import CycleTracker from './pages/CycleTracker.jsx';
+
 
 import FindDoctor from "./pages/FindDoctor.jsx";
 import DoctorDetails from "./pages/DoctorDetails.jsx";

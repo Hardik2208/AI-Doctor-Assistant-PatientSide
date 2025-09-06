@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import Header from "../assets/component/Header.jsx";
+import Footer from "../assets/component/Footer.jsx";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 import {
   Droplet,
@@ -168,6 +170,20 @@ const MenstrualTracker = () => {
         (!area || s.area.toLowerCase().includes(area))
     ).sort((a, b) => a.distanceKm - b.distanceKm);
   }, [q, storeArea]);
+  
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, name, index }) => {
+    const RADIAN = Math.PI / 180;
+    const radius = outerRadius + 20;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+      <text x={x} y={y} fill={GRADIENT_COLORS[index]} textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+        {`${name} ${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
+  
 
   return (
     <>
@@ -189,9 +205,8 @@ const MenstrualTracker = () => {
           </div>
         </section>
 
-        {/* Main Grid: Inputs + Calendar */}
-        <section className="grid grid-cols-1 lg:grid-cols-5 gap-8" id="calendar-section">
-          {/* Inputs */}
+        {/* --- Core Tracking Section (Inputs + Calendar) --- */}
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8" id="calendar-section">
           <Card className="lg:col-span-2">
             <h2 className="text-xl font-semibold mb-6">Your Cycle Details 🩸</h2>
             <InputRow label="Last period start date">
@@ -256,28 +271,27 @@ const MenstrualTracker = () => {
 
             <div className="flex flex-col items-center mt-8">
               <h4 className="font-semibold text-gray-700 mb-3">Cycle Overview</h4>
-              <PieChart width={280} height={280}>
+              <PieChart width={300} height={300}>
                 <Pie
                   data={phaseData}
                   cx="50%"
                   cy="50%"
-                  labelLine={false}
-                  outerRadius={110}
+                  labelLine={true}
+                  outerRadius={90}
                   dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={renderCustomizedLabel}
                 >
                   {phaseData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={GRADIENT_COLORS[index]} stroke="#fff" strokeWidth={2} />
                   ))}
                 </Pie>
                 <Tooltip formatter={(value, name) => [`${value} days`, name]} />
-                <Legend iconType="circle" />
+                <Legend layout="horizontal" align="center" verticalAlign="bottom" wrapperStyle={{ paddingTop: '20px' }} />
               </PieChart>
             </div>
           </Card>
 
-          {/* Calendar */}
-          <Card className="lg:col-span-3 **self-start**">
+          <Card className="lg:col-span-3 self-start">
             <div className="flex items-center justify-between mb-6">
               <button
                 className="p-2 rounded-full border border-gray-200 hover:bg-gray-100 transition"
@@ -309,7 +323,6 @@ const MenstrualTracker = () => {
               ))}
               {monthGrid.map((dateObj, i) => {
                 if (!dateObj) {
-                  // Removed padding to make the cell height zero
                   return <div key={i} />;
                 }
                 const ds = fmt(dateObj);
@@ -322,26 +335,48 @@ const MenstrualTracker = () => {
                     key={i}
                     onClick={() => setSelectedDate(ds)}
                     className={`p-3 rounded-xl transition-all text-sm flex flex-col items-center gap-1
-                    ${isSelected ? "bg-gray-900 text-white shadow-lg" : "hover:bg-gray-100 bg-white border border-gray-200"}
+                    ${isSelected ? "bg-gradient-to-br from-violet-300 to-blue-300 text-white shadow-lg" : "hover:bg-gray-100 bg-white border border-gray-200"}
                     ${isSelected ? "" : borderForPhase[phase]}
                     ${isToday ? "border-2 border-emerald-500" : ""}`}
                     title={phase}
                   >
                     <span className={`font-medium ${isSelected ? "text-white" : ""}`}>{dateObj.getDate()}</span>
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] leading-4 capitalize
+                    {/* Applied responsive fix for phase labels */}
+                    <span className={`px-2 py-0.5 rounded-full text-[9px] leading-3 capitalize whitespace-nowrap overflow-hidden max-w-full
                       ${isSelected ? "bg-white/20" : PHASE_COLORS_NEW[phase]}`}>
                       {phase === "none" ? "" : phase}
                     </span>
-                    {isToday && !isSelected && (<span className="text-[9px] text-emerald-600 font-semibold">today</span>)}
+                    {isToday && !isSelected && (<span className="text-[8px] text-emerald-600 font-semibold">today</span>)}
                   </button>
                 );
               })}
             </div>
-          </Card>
-        </section>
 
-        {/* Symptoms & Daily Logs */}
-        <section id="logs-section" className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="mt-8 pt-8 border-t border-gray-200" id="health-section">
+              <h3 className="text-xl font-semibold mb-6">Health Insights & Education</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <PhaseCard title="Menstrual" text="Day 1–5 • Bleeding • Low energy" color="purple" />
+                <PhaseCard title="Follicular" text="Day 5–13 • High energy • Estrogen rising" color="emerald" />
+                <PhaseCard title="Ovulation" text="Day 14 • Peak fertility" color="rose" />
+                <PhaseCard title="Luteal" text="Day 15–28 • PMS likely" color="indigo" />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
+                <InfoCard icon={<Leaf />} title="Healthy Period Practices"
+                  bullets={["Change pads every 4–6 hours", "Stay hydrated, eat iron-rich foods", "Gentle movement helps cramps"]}
+                />
+                <InfoCard icon={<ShieldQuestion />} title="Breaking Myths"
+                  bullets={["Periods ≠ impurity", "Exercising is safe", "Pain isn’t ‘normal’ if severe—consult a doctor"]}
+                />
+                <InfoCard icon={<Store />} title="Nearby Stores Availability"
+                  bullets={["Search by brand or area", "Compare price & stock", "Sort by distance (auto)"]}
+                />
+              </div>
+            </div>
+          </Card>
+        </div>
+
+        {/* --- Daily Log Section --- */}
+        <section id="logs-section" className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
           <Card title={`Logs: ${selectedDate}`}>
             <div className="text-sm text-gray-500 mb-4">
               Select a date from calendar, then tap chips to record. Auto-saved.
@@ -388,36 +423,12 @@ const MenstrualTracker = () => {
             </div>
           </Card>
 
-          {/* Compact summary of today's log */}
           <Card title="Today's Snapshot">
             <SummaryBlock dateStr={selectedDate} logs={logs} schedule={schedule} />
           </Card>
-
-          {/* Education + Phases */}
-          <Card innerRef={educationRef}>
-            <h3 className="text-xl font-semibold mb-6">Health Insights & Education</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-              <PhaseCard title="Menstrual" text="Day 1–5 • Bleeding • Low energy" color="purple" />
-              <PhaseCard title="Follicular" text="Day 5–13 • High energy • Estrogen rising" color="emerald" />
-              <PhaseCard title="Ovulation" text="Day 14 • Peak fertility" color="rose" />
-              <PhaseCard title="Luteal" text="Day 15–28 • PMS likely" color="indigo" />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <InfoCard icon={<Leaf />} title="Healthy Period Practices"
-                bullets={["Change pads every 4–6 hours", "Stay hydrated, eat iron-rich foods", "Gentle movement helps cramps"]}
-              />
-              <InfoCard icon={<ShieldQuestion />} title="Breaking Myths"
-                bullets={["Periods ≠ impurity", "Exercising is safe", "Pain isn’t ‘normal’ if severe—consult a doctor"]}
-              />
-              <InfoCard icon={<Store />} title="Nearby Stores Availability"
-                bullets={["Search by brand or area", "Compare price & stock", "Sort by distance (auto)"]}
-              />
-            </div>
-          </Card>
         </section>
 
-        {/* Nearby Stores Availability */}
+        {/* --- Nearby Stores Section --- */}
         <section ref={storesRef} className="mt-10">
           <Card>
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
@@ -461,8 +472,11 @@ const MenstrualTracker = () => {
                     {s.items.map((it, idx) => (
                       <div key={idx} className="flex items-center justify-between text-sm">
                         <span className="font-medium text-gray-700">{it.brand}</span>
-                        <span className="text-gray-500">₹{it.price}</span>
-                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium
+                        {/* Fix for price alignment */}
+                        <div className="flex-1 text-right text-gray-500">
+                          <span>₹{it.price}</span>
+                        </div>
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ml-2
                           ${it.stock === "In Stock" ? "bg-emerald-100 text-emerald-700"
                             : it.stock === "Low Stock" ? "bg-amber-100 text-amber-700"
                               : "bg-rose-100 text-rose-700"}`}>
@@ -488,33 +502,6 @@ const MenstrualTracker = () => {
 };
 
 // ====================== UI Subcomponents (Refined) ======================
-const Header = () => (
-  <header className="sticky top-0 z-50 backdrop-blur-lg bg-white/70 p-4 border-b border-gray-200/50 shadow-sm transition-all duration-300">
-    <div className="container mx-auto flex items-center justify-between">
-      <div className="flex items-center gap-2">
-        <Droplet className="text-blue-500" size={24} />
-        <h1 className="text-xl font-bold text-gray-900">Flow-Sense</h1>
-      </div>
-      <nav>
-        <ul className="flex gap-4 text-sm text-gray-600 font-medium">
-          <li><a href="#calendar-section" className="hover:text-blue-500 transition-colors">Calendar</a></li>
-          <li><a href="#logs-section" className="hover:text-blue-500 transition-colors">Logs</a></li>
-          <li><a href="#stores-availability" className="hover:text-blue-500 transition-colors">Stores</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
-);
-
-const Footer = () => (
-  <footer className="bg-gray-900 text-gray-400 p-8 text-center text-sm">
-    <div className="container mx-auto">
-      <p>&copy; 2025 Flow-Sense. All rights reserved.</p>
-      <p className="mt-2">Disclaimer: This is for informational purposes only and not a substitute for professional medical advice.</p>
-    </div>
-  </footer>
-);
-
 const Card = ({ title, children, className = "", innerRef }) => (
   <div ref={innerRef} className={`bg-white shadow-xl rounded-3xl p-8 border border-gray-200/50 ${className}`}>
     {title && <h3 className="text-xl font-semibold text-gray-800 mb-6">{title}</h3>}
@@ -624,13 +611,13 @@ const SummaryBlock = ({ dateStr, logs, schedule }) => {
   const l = logs[dateStr];
   const phase = schedule[dateStr] ?? "none";
   return (
-    <div className="text-sm text-gray-700 space-y-3">
+    <div className="text-lg text-gray-700 space-y-3">
       <div>
-        <span className="text-gray-500">Phase: </span>
+        <span className="font-semibold text-gray-500">Phase: </span>
         <span className="font-semibold capitalize">{phase === "none" ? "—" : phase}</span>
       </div>
       <div>
-        <span className="text-gray-500">Flow: </span>
+        <span className="font-semibold text-gray-500">Flow: </span>
         <span className="font-semibold">{l?.flow || "—"}</span>
       </div>
       <RowList label="Moods" items={l?.moods} />
@@ -638,11 +625,11 @@ const SummaryBlock = ({ dateStr, logs, schedule }) => {
       <RowList label="Symptoms" items={l?.other} />
       <RowList label="Signs" items={l?.signs} />
       <div>
-        <span className="text-gray-500">Energy: </span>
+        <span className="font-semibold text-gray-500">Energy: </span>
         <span className="font-semibold">{l?.energy || "—"}</span>
       </div>
       <div className="border-t border-gray-100 pt-3">
-        <div className="text-gray-500 font-medium">Notes</div>
+        <div className="font-semibold text-gray-500">Notes</div>
         <div className="text-gray-800">{l?.notes?.trim() || "—"}</div>
       </div>
     </div>
@@ -651,7 +638,7 @@ const SummaryBlock = ({ dateStr, logs, schedule }) => {
 
 const RowList = ({ label, items }) => (
   <div>
-    <span className="text-gray-500">{label}: </span>
+    <span className="font-semibold text-gray-500">{label}: </span>
     <span className="font-semibold">{items?.length ? items.join(", ") : "—"}</span>
   </div>
 );
