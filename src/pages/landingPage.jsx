@@ -1,646 +1,361 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import Header from "../assets/component/Header.jsx";
-import Footer from "../assets/component/Footer.jsx";
-import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
+// LandingPage.jsx
+import React, { useRef } from "react";
+import Header from "../assets/component/Header.jsx"; // Import your header component
+import { Link } from "react-router-dom";
+import bg from "../assets/component/bg.png";
+import Footer from "../assets/component/Footer.jsx"; // Import your footer component
+import Chatbot from "./Chatbot.jsx";
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from "react";
 import {
-  Droplet,
-  Smile,
-  Frown,
-  Heart,
-  Zap,
-  Activity,
-  Bed,
-  AlertCircle,
-  Cloud,
-  Bike,
-  Dumbbell,
-  Footprints,
-  MapPin,
-  Store,
-  Search,
-  NotebookPen,
-  CalendarDays,
-  Info,
-  Leaf,
-  ShieldQuestion,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+  HeartIcon,
+  ShieldCheckIcon,
+  CheckBadgeIcon,
+  UserGroupIcon,
+} from "@heroicons/react/24/solid";
+import { ArrowRightIcon } from "@heroicons/react/24/outline";
+import { FaStethoscope } from "react-icons/fa";
+import LandingVdo from "../assets/component/landingvdo.jsx";
 
-// The existing helpers and mock data remain unchanged as they are functional.
-const fmt = (d) => d.toISOString().slice(0, 10);
-const parse = (s) => {
-  const [y, m, d] = s.split("-").map(Number);
-  return new Date(y, m - 1, d);
-};
-const addDays = (d, n) => {
-  const x = new Date(d);
-  x.setDate(x.getDate() + n);
-  return x;
-};
-const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-
-// Color palette for a softer, premium look
-const GRADIENT_COLORS = ["#6366F1", "#A855F7", "#F472B6", "#F87171"];
-const PHASE_COLORS_NEW = {
-  menstrual: "bg-gradient-to-r from-purple-400 to-pink-500 text-white",
-  follicular: "bg-gradient-to-r from-emerald-400 to-sky-500 text-white",
-  ovulation: "bg-gradient-to-r from-rose-400 to-red-500 text-white",
-  luteal: "bg-gradient-to-r from-indigo-400 to-purple-500 text-white",
-  none: "bg-gray-100 text-gray-700",
-};
-const borderForPhase = {
-  menstrual: "ring-2 ring-purple-400/70",
-  follicular: "ring-2 ring-emerald-400/70",
-  ovulation: "ring-2 ring-rose-400/70",
-  luteal: "ring-2 ring-indigo-400/70",
-  none: "ring-1 ring-gray-200",
-};
-
-const today = new Date();
-const defaultStart = fmt(addDays(today, -10));
-
-const MOCK_STORES = [
-  { id: 1, name: "CareMart Pharmacy", area: "Indore", distanceKm: 1.2, items: [{ brand: "Whisper Ultra", price: 85, stock: "In Stock" }, { brand: "Stayfree Secure", price: 72, stock: "Low Stock" }] },
-  { id: 2, name: "Health+ Medicals", area: "Bhopal", distanceKm: 3.5, items: [{ brand: "Sofy Antibacteria", price: 95, stock: "In Stock" }, { brand: "Nua Pads", price: 159, stock: "Out of Stock" }] },
-  { id: 3, name: "Apna Store", area: "Jaipur", distanceKm: 0.8, items: [{ brand: "Whisper Choice", price: 52, stock: "In Stock" }, { brand: "Stayfree Dry-Max", price: 98, stock: "In Stock" }] },
-  { id: 4, name: "City Chemists", area: "Mumbai", distanceKm: 2.1, items: [{ brand: "Paree Super", price: 89, stock: "Low Stock" }, { brand: "Kotex Overnight", price: 120, stock: "In Stock" }] },
+const symptoms = [
+  {
+    title: "Fever",
+    description:
+      "Fever is a temporary increase in body temperature, often due to an infection. It can be accompanied by chills, sweating, dehydration, and fatigue. Most fevers resolve on their own, but persistent or high fever may require medical attention.",
+    specialist: "General Physician",
+    bgImage: "/images/quicksymptom/fever.jpg", 
+  },
+  {
+    title: "Gastric / Colic Pain",
+    description:
+      "Gastric pain can result from indigestion, acid reflux, or more serious gastrointestinal issues. Symptoms may include bloating, nausea, heartburn, or cramping. A gastroenterologist can help diagnose and treat persistent abdominal discomfort.",
+    specialist: "Gastroenterologist",
+    bgImage: "https://images.pexels.com/photos/4498154/pexels-photo-4498154.jpeg", // woman holding stomach
+  },
+  {
+    title: "Body Aches",
+    description:
+      "Body aches are generalized pain in muscles or joints, often linked to viral infections, overexertion, or stress. Rest, hydration, and mild pain relievers may help, but persistent aches could signal an underlying condition.",
+    specialist: "General Physician",
+    bgImage: "/images/quicksymptom/ache.jpg", // person holding back
+    isHighlighted: true,
+  },
+  {
+    title: "Dust Allergy",
+    description:
+      "Dust allergy can cause sneezing, coughing, itchy eyes, and difficulty breathing due to exposure to dust mites or particles. Preventive steps include regular cleaning and using air filters. Severe symptoms may require allergy medications.",
+    specialist: "Allergist / Immunologist",
+    bgImage: "https://images.pexels.com/photos/3768911/pexels-photo-3768911.jpeg", // dust floating in sunlight
+  },
+  {
+    title: "Migraine",
+    description:
+      "Migraines are severe headaches often accompanied by nausea, sensitivity to light and sound, or visual disturbances. Identifying triggers and lifestyle adjustments, along with prescribed medications, can help manage symptoms.",
+    specialist: "Neurologist",
+    bgImage: "https://images.pexels.com/photos/5380302/pexels-photo-5380302.jpeg", // woman with hand on head
+  },
+  {
+    title: "Cough",
+    description:
+      "A cough may be caused by infections, allergies, or irritants. It can be dry or productive (with phlegm). Persistent cough lasting more than a few weeks should be evaluated by a doctor to rule out chronic conditions.",
+    specialist: "Pulmonologist / General Physician",
+    bgImage: "/images/quicksymptom/cough.jpg", // person covering mouth
+  },
+  {
+    title: "Skin Allergy",
+    description:
+      "Skin allergies can present as rashes, redness, itching, or swelling. Common causes include food, medications, or environmental triggers. A dermatologist can help diagnose and recommend treatment, including topical creams or antihistamines.",
+    specialist: "Dermatologist",
+    bgImage: "https://images.pexels.com/photos/674977/pexels-photo-674977.jpeg", // red rash on skin
+  },
+  {
+    title: "Eye Infections",
+    description:
+      "Eye infections like conjunctivitis cause redness, itching, pain, and discharge. Proper hygiene and timely medical care are essential to prevent worsening. An ophthalmologist may prescribe eye drops or other treatment.",
+    specialist: "Ophthalmologist",
+    bgImage: "https://images.pexels.com/photos/4587971/pexels-photo-4587971.jpeg", // close-up of irritated eye
+  },
 ];
 
-const MenstrualTracker = () => {
-  const [lastStart, setLastStart] = useState(defaultStart);
-  const [cycleLength, setCycleLength] = useState(28);
-  const [periodLength, setPeriodLength] = useState(5);
-  const [viewYear, setViewYear] = useState(today.getFullYear());
-  const [viewMonth, setViewMonth] = useState(today.getMonth());
-  const [logs, setLogs] = useState({});
-  const [selectedDate, setSelectedDate] = useState(fmt(today));
-  const [q, setQ] = useState("");
-  const [storeArea, setStoreArea] = useState("");
 
-  const storesRef = useRef(null);
-  const educationRef = useRef(null);
 
-  const schedule = useMemo(() => {
-    if (!lastStart) return {};
-    const start = parse(lastStart);
-    const horizonDays = 31 * 6;
-    const map = {};
-    for (let i = 0; i < horizonDays; i++) {
-      const d = addDays(start, i);
-      const dayIdx = i % cycleLength;
-      let phase = "none";
+const careOptions = [
+  {
+    type: "Digital Care",
+    title: "Telemedicine",
+    description: "Virtual consultations from the comfort of your home with certified healthcare professionals.",
+    brief: "Connect instantly with doctors through secure video calls, get prescriptions, and receive medical advice without leaving home.",
+    image: "/images/telemedicine.jpg",
+    link: "/telemedicine",
+    buttonText: "Explore Telemedicine",
+    stats: "Available 24/7"
+  },
+  {
+    type: "Primary Care",
+    title: "Local Clinics",
+    description: "Find nearby medical clinics for routine checkups and comprehensive healthcare services.",
+    brief: "Discover trusted local healthcare providers in your area for regular health maintenance, preventive care, and family medicine.",
+    image: "/images/clinic.jpg",
+    link: "/clinics",
+    buttonText: "Find Clinics",
+    stats: "500+ Locations"
+  },
+  {
+    type: "Specialized Care",
+    title: "Specialist Doctors",
+    description: "Connect with specialized healthcare professionals for expert medical care and treatment.",
+    brief: "Access board-certified specialists across various medical fields including cardiology, dermatology, orthopedics, and more.",
+    image: "/images/doctor.jpg",
+    link: "/specialised-doctor",
+    buttonText: "View Specialists",
+    stats: "200+ Specialists"
+  },
+  {
+    type: "Immediate Care",
+    title: "Urgent Care",
+    description: "Immediate medical attention for non-emergency situations when you need care now.",
+    brief: "Fast-track medical services for injuries, illnesses, and health concerns that require prompt attention but aren't life-threatening.",
+    image: "/images/urgent.jpg",
+    link: "/urgent-care",
+    buttonText: "Get Urgent Care",
+    stats: "Average 15min wait"
+  },
+];
 
-      if (dayIdx >= 0 && dayIdx < periodLength) phase = "menstrual";
-      const ovuIdx = clamp(cycleLength - 14, 10, 20);
-      if (dayIdx === ovuIdx) phase = "ovulation";
-      if (dayIdx >= periodLength && dayIdx < ovuIdx) phase = "follicular";
-      if (dayIdx > ovuIdx) phase = "luteal";
 
-      map[fmt(d)] = phase;
-    }
-    return map;
-  }, [lastStart, cycleLength, periodLength]);
 
-  const predictions = useMemo(() => {
-    if (!lastStart) return null;
-    const start = parse(lastStart);
-    const nextStart = addDays(start, cycleLength);
-    const ovulation = addDays(start, cycleLength - 14);
-    const fertileStart = addDays(ovulation, -2);
-    const fertileEnd = addDays(ovulation, 1);
-    const periodEnd = addDays(start, periodLength - 1);
-    return {
-      current: { start, end: periodEnd },
-      next: { start: nextStart, end: addDays(nextStart, periodLength - 1) },
-      ovulation,
-      fertileStart,
-      fertileEnd,
-    };
-  }, [lastStart, cycleLength, periodLength]);
 
-  const phaseData = useMemo(() => {
-    const ovIdx = clamp(cycleLength - 14, 10, 20);
-    const menstrual = clamp(periodLength, 1, 10);
-    const ovulation = 1;
-    const follicular = Math.max(0, ovIdx - menstrual);
-    const lutealFixed = Math.max(0, cycleLength - (menstrual + follicular + ovulation));
-    return [
-      { name: "Menstrual", value: menstrual },
-      { name: "Follicular", value: follicular },
-      { name: "Ovulation", value: ovulation },
-      { name: "Luteal", value: lutealFixed },
-    ];
-  }, [cycleLength, periodLength]);
-
-  const monthGrid = useMemo(() => {
-    const first = new Date(viewYear, viewMonth, 1);
-    const startDay = (first.getDay() + 6) % 7;
-    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
-    const cells = [];
-    for (let i = 0; i < startDay; i++) {
-      cells.push(null);
-    }
-    for (let d = 1; d <= daysInMonth; d++) {
-      const date = new Date(viewYear, viewMonth, d);
-      cells.push(date);
-    }
-    return cells;
-  }, [viewMonth, viewYear]);
-
-  useEffect(() => {
-    const sd = parse(selectedDate);
-    setViewYear(sd.getFullYear());
-    setViewMonth(sd.getMonth());
-  }, []);
-
-  const setLog = (dateStr, updater) =>
-    setLogs((prev) => {
-      const base = prev[dateStr] ?? { flow: "", moods: [], activities: [], other: [], signs: [], energy: "", notes: "" };
-      const next = typeof updater === "function" ? updater(base) : updater;
-      return { ...prev, [dateStr]: next };
-    });
-
-  const filteredStores = useMemo(() => {
-    const text = (q || "").toLowerCase().trim();
-    const area = (storeArea || "").toLowerCase().trim();
-    return MOCK_STORES.filter(
-      (s) =>
-        (!text || s.name.toLowerCase().includes(text) || s.items.some((i) => i.brand.toLowerCase().includes(text))) &&
-        (!area || s.area.toLowerCase().includes(area))
-    ).sort((a, b) => a.distanceKm - b.distanceKm);
-  }, [q, storeArea]);
-  
-  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, name, index }) => {
-    const RADIAN = Math.PI / 180;
-    const radius = outerRadius + 20;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-    return (
-      <text x={x} y={y} fill={GRADIENT_COLORS[index]} textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
-        {`${name} ${(percent * 100).toFixed(0)}%`}
-      </text>
-    );
-  };
-  
-
+export default function LandingPage({user}) {
+  const [selectedSymptom, setSelectedSymptom] = useState(null);
   return (
     <>
-      <Header />
-      <main className="min-h-screen bg-gray-100 text-gray-800 font-sans py-12 px-4 md:px-8">
-        {/* Title */}
-        <section className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 drop-shadow-lg">
-            Flow-Sense
-          </h1>
-          <p className="text-gray-600 mt-3 max-w-lg mx-auto">
-            Your personal cycle companion for tracking, predicting, and understanding your body's rhythm.
-          </p>
-          <div className="mt-6 flex gap-3 justify-center flex-wrap">
-            <JumpButton icon={<CalendarDays size={18} />} label="Calendar" onClick={() => document.getElementById("calendar-section")?.scrollIntoView({ behavior: "smooth" })} />
-            <JumpButton icon={<NotebookPen size={18} />} label="Daily Logs" onClick={() => document.getElementById("logs-section")?.scrollIntoView({ behavior: "smooth" })} />
-            <JumpButton icon={<Store size={18} />} label="Nearby Stores" onClick={() => storesRef.current?.scrollIntoView({ behavior: "smooth" })} />
-            <JumpButton icon={<Info size={18} />} label="Health Info" onClick={() => educationRef.current?.scrollIntoView({ behavior: "smooth" })} />
-          </div>
-        </section>
-
-        {/* --- Core Tracking Section (Inputs + Calendar) --- */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8" id="calendar-section">
-          <Card className="lg:col-span-2">
-            <h2 className="text-xl font-semibold mb-6">Your Cycle Details 🩸</h2>
-            <InputRow label="Last period start date">
-              <input
-                type="date"
-                value={lastStart}
-                onChange={(e) => {
-                  setLastStart(e.target.value);
-                  setSelectedDate(e.target.value);
-                }}
-                className="w-full mt-2 p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
-              />
-            </InputRow>
-            <InputRow label="Average cycle length (days)">
-              <input
-                type="number"
-                min={20}
-                max={40}
-                value={cycleLength}
-                onChange={(e) => setCycleLength(clamp(Number(e.target.value || 28), 20, 40))}
-                className="w-full mt-2 p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
-              />
-            </InputRow>
-            <InputRow label="Period length (days)">
-              <input
-                type="number"
-                min={2}
-                max={10}
-                value={periodLength}
-                onChange={(e) => setPeriodLength(clamp(Number(e.target.value || 5), 2, 10))}
-                className="w-full mt-2 p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
-              />
-            </InputRow>
-
-            <div className="rounded-2xl bg-gray-50 border border-gray-200 p-5 mt-8 shadow-inner">
-              <h4 className="font-semibold text-gray-700 mb-3">Predicted Dates</h4>
-              <ul className="text-sm text-gray-700 space-y-2">
-                <li>
-                  <span className="font-medium text-gray-500">Current period: </span>
-                  <span className="font-semibold">
-                    {predictions?.current?.start.toDateString()} → {predictions?.current?.end.toDateString()}
-                  </span>
-                </li>
-                <li>
-                  <span className="font-medium text-gray-500">Ovulation: </span>
-                  <span className="font-semibold">{predictions?.ovulation.toDateString()}</span>
-                </li>
-                <li>
-                  <span className="font-medium text-gray-500">Fertile window: </span>
-                  <span className="font-semibold">
-                    {predictions?.fertileStart.toDateString()} → {predictions?.fertileEnd.toDateString()}
-                  </span>
-                </li>
-                <li>
-                  <span className="font-medium text-gray-500">Next period: </span>
-                  <span className="font-semibold">
-                    {predictions?.next?.start.toDateString()} → {predictions?.next?.end.toDateString()}
-                  </span>
-                </li>
-              </ul>
-            </div>
-
-            <div className="flex flex-col items-center mt-8">
-              <h4 className="font-semibold text-gray-700 mb-3">Cycle Overview</h4>
-              <PieChart width={300} height={300}>
-                <Pie
-                  data={phaseData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={true}
-                  outerRadius={90}
-                  dataKey="value"
-                  label={renderCustomizedLabel}
-                >
-                  {phaseData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={GRADIENT_COLORS[index]} stroke="#fff" strokeWidth={2} />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(value, name) => [`${value} days`, name]} />
-                <Legend layout="horizontal" align="center" verticalAlign="bottom" wrapperStyle={{ paddingTop: '20px' }} />
-              </PieChart>
-            </div>
-          </Card>
-
-          <Card className="lg:col-span-3 self-start">
-            <div className="flex items-center justify-between mb-6">
-              <button
-                className="p-2 rounded-full border border-gray-200 hover:bg-gray-100 transition"
-                onClick={() => { const d = new Date(viewYear, viewMonth - 1, 1); setViewYear(d.getFullYear()); setViewMonth(d.getMonth()); }}
-              >
-                <ChevronLeft size={20} />
-              </button>
-              <h2 className="text-2xl font-bold text-gray-700">
-                {new Date(viewYear, viewMonth, 1).toLocaleString(undefined, { month: "long", year: "numeric" })}
-              </h2>
-              <button
-                className="p-2 rounded-full border border-gray-200 hover:bg-gray-100 transition"
-                onClick={() => { const d = new Date(viewYear, viewMonth + 1, 1); setViewYear(d.getFullYear()); setViewMonth(d.getMonth()); }}
-              >
-                <ChevronRight size={20} />
-              </button>
-            </div>
-
-            <div className="flex flex-wrap gap-2 text-xs mt-4 justify-center">
-              <LegendPill colorClass={PHASE_COLORS_NEW.menstrual} label="Menstrual" />
-              <LegendPill colorClass={PHASE_COLORS_NEW.follicular} label="Follicular" />
-              <LegendPill colorClass={PHASE_COLORS_NEW.ovulation} label="Ovulation" />
-              <LegendPill colorClass={PHASE_COLORS_NEW.luteal} label="Luteal" />
-            </div>
-
-            <div className="grid grid-cols-7 gap-3 text-center text-gray-700 text-sm mt-6">
-              {["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"].map((d, i) => (
-                <div key={i} className="font-semibold text-gray-500">{d}</div>
-              ))}
-              {monthGrid.map((dateObj, i) => {
-                if (!dateObj) {
-                  return <div key={i} />;
-                }
-                const ds = fmt(dateObj);
-                const phase = schedule[ds] ?? "none";
-                const isSelected = ds === selectedDate;
-                const isToday = fmt(today) === ds;
-
-                return (
-                  <button
-                    key={i}
-                    onClick={() => setSelectedDate(ds)}
-                    className={`p-3 rounded-xl transition-all text-sm flex flex-col items-center gap-1
-                    ${isSelected ? "bg-gradient-to-br from-violet-300 to-blue-300 text-white shadow-lg" : "hover:bg-gray-100 bg-white border border-gray-200"}
-                    ${isSelected ? "" : borderForPhase[phase]}
-                    ${isToday ? "border-2 border-emerald-500" : ""}`}
-                    title={phase}
-                  >
-                    <span className={`font-medium ${isSelected ? "text-white" : ""}`}>{dateObj.getDate()}</span>
-                    {/* Applied responsive fix for phase labels */}
-                    <span className={`px-2 py-0.5 rounded-full text-[9px] leading-3 capitalize whitespace-nowrap overflow-hidden max-w-full
-                      ${isSelected ? "bg-white/20" : PHASE_COLORS_NEW[phase]}`}>
-                      {phase === "none" ? "" : phase}
-                    </span>
-                    {isToday && !isSelected && (<span className="text-[8px] text-emerald-600 font-semibold">today</span>)}
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="mt-8 pt-8 border-t border-gray-200" id="health-section">
-              <h3 className="text-xl font-semibold mb-6">Health Insights & Education</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                <PhaseCard title="Menstrual" text="Day 1–5 • Bleeding • Low energy" color="purple" />
-                <PhaseCard title="Follicular" text="Day 5–13 • High energy • Estrogen rising" color="emerald" />
-                <PhaseCard title="Ovulation" text="Day 14 • Peak fertility" color="rose" />
-                <PhaseCard title="Luteal" text="Day 15–28 • PMS likely" color="indigo" />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
-                <InfoCard icon={<Leaf />} title="Healthy Period Practices"
-                  bullets={["Change pads every 4–6 hours", "Stay hydrated, eat iron-rich foods", "Gentle movement helps cramps"]}
-                />
-                <InfoCard icon={<ShieldQuestion />} title="Breaking Myths"
-                  bullets={["Periods ≠ impurity", "Exercising is safe", "Pain isn’t ‘normal’ if severe—consult a doctor"]}
-                />
-                <InfoCard icon={<Store />} title="Nearby Stores Availability"
-                  bullets={["Search by brand or area", "Compare price & stock", "Sort by distance (auto)"]}
-                />
-              </div>
-            </div>
-          </Card>
-        </div>
-
-        {/* --- Daily Log Section --- */}
-        <section id="logs-section" className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-          <Card title={`Logs: ${selectedDate}`}>
-            <div className="text-sm text-gray-500 mb-4">
-              Select a date from calendar, then tap chips to record. Auto-saved.
-            </div>
-            <ChipGroup title="Menstruation Flow" type="single" value={logs[selectedDate]?.flow || ""}
-              onChange={(val) => setLog(selectedDate, (b) => ({ ...b, flow: val === b.flow ? "" : val }))}
-              items={[{ label: "Light", icon: <Droplet size={16} /> }, { label: "Medium", icon: <Droplet size={16} /> }, { label: "Heavy", icon: <Droplet size={16} /> }, { label: "Spotting", icon: <Droplet size={16} /> }]}
-              color="red"
-            />
-            <ChipGroup title="Moods" type="multi" value={logs[selectedDate]?.moods || []}
-              onChange={(arr) => setLog(selectedDate, (b) => ({ ...b, moods: arr }))}
-              items={[{ label: "Neutral", icon: <Smile size={16} /> }, { label: "Happy", icon: <Smile size={16} /> }, { label: "Sad", icon: <Frown size={16} /> }, { label: "Sensitive", icon: <Heart size={16} /> }]}
-              color="pink"
-            />
-            <ChipGroup title="Physical Activity" type="multi" value={logs[selectedDate]?.activities || []}
-              onChange={(arr) => setLog(selectedDate, (b) => ({ ...b, activities: arr }))}
-              items={[{ label: "Gym", icon: <Dumbbell size={16} /> }, { label: "Walking", icon: <Footprints size={16} /> }, { label: "Running", icon: <Activity size={16} /> }, { label: "Cycling", icon: <Bike size={16} /> }]}
-              color="purple"
-            />
-            <ChipGroup title="Other Body Symptoms" type="multi" value={logs[selectedDate]?.other || []}
-              onChange={(arr) => setLog(selectedDate, (b) => ({ ...b, other: arr }))}
-              items={[{ label: "Bloating", icon: <Cloud size={16} /> }, { label: "Fatigue", icon: <Bed size={16} /> }, { label: "Nausea", icon: <AlertCircle size={16} /> }, { label: "Insomnia", icon: <Bed size={16} /> }]}
-              color="blue"
-            />
-            <ChipGroup title="Signs" type="multi" value={logs[selectedDate]?.signs || []}
-              onChange={(arr) => setLog(selectedDate, (b) => ({ ...b, signs: arr }))}
-              items={[{ label: "All Good", icon: <Smile size={16} /> }, { label: "Cramps", icon: <AlertCircle size={16} /> }, { label: "Headache", icon: <Frown size={16} /> }, { label: "Acne", icon: <AlertCircle size={16} /> }]}
-              color="violet"
-            />
-            <ChipGroup title="Energy Levels" type="single" value={logs[selectedDate]?.energy || ""}
-              onChange={(val) => setLog(selectedDate, (b) => ({ ...b, energy: val === b.energy ? "" : val }))}
-              items={[{ label: "High", icon: <Zap size={16} /> }, { label: "Medium", icon: <Zap size={16} /> }, { label: "Low", icon: <Zap size={16} /> }, { label: "Exhausted", icon: <Bed size={16} /> }]}
-              color="gray"
-            />
-            <div className="mt-6">
-              <label className="block text-sm font-medium text-gray-600 mb-2">Add Personal Notes</label>
-              <textarea
-                rows="4"
-                value={logs[selectedDate]?.notes || ""}
-                onChange={(e) => setLog(selectedDate, (b) => ({ ...b, notes: e.target.value }))}
-                placeholder="Write your notes here..."
-                className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-400"
-              />
-            </div>
-          </Card>
-
-          <Card title="Today's Snapshot">
-            <SummaryBlock dateStr={selectedDate} logs={logs} schedule={schedule} />
-          </Card>
-        </section>
-
-        {/* --- Nearby Stores Section --- */}
-        <section ref={storesRef} className="mt-10">
-          <Card>
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
-              <h3 className="text-xl font-semibold flex items-center gap-3">
-                <Store size={24} className="text-blue-500" /> Nearby Stores Availability
-              </h3>
-              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                <div className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 bg-gray-50 focus-within:ring-2 focus-within:ring-blue-400 transition">
-                  <Search size={18} className="text-gray-400 shrink-0" />
-                  <input
-                    value={q}
-                    onChange={(e) => setQ(e.target.value)}
-                    placeholder="Search brand / store..."
-                    className="bg-transparent outline-none text-sm w-full"
-                  />
-                </div>
-                <div className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 bg-gray-50 focus-within:ring-2 focus-within:ring-blue-400 transition">
-                  <MapPin size={18} className="text-gray-400 shrink-0" />
-                  <input
-                    value={storeArea}
-                    onChange={(e) => setStoreArea(e.target.value)}
-                    placeholder="Area / City"
-                    className="bg-transparent outline-none text-sm w-full"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredStores.map((s) => (
-                <div key={s.id} className="border border-gray-200 rounded-2xl p-4 bg-white hover:shadow-lg transition-shadow">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="font-semibold">{s.name}</div>
-                      <div className="text-xs text-gray-500 flex items-center gap-1 mt-1">
-                        <MapPin size={14} /> {s.area} • {s.distanceKm} km
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-3 border-t border-gray-100 pt-3 space-y-2">
-                    {s.items.map((it, idx) => (
-                      <div key={idx} className="flex items-center justify-between text-sm">
-                        <span className="font-medium text-gray-700">{it.brand}</span>
-                        {/* Fix for price alignment */}
-                        <div className="flex-1 text-right text-gray-500">
-                          <span>₹{it.price}</span>
-                        </div>
-                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ml-2
-                          ${it.stock === "In Stock" ? "bg-emerald-100 text-emerald-700"
-                            : it.stock === "Low Stock" ? "bg-amber-100 text-amber-700"
-                              : "bg-rose-100 text-rose-700"}`}>
-                          {it.stock}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-              {filteredStores.length === 0 && (
-                <div className="col-span-full text-center text-gray-500 py-6">No stores found with that name or area.</div>
-              )}
-            </div>
-          </Card>
-        </section>
+    <Chatbot/>
+      <Header user={user} />
+      <main className="bg-gradient-to-br from-white to-blue-50 ">
+        <LandingVdo/>
 
       </main>
 
+
+      <div className="bg-white py-16 px-4 md:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Header Section */}
+          <div className="flex flex-col items-center text-center mb-16">
+            <span className="inline-flex items-center bg-green-500 text-white rounded-full px-4 py-1.5 text-sm font-medium mb-6">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 mr-2"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              Your Health Care Options
+            </span>
+            <h2 className="text-3xl md:text-5xl font-extrabold text-gray-800 leading-tight mb-4">
+              Find the <span className="text-blue-500">Perfect Care</span>
+            </h2>
+            <p className="text-lg text-gray-600 max-w-xl">
+              Discover healthcare solutions tailored to your specific needs and
+              preferences
+            </p>
+          </div>
+
+{/* Cards Grid */}
+<div className="space-y-16">
+  {careOptions.map((option, index) => (
+    <div
+      key={index}
+      className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center"
+    >
+      {/* Content Side */}
+      <div className={`space-y-5 ${index % 2 === 1 ? "lg:order-2" : "lg:order-1"}`}>
+{/* Type Badge */}
+<div className="inline-flex items-center px-4 py-2 bg-gray-50 rounded-full">
+  <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide">
+    {option.type}
+  </p>
+</div>
+        
+        {/* Title */}
+        <h3 className="text-3xl font-bold text-gray-900 leading-tight">
+          {option.title}
+        </h3>
+        
+        {/* Description */}
+        <p className="text-lg text-gray-600 leading-relaxed">
+          {option.description}
+        </p>
+
+{/* Button */}
+<div className="pt-4 p-5">
+  <button className="btn btn-primary gap-2 shadow-lg hover:scale-105 transition-transform duration-200 p-2">
+    <a href={option.link} className="flex items-center gap-2">
+      {option.buttonText}
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M9 5l7 7-7 7"
+        />
+      </svg>
+    </a>
+  </button>
+</div>
+
+
+
+
+      </div>
+
+      {/* Image Side */}
+      <div className={`flex justify-center ${index % 2 === 1 ? "lg:order-1" : "lg:order-2"}`}>
+        <div className="relative group w-full max-w-lg">
+          {/* Background decoration */}
+          <div className="absolute -inset-2 bg-gradient-to-r from-blue-600/10 to-slate-600/10 rounded-3xl blur-lg opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
+          
+          {/* Image container */}
+          <div className="relative bg-white p-2 rounded-2xl shadow-xl">
+            <img
+              src={option.image}
+              alt={option.title}
+              className="w-full h-80 object-cover rounded-xl transition-transform duration-300 group-hover:scale-105"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
+        </div>
+      </div>
+
+
+            <div className="bg-white py-16 px-4 md:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Header Section */}
+          <div className="flex flex-col items-center text-center mb-16">
+            <span className="inline-flex items-center bg-green-500 text-white rounded-full px-4 py-1.5 text-sm font-medium mb-6">
+              Most Common Symptoms
+            </span>
+            <h2 className="text-3xl md:text-5xl font-extrabold text-gray-800 leading-tight mb-4">
+              Quick Symptom Guide
+            </h2>
+            <p className="text-lg text-gray-600 max-w-xl">
+              Understand your symptoms and find the right specialist for your
+              needs
+            </p>
+          </div>
+
+{/* Symptom Cards with Horizontal Scroll */}
+<div className="flex space-x-6 overflow-x-scroll pb-4 -mx-4 px-4 sm:px-0 scrollbar-hide">
+  {symptoms.map((symptom, index) => (
+    <motion.div
+      key={index}
+      layoutId={`symptom-${index}`}
+      onClick={() => setSelectedSymptom(symptom)}
+      className="flex-none w-72 h-80 bg-white rounded-2xl shadow-md border hover:shadow-lg transition-shadow duration-300 cursor-pointer overflow-hidden relative"
+      style={{
+        backgroundImage: `url(${symptom.bgImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
+      }}
+    >
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/40 hover:bg-black/30 transition-colors duration-300"></div>
+      
+      {/* Content */}
+      <div className="relative z-10 p-6 h-full flex flex-col justify-end text-white">
+        <motion.h3
+          layoutId={`title-${index}`}
+          className="text-xl font-bold mb-2"
+        >
+          {symptom.title}
+        </motion.h3>
+
+        <div className="border-t border-white/30 pt-4 flex items-center justify-between">
+          <span className="text-sm font-medium text-gray-300">
+            {symptom.specialist}
+          </span>
+        </div>
+      </div>
+    </motion.div>
+  ))}
+</div>
+
+          {/* Modal for expanded symptom view */}
+<AnimatePresence>
+  {selectedSymptom && (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+      onClick={() => setSelectedSymptom(null)}
+    >
+      <motion.div
+        layoutId={`symptom-${symptoms.indexOf(selectedSymptom)}`}
+        className="bg-white rounded-2xl overflow-hidden max-w-2xl w-full"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Background Image Section */}
+        <div
+          className="relative h-64 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${selectedSymptom.bgImage})`,
+          }}
+        >
+          {/* Dark overlay */}
+          <div className="absolute inset-0 bg-black/40"></div>
+
+          {/* Title Overlay */}
+          <div className="relative z-10 p-8 h-full flex flex-col justify-end text-white">
+            <motion.h3
+              layoutId={`title-${symptoms.indexOf(selectedSymptom)}`}
+              className="text-3xl font-bold mb-2"
+            >
+              {selectedSymptom.title}
+            </motion.h3>
+          </div>
+        </div>
+
+        {/* Detailed Content Section */}
+        <div className="p-8">
+          <p className="text-gray-600 leading-relaxed mb-6 text-lg">
+            {selectedSymptom.description}
+          </p>
+
+          <div className="flex items-center justify-between border-t pt-4">
+            <span className="text-sm font-medium text-gray-500">
+              Specialist: {selectedSymptom.specialist}
+            </span>
+            <button
+              onClick={() => setSelectedSymptom(null)}
+              className="px-4 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
+
+
+        </div>
+      </div>
       <Footer />
     </>
   );
-};
-
-// ====================== UI Subcomponents (Refined) ======================
-const Card = ({ title, children, className = "", innerRef }) => (
-  <div ref={innerRef} className={`bg-white shadow-xl rounded-3xl p-8 border border-gray-200/50 ${className}`}>
-    {title && <h3 className="text-xl font-semibold text-gray-800 mb-6">{title}</h3>}
-    {children}
-  </div>
-);
-
-const JumpButton = ({ icon, label, onClick }) => (
-  <button
-    onClick={onClick}
-    className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium transition-all shadow-sm hover:shadow-md"
-  >
-    {icon} <span className="hidden sm:inline">{label}</span>
-  </button>
-);
-
-const InputRow = ({ label, children }) => (
-  <div className="mb-5">
-    <label className="block text-sm font-medium text-gray-600 mb-2">{label}</label>
-    {children}
-  </div>
-);
-
-const LegendPill = ({ colorClass, label }) => (
-  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${colorClass}`}>{label}</span>
-);
-
-const colorMap = {
-  red: "bg-red-100 text-red-700",
-  pink: "bg-pink-100 text-pink-700",
-  purple: "bg-purple-100 text-purple-700",
-  blue: "bg-blue-100 text-blue-700",
-  violet: "bg-violet-100 text-violet-700",
-  gray: "bg-gray-100 text-gray-700",
-  rose: "bg-rose-100 text-rose-700",
-  emerald: "bg-emerald-100 text-emerald-700",
-  indigo: "bg-indigo-100 text-indigo-700",
-};
-
-const Chip = ({ active, onClick, children, color = "gray" }) => (
-  <button
-    onClick={onClick}
-    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200
-    ${active ? "bg-gray-900 text-white shadow-md" : `hover:bg-gray-200 ${colorMap[color]}`}`}
-  >
-    {children}
-  </button>
-);
-
-const ChipGroup = ({ title, type, value, onChange, items, color }) => {
-  const handleClick = (label) => {
-    if (type === "single") {
-      onChange(label === value ? "" : label);
-      return;
-    }
-    const set = new Set(value || []);
-    if (set.has(label)) set.delete(label);
-    else set.add(label);
-    onChange([...set]);
-  };
-
-  return (
-    <div className="mb-5">
-      <h3 className="text-sm font-semibold text-gray-600 mb-2">{title}</h3>
-      <div className="flex flex-wrap gap-2">
-        {items.map((it, idx) => {
-          const active = type === "single" ? value === it.label : (value || []).includes(it.label);
-          return (
-            <Chip key={idx} active={active} color={color} onClick={() => handleClick(it.label)}>
-              {it.icon} {it.label}
-            </Chip>
-          );
-        })}
-      </div>
-    </div>
-  );
-};
-
-const PhaseCard = ({ title, text, color }) => (
-  <div className={`rounded-xl border border-gray-200/50 p-4 transition-all hover:scale-105 shadow-sm hover:shadow-lg ${colorMap[color]}`}>
-    <h4 className="font-bold text-gray-800 mb-1">{title}</h4>
-    <p className="text-sm text-gray-600">{text}</p>
-  </div>
-);
-
-const InfoCard = ({ icon, title, bullets }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  return (
-    <div
-      className="rounded-xl border border-gray-200/50 p-4 cursor-pointer shadow-sm hover:shadow-md transition bg-white"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <div className="flex items-center gap-2 text-gray-800 font-semibold mb-2">
-        {icon} {title}
-      </div>
-      <ul className={`list-disc pl-5 text-sm text-gray-700 space-y-1 overflow-hidden transition-all duration-300 ${isHovered ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
-        {bullets.map((b, i) => (
-          <li key={i}>{b}</li>
-        ))}
-      </ul>
-    </div>
-  );
-};
-
-const SummaryBlock = ({ dateStr, logs, schedule }) => {
-  const l = logs[dateStr];
-  const phase = schedule[dateStr] ?? "none";
-  return (
-    <div className="text-lg text-gray-700 space-y-3">
-      <div>
-        <span className="font-semibold text-gray-500">Phase: </span>
-        <span className="font-semibold capitalize">{phase === "none" ? "—" : phase}</span>
-      </div>
-      <div>
-        <span className="font-semibold text-gray-500">Flow: </span>
-        <span className="font-semibold">{l?.flow || "—"}</span>
-      </div>
-      <RowList label="Moods" items={l?.moods} />
-      <RowList label="Activities" items={l?.activities} />
-      <RowList label="Symptoms" items={l?.other} />
-      <RowList label="Signs" items={l?.signs} />
-      <div>
-        <span className="font-semibold text-gray-500">Energy: </span>
-        <span className="font-semibold">{l?.energy || "—"}</span>
-      </div>
-      <div className="border-t border-gray-100 pt-3">
-        <div className="font-semibold text-gray-500">Notes</div>
-        <div className="text-gray-800">{l?.notes?.trim() || "—"}</div>
-      </div>
-    </div>
-  );
-};
-
-const RowList = ({ label, items }) => (
-  <div>
-    <span className="font-semibold text-gray-500">{label}: </span>
-    <span className="font-semibold">{items?.length ? items.join(", ") : "—"}</span>
-  </div>
-);
-
-export default MenstrualTracker;
+}
