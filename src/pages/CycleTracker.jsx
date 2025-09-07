@@ -367,10 +367,6 @@ const MenstrualTracker = () => {
                 <InfoCard icon={<ShieldQuestion />} title="Breaking Myths"
                   bullets={["Periods ≠ impurity", "Exercising is safe", "Pain isn’t ‘normal’ if severe—consult a doctor"]}
                 />
-                <InfoCard icon={<Store />} title="Nearby Stores Availability"
-                  bullets={["Search by brand or area", "Compare price & stock", "Sort by distance (auto)"]}
-                  onClick={() => storesRef.current?.scrollIntoView({ behavior: 'smooth' })}
-                />
               </div>
             </div>
           </Card>
