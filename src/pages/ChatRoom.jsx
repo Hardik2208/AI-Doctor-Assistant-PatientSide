@@ -42,6 +42,7 @@ useEffect(() => {
   // Send message
   const sendMessage = async () => {
     if (!message.trim()) return;
+    
     const msgData = { roomId, user, text: message };
 
     try {

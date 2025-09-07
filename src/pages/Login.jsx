@@ -41,24 +41,38 @@ const handleSubmit = async (e) => {
         password: formData.password,
       });
       if (error) throw error;
-      console.log("Logged in user:", data.user);
+      
+      // 🔑 Store user info in localStorage for chat
+      localStorage.setItem('currentUser', JSON.stringify({
+        id: data.user.id,
+        email: data.user.email,
+        role: 'patient'
+      }));
+      
     } else {
-      // ✅ Signup with fullName stored in user_metadata
+      // ✅ Signup
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {
           data: {
-            full_name: formData.fullName, // 🔑 store name
+            full_name: formData.fullName,
+            role: "patient",
           },
         },
       });
       if (error) throw error;
-      console.log("Signed up user:", data.user);
+      
+      // 🔑 Store user info for chat
+      localStorage.setItem('currentUser', JSON.stringify({
+        id: data.user.id,
+        email: data.user.email,
+        role: 'patient'
+      }));
     }
 
     alert(`${currentState === "Sign up" ? "Account created" : "Login"} successful!`);
-    navigate("/"); // go to homepage
+    navigate("/");
 
   } catch (err) {
     console.error("Auth error:", err.message);
@@ -225,7 +239,7 @@ const handleSubmit = async (e) => {
                 <button
   onClick={(e) => {
     handleSubmit(e);       // run validation + form submission
-    navigate("/"); // then navigate
+
   }}
                   className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
                 >

@@ -13,7 +13,29 @@ import { Link } from "react-router-dom";
 
 import Header from "../assets/component/Header";
 import Footer from "../assets/component/Footer.jsx";
+
+//for chatroom
+// Add these imports at the top
+import { useNavigate } from "react-router-dom";
+import { generateRoomId, getCurrentUser } from "../utils/roomUtils";
+
+
 export default function FindDoctor() {
+
+  //chatRoom
+    const navigate = useNavigate();
+  const handleChatWithDoctor = (doctorId) => {
+    const currentUser = getCurrentUser();
+    
+    if (!currentUser) {
+      alert('Please login first');
+      navigate('/login');
+      return;
+    }
+    
+    const roomId = generateRoomId(currentUser.id, doctorId);
+    navigate(`/chat/${roomId}?user=${currentUser.email}`);
+  };
   const doctors = [
     {
       id: 1,
@@ -155,7 +177,9 @@ export default function FindDoctor() {
             </p>
 
             <div className="grid md:grid-cols-2 gap-6 mt-6">
+              
               {doctors.map((doc) => (
+                
                 <div
                   key={doc.id}
                   className="bg-white rounded-xl shadow-md p-5 flex flex-col transition-all duration-300 hover:shadow-xl w-full"
@@ -179,6 +203,7 @@ export default function FindDoctor() {
                       </p>
                     </div>
                   </Link>
+                  
 
                   <div className="mt-3 text-gray-600 text-sm space-y-1">
                     <p className="flex items-center gap-2">
@@ -203,21 +228,28 @@ export default function FindDoctor() {
                     <p className="text-green-600 font-semibold">{doc.fees}</p>
                   </div>
 
-                  {/* Action Buttons */}
-                  <div className="flex gap-3 mt-4">
-                    <button
-                      onClick={() => alert(`Booking appointment with ${doc.name}`)}
-                      className="flex-1 bg-gradient-to-r from-cyan-400 to-teal-500 text-white py-2 rounded-lg flex items-center justify-center gap-2 font-medium transition-all duration-300 hover:from-cyan-500 hover:to-teal-600"
-                    >
-                      <Calendar className="w-4 h-4" /> Book Appointment
-                    </button>
-                    <button
-                      onClick={() => alert(`Generating report for ${doc.name}`)}
-                      className="border border-gray-300 py-2 px-4 rounded-lg font-medium flex items-center justify-center gap-2 transition-all duration-300 hover:text-white hover:border-transparent hover:bg-gradient-to-r hover:from-purple-500 hover:to-purple-700"
-                    >
-                      📄 Generate Report
-                    </button>
-                  </div>
+{/* Action Buttons */}
+<div className="flex gap-2 mt-4">
+  <button
+    onClick={() => handleChatWithDoctor(doc.id)}
+    className="bg-green-500 text-white py-2 px-3 rounded-lg font-medium transition-all duration-300 hover:bg-green-600"
+  >
+    💬 Chat
+  </button>
+  <button
+    onClick={() => alert(`Booking appointment with ${doc.name}`)}
+    className="flex-1 bg-gradient-to-r from-cyan-400 to-teal-500 text-white py-2 rounded-lg flex items-center justify-center gap-2 font-medium transition-all duration-300 hover:from-cyan-500 hover:to-teal-600"
+  >
+    <Calendar className="w-4 h-4" /> Book Appointment
+  </button>
+  <button
+    onClick={() => alert(`Generating report for ${doc.name}`)}
+    className="border border-gray-300 py-2 px-4 rounded-lg font-medium flex items-center justify-center gap-2 transition-all duration-300 hover:text-white hover:border-transparent hover:bg-gradient-to-r hover:from-purple-500 hover:to-purple-700"
+  >
+    📄 Report
+  </button>
+</div>
+
                 </div>
               ))}
             </div>
