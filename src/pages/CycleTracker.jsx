@@ -171,7 +171,7 @@ const MenstrualTracker = () => {
     ).sort((a, b) => a.distanceKm - b.distanceKm);
   }, [q, storeArea]);
   
-  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, name, index }) => {
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent,index }) => {
     const RADIAN = Math.PI / 180;
     const radius = outerRadius + 20;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -352,7 +352,7 @@ const MenstrualTracker = () => {
               })}
             </div>
 
-            <div className="mt-8 pt-8 border-t border-gray-200" id="health-section">
+            <div ref={educationRef} className="mt-8 pt-8 border-t border-gray-200">
               <h3 className="text-xl font-semibold mb-6">Health Insights & Education</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                 <PhaseCard title="Menstrual" text="Day 1–5 • Bleeding • Low energy" color="purple" />
@@ -369,6 +369,7 @@ const MenstrualTracker = () => {
                 />
                 <InfoCard icon={<Store />} title="Nearby Stores Availability"
                   bullets={["Search by brand or area", "Compare price & stock", "Sort by distance (auto)"]}
+                  onClick={() => storesRef.current?.scrollIntoView({ behavior: 'smooth' })}
                 />
               </div>
             </div>
@@ -587,13 +588,14 @@ const PhaseCard = ({ title, text, color }) => (
   </div>
 );
 
-const InfoCard = ({ icon, title, bullets }) => {
+const InfoCard = ({ icon, title, bullets, onClick }) => {
   const [isHovered, setIsHovered] = useState(false);
   return (
     <div
       className="rounded-xl border border-gray-200/50 p-4 cursor-pointer shadow-sm hover:shadow-md transition bg-white"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={onClick}
     >
       <div className="flex items-center gap-2 text-gray-800 font-semibold mb-2">
         {icon} {title}
