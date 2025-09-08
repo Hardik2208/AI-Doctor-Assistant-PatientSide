@@ -192,9 +192,11 @@ export default function LandingPage({user}) {
         </p>
 
 {/* Button */}
+
+
 <div className="pt-4 p-5">
   <button className="btn btn-primary gap-2 shadow-lg hover:scale-105 transition-transform duration-200 p-2">
-    <a href={option.link} className="flex items-center gap-2">
+    <Link to={option.link} className="flex items-center gap-2">
       {option.buttonText}
       <svg
         className="w-5 h-5"
@@ -209,7 +211,7 @@ export default function LandingPage({user}) {
           d="M9 5l7 7-7 7"
         />
       </svg>
-    </a>
+    </Link>
   </button>
 </div>
 
