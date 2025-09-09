@@ -1,3 +1,4 @@
+// FindDoctor.jsx
 import React, { useEffect, useState } from "react";
 import { useSearchParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -16,7 +17,7 @@ import Header from "../assets/component/Header";
 import Footer from "../assets/component/Footer.jsx";
 import { generateRoomId, getCurrentUser } from "../utils/roomUtils";
 // The following line is no longer needed as the ID is from the backend
-// import { getDoctorIdByEmail } from "../supabaseClient.js"; 
+// import { getDoctorIdByEmail } from "../supabaseClient.js";
 
 export default function FindDoctor() {
   const navigate = useNavigate();
@@ -87,7 +88,7 @@ export default function FindDoctor() {
   return (
     <>
       <Header />
-      <section className="bg-gradient-to-r from-teal-400 via-blue-400 to-purple-500 text-white py-16">
+      <section className="bg-gradient-to-r from-blue-900 to-teal-800 text-white py-16">
         <div className="max-w-6xl mx-auto text-center px-4">
           <Stethoscope className="mx-auto mb-4 w-10 h-10" />
           <h2 className="text-3xl md:text-4xl font-bold">

@@ -86,15 +86,6 @@ const Footer = () => {
                 Diet Planning
               </Link>
             </li>
-            <li className="flex items-center space-x-2">
-              <div className="w-1 h-1 bg-blue-500 rounded-full"></div>
-              <Link
-                to="/careers"
-                className="hover:text-blue-500 transition-colors"
-              >
-                Careers
-              </Link>
-            </li>
           </ul>
         </div>
 

@@ -1,6 +1,6 @@
 // src/App.jsx
 
-import React, { useState, useEffect } from "react"; 
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ScrollToTop from "./assets/component/Srolltotop.js";
 
@@ -21,41 +21,42 @@ import LoginForm from "./pages/Login.jsx";
 import { supabase } from './supabaseClient.js'
 import WellnessJournerPage from './pages/WellnessJourneyPage.jsx'
 import CycleTracker from './pages/CycleTracker.jsx';
+import CommonIllness from './pages/CommonIllness.jsx';
 
 
 import FindDoctor from "./pages/FindDoctor.jsx";
 import DoctorDetails from "./pages/DoctorDetails.jsx";
-import Fitness from "./pages/Fitness.jsx"; 
-import SpecialisedDoctor from "./pages/SpecialisedDoctor.jsx";  // ✅ New import
+import Fitness from "./pages/Fitness.jsx";
+import SpecialisedDoctor from "./pages/SpecialisedDoctor.jsx";
 import ChatRoom from "./pages/ChatRoom.jsx";
-import Clinics from "./pages/Clinics.jsx";  // ✅ New import for clinics
+import Clinics from "./pages/Clinics.jsx";
 
 
 export default function App() {
   const [user, setUser] = useState(null);
-  
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       setUser(data?.user ?? null);
     });
-    
+
     const { data: subscription } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setUser(session?.user ?? null);
       }
     );
-    
+
     return () => {
       subscription.subscription.unsubscribe();
     };
   }, []);
-  
+
   return (
     <BrowserRouter>
       <ScrollToTop/>
       <Routes>
         {/* 1-to-1 Chat route */}
-<Route path="/chat/:roomId" element={<ChatRoom />} />
+        <Route path="/chat/:roomId" element={<ChatRoom />} />
 
 
         {/* Existing routes */}
@@ -76,16 +77,19 @@ export default function App() {
 
         {/* New Fitness page route */}
         <Route path="/fitness" element={<Fitness user={user} />} />
-        
+
         {/* Doctor pages */}
         <Route path="/find-doctor" element={<FindDoctor />} />
         <Route path="/doctor/:id" element={<DoctorDetails />} />
-        <Route path="/specialised-doctor" element={<SpecialisedDoctor />} /> {/* ✅ New route */}
-        <Route path="/clinics" element={<Clinics />} /> {/* ✅ New route for clinics */}
+        <Route path="/specialised-doctor" element={<SpecialisedDoctor />} />
+        <Route path="/clinics" element={<Clinics />} />
 
         {/* Login page */}
         <Route path="/login" element={<LoginForm />} />
         <Route path="/cycle-tracker" element={<CycleTracker />} />
+        
+        {/* Common Illnesses page route */}
+        <Route path="/common-illnesses" element={<CommonIllness />} />
 
       </Routes>
     </BrowserRouter>

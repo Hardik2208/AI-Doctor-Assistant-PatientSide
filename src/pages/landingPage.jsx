@@ -1,9 +1,9 @@
 // LandingPage.jsx
 import React, { useRef } from "react";
-import Header from "../assets/component/Header.jsx"; // Import your header component
+import Header from "../assets/component/Header.jsx";
 import { Link } from "react-router-dom";
 import bg from "../assets/component/bg.png";
-import Footer from "../assets/component/Footer.jsx"; // Import your footer component
+import Footer from "../assets/component/Footer.jsx";
 import Chatbot from "./Chatbot.jsx";
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from "react";
@@ -23,21 +23,21 @@ const symptoms = [
     description:
       "Fever is a temporary increase in body temperature, often due to an infection. It can be accompanied by chills, sweating, dehydration, and fatigue. Most fevers resolve on their own, but persistent or high fever may require medical attention.",
     specialist: "General Physician",
-    bgImage: "/images/quicksymptom/fever.jpg", 
+    bgImage: "/images/quicksymptom/fever.jpg",
   },
   {
     title: "Gastric / Colic Pain",
     description:
       "Gastric pain can result from indigestion, acid reflux, or more serious gastrointestinal issues. Symptoms may include bloating, nausea, heartburn, or cramping. A gastroenterologist can help diagnose and treat persistent abdominal discomfort.",
     specialist: "Gastroenterologist",
-    bgImage: "https://images.pexels.com/photos/4498154/pexels-photo-4498154.jpeg", // woman holding stomach
+    bgImage: "https://images.pexels.com/photos/4498154/pexels-photo-4498154.jpeg",
   },
   {
     title: "Body Aches",
     description:
       "Body aches are generalized pain in muscles or joints, often linked to viral infections, overexertion, or stress. Rest, hydration, and mild pain relievers may help, but persistent aches could signal an underlying condition.",
     specialist: "General Physician",
-    bgImage: "/images/quicksymptom/ache.jpg", // person holding back
+    bgImage: "/images/quicksymptom/ache.jpg",
     isHighlighted: true,
   },
   {
@@ -45,38 +45,37 @@ const symptoms = [
     description:
       "Dust allergy can cause sneezing, coughing, itchy eyes, and difficulty breathing due to exposure to dust mites or particles. Preventive steps include regular cleaning and using air filters. Severe symptoms may require allergy medications.",
     specialist: "Allergist / Immunologist",
-    bgImage: "https://images.pexels.com/photos/3768911/pexels-photo-3768911.jpeg", // dust floating in sunlight
+    bgImage: "https://images.pexels.com/photos/3768911/pexels-photo-3768911.jpeg",
   },
   {
     title: "Migraine",
     description:
       "Migraines are severe headaches often accompanied by nausea, sensitivity to light and sound, or visual disturbances. Identifying triggers and lifestyle adjustments, along with prescribed medications, can help manage symptoms.",
     specialist: "Neurologist",
-    bgImage: "https://images.pexels.com/photos/5380302/pexels-photo-5380302.jpeg", // woman with hand on head
+    bgImage: "https://images.pexels.com/photos/5380302/pexels-photo-5380302.jpeg",
   },
   {
     title: "Cough",
     description:
       "A cough may be caused by infections, allergies, or irritants. It can be dry or productive (with phlegm). Persistent cough lasting more than a few weeks should be evaluated by a doctor to rule out chronic conditions.",
     specialist: "Pulmonologist / General Physician",
-    bgImage: "/images/quicksymptom/cough.jpg", // person covering mouth
+    bgImage: "/images/quicksymptom/cough.jpg",
   },
   {
     title: "Skin Allergy",
     description:
       "Skin allergies can present as rashes, redness, itching, or swelling. Common causes include food, medications, or environmental triggers. A dermatologist can help diagnose and recommend treatment, including topical creams or antihistamines.",
     specialist: "Dermatologist",
-    bgImage: "https://images.pexels.com/photos/674977/pexels-photo-674977.jpeg", // red rash on skin
+    bgImage: "https://images.pexels.com/photos/674977/pexels-photo-674977.jpeg",
   },
   {
     title: "Eye Infections",
     description:
       "Eye infections like conjunctivitis cause redness, itching, pain, and discharge. Proper hygiene and timely medical care are essential to prevent worsening. An ophthalmologist may prescribe eye drops or other treatment.",
     specialist: "Ophthalmologist",
-    bgImage: "https://images.pexels.com/photos/4587971/pexels-photo-4587971.jpeg", // close-up of irritated eye
+    bgImage: "https://images.pexels.com/photos/4587971/pexels-photo-4587971.jpeg",
   },
 ];
-
 
 
 const careOptions = [
@@ -120,9 +119,28 @@ const careOptions = [
     buttonText: "Get Urgent Care",
     stats: "Average 15min wait"
   },
+  // Added new cards with placeholder images
+  {
+    type: "Personal Health",
+    title: "Menstrual Cycle Tracker",
+    description: "Track your menstrual health and gain insights into your cycle with personalized data and health tips.",
+    brief: "Monitor your cycle, predict fertile windows, and understand your body better with a simple-to-use tracker.",
+    image: "https://images.pexels.com/photos/4031780/pexels-photo-4031780.jpeg",
+    link: "/cycle-tracker",
+    buttonText: "Start Tracking",
+    stats: "2.5M+ Users"
+  },
+  {
+    type: "Wellness",
+    title: "Common Illnesses",
+    description: "Learn about symptoms, causes, and home remedies for everyday ailments to stay informed and healthy.",
+    brief: "A comprehensive guide to common health issues like colds, flu, and headaches, with expert advice for care and prevention.",
+    image: "https://images.pexels.com/photos/3739198/pexels-photo-3739198.jpeg",
+    link: "/common-illnesses",
+    buttonText: "Learn More",
+    stats: "Expert Verified"
+  },
 ];
-
-
 
 
 export default function LandingPage({user}) {
@@ -133,9 +151,7 @@ export default function LandingPage({user}) {
       <Header user={user} />
       <main className="bg-gradient-to-br from-white to-blue-50 ">
         <LandingVdo/>
-
       </main>
-
 
       <div className="bg-white py-16 px-4 md:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
@@ -165,85 +181,68 @@ export default function LandingPage({user}) {
             </p>
           </div>
 
-{/* Cards Grid */}
-<div className="space-y-16">
-  {careOptions.map((option, index) => (
-    <div
-      key={index}
-      className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center"
-    >
-      {/* Content Side */}
-      <div className={`space-y-5 ${index % 2 === 1 ? "lg:order-2" : "lg:order-1"}`}>
-{/* Type Badge */}
-<div className="inline-flex items-center px-4 py-2 bg-gray-50 rounded-full">
-  <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide">
-    {option.type}
-  </p>
-</div>
-        
-        {/* Title */}
-        <h3 className="text-3xl font-bold text-gray-900 leading-tight">
-          {option.title}
-        </h3>
-        
-        {/* Description */}
-        <p className="text-lg text-gray-600 leading-relaxed">
-          {option.description}
-        </p>
+          {/* Cards Grid - Updated for premium look and new cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {careOptions.map((option, index) => (
+              <div
+                key={index}
+                className="relative group overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105
+                           ring-1 ring-inset ring-gray-200/50 group-hover:ring-blue-500/50"
+              >
+                {/* Image background with overlay */}
+                <div
+                  className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+                  style={{ backgroundImage: `url(${option.image})` }}
+                >
+                  {/* Adjusted: Removed bg-white/50 and backdrop-blur-sm from here.
+                      Increased the dark overlay to ensure text readability against the image. */}
+                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors duration-300"></div>
+                </div>
 
-{/* Button */}
+                {/* Content layer - now fully opaque, text is white for contrast */}
+                <div className="relative p-4 h-full flex flex-col justify-end text-white"> {/* Text is now always white */}
+                  <div className="space-y-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-200"> {/* Adjusted text color */}
+                      {option.type}
+                    </p>
+                    <h3 className="text-xl font-bold text-white leading-tight"> {/* Adjusted text color */}
+                      {option.title}
+                    </h3>
+                    <p className="text-xs text-gray-100 leading-relaxed"> {/* Adjusted text color */}
+                      {option.description}
+                    </p>
+                  </div>
 
-
-<div className="pt-4 p-5">
-  <button className="btn btn-primary gap-2 shadow-lg hover:scale-105 transition-transform duration-200 p-2">
-    <Link to={option.link} className="flex items-center gap-2">
-      {option.buttonText}
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9 5l7 7-7 7"
-        />
-      </svg>
-    </Link>
-  </button>
-</div>
-
-
-
-
-      </div>
-
-      {/* Image Side */}
-      <div className={`flex justify-center ${index % 2 === 1 ? "lg:order-1" : "lg:order-2"}`}>
-        <div className="relative group w-full max-w-lg">
-          {/* Background decoration */}
-          <div className="absolute -inset-2 bg-gradient-to-r from-blue-600/10 to-slate-600/10 rounded-3xl blur-lg opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
-          
-          {/* Image container */}
-          <div className="relative bg-white p-2 rounded-2xl shadow-xl">
-            <img
-              src={option.image}
-              alt={option.title}
-              className="w-full h-80 object-cover rounded-xl transition-transform duration-300 group-hover:scale-105"
-            />
+                  {/* Button at the bottom of the card */}
+                  <div className="mt-3">
+                    <Link
+                      to={option.link}
+                      className="inline-flex items-center text-blue-300 hover:text-blue-500 transition-colors duration-200 font-semibold"
+                    >
+                      {option.buttonText}
+                      <svg
+                        className="w-4 h-4 ml-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
-    </div>
-  ))}
-</div>
-        </div>
-      </div>
 
-
-            <div className="bg-white py-16 px-4 md:px-6 lg:px-8">
+      <div className="bg-white py-16 px-4 md:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           {/* Header Section */}
           <div className="flex flex-col items-center text-center mb-16">
@@ -259,102 +258,100 @@ export default function LandingPage({user}) {
             </p>
           </div>
 
-{/* Symptom Cards with Horizontal Scroll */}
-<div className="flex space-x-6 overflow-x-scroll pb-4 -mx-4 px-4 sm:px-0 scrollbar-hide">
-  {symptoms.map((symptom, index) => (
-    <motion.div
-      key={index}
-      layoutId={`symptom-${index}`}
-      onClick={() => setSelectedSymptom(symptom)}
-      className="flex-none w-72 h-80 bg-white rounded-2xl shadow-md border hover:shadow-lg transition-shadow duration-300 cursor-pointer overflow-hidden relative"
-      style={{
-        backgroundImage: `url(${symptom.bgImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
-      }}
-    >
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/40 hover:bg-black/30 transition-colors duration-300"></div>
-      
-      {/* Content */}
-      <div className="relative z-10 p-6 h-full flex flex-col justify-end text-white">
-        <motion.h3
-          layoutId={`title-${index}`}
-          className="text-xl font-bold mb-2"
-        >
-          {symptom.title}
-        </motion.h3>
+          {/* Quick Symptom Cards - This section remains with its original horizontal scroll */}
+          <div className="flex space-x-6 overflow-x-scroll pb-4 -mx-4 px-4 sm:px-0 scrollbar-hide">
+            {symptoms.map((symptom, index) => (
+              <motion.div
+                key={index}
+                layoutId={`symptom-${index}`}
+                onClick={() => setSelectedSymptom(symptom)}
+                className="flex-none w-72 h-80 bg-white rounded-2xl shadow-md border hover:shadow-lg transition-shadow duration-300 cursor-pointer overflow-hidden relative"
+                style={{
+                  backgroundImage: `url(${symptom.bgImage})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center'
+                }}
+              >
+                {/* Dark overlay */}
+                <div className="absolute inset-0 bg-black/40 hover:bg-black/30 transition-colors duration-300"></div>
 
-        <div className="border-t border-white/30 pt-4 flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-300">
-            {symptom.specialist}
-          </span>
-        </div>
-      </div>
-    </motion.div>
-  ))}
-</div>
+                {/* Content */}
+                <div className="relative z-10 p-6 h-full flex flex-col justify-end text-white">
+                  <motion.h3
+                    layoutId={`title-${index}`}
+                    className="text-xl font-bold mb-2"
+                  >
+                    {symptom.title}
+                  </motion.h3>
+
+                  <div className="border-t border-white/30 pt-4 flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-300">
+                      {symptom.specialist}
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
 
           {/* Modal for expanded symptom view */}
-<AnimatePresence>
-  {selectedSymptom && (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-      onClick={() => setSelectedSymptom(null)}
-    >
-      <motion.div
-        layoutId={`symptom-${symptoms.indexOf(selectedSymptom)}`}
-        className="bg-white rounded-2xl overflow-hidden max-w-2xl w-full"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Background Image Section */}
-        <div
-          className="relative h-64 bg-cover bg-center"
-          style={{
-            backgroundImage: `url(${selectedSymptom.bgImage})`,
-          }}
-        >
-          {/* Dark overlay */}
-          <div className="absolute inset-0 bg-black/40"></div>
+          <AnimatePresence>
+            {selectedSymptom && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+                onClick={() => setSelectedSymptom(null)}
+              >
+                <motion.div
+                  layoutId={`symptom-${symptoms.indexOf(selectedSymptom)}`}
+                  className="bg-white rounded-2xl overflow-hidden max-w-2xl w-full"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* Background Image Section */}
+                  <div
+                    className="relative h-64 bg-cover bg-center"
+                    style={{
+                      backgroundImage: `url(${selectedSymptom.bgImage})`,
+                    }}
+                  >
+                    {/* Dark overlay */}
+                    <div className="absolute inset-0 bg-black/40"></div>
 
-          {/* Title Overlay */}
-          <div className="relative z-10 p-8 h-full flex flex-col justify-end text-white">
-            <motion.h3
-              layoutId={`title-${symptoms.indexOf(selectedSymptom)}`}
-              className="text-3xl font-bold mb-2"
-            >
-              {selectedSymptom.title}
-            </motion.h3>
-          </div>
-        </div>
+                    {/* Title Overlay */}
+                    <div className="relative z-10 p-8 h-full flex flex-col justify-end text-white">
+                      <motion.h3
+                        layoutId={`title-${symptoms.indexOf(selectedSymptom)}`}
+                        className="text-3xl font-bold mb-2"
+                      >
+                        {selectedSymptom.title}
+                      </motion.h3>
+                    </div>
+                  </div>
 
-        {/* Detailed Content Section */}
-        <div className="p-8">
-          <p className="text-gray-600 leading-relaxed mb-6 text-lg">
-            {selectedSymptom.description}
-          </p>
+                  {/* Detailed Content Section */}
+                  <div className="p-8">
+                    <p className="text-gray-600 leading-relaxed mb-6 text-lg">
+                      {selectedSymptom.description}
+                    </p>
 
-          <div className="flex items-center justify-between border-t pt-4">
-            <span className="text-sm font-medium text-gray-500">
-              Specialist: {selectedSymptom.specialist}
-            </span>
-            <button
-              onClick={() => setSelectedSymptom(null)}
-              className="px-4 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      </motion.div>
-    </motion.div>
-  )}
-</AnimatePresence>
-
-
+                    <div className="flex items-center justify-between border-t pt-4">
+                      <span className="text-sm font-medium text-gray-500">
+                        Specialist: {selectedSymptom.specialist}
+                      </span>
+                      <button
+                        onClick={() => setSelectedSymptom(null)}
+                        className="px-4 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
       <Footer />
