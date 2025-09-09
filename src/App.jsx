@@ -28,6 +28,10 @@ import DoctorDetails from "./pages/DoctorDetails.jsx";
 import Fitness from "./pages/Fitness.jsx"; 
 import SpecialisedDoctor from "./pages/SpecialisedDoctor.jsx";  // ✅ New import
 import ChatRoom from "./pages/ChatRoom.jsx";
+import VideoCall from "./components/VideoCall.jsx";
+import VideoCallSetup from "./components/VideoCallSetup.jsx";
+import Telemedicine from "./pages/Telemedicine.jsx";
+import TelemedicineSetup from "./components/TelemedicineSetup.jsx";
 import Clinics from "./pages/Clinics.jsx";  // ✅ New import for clinics
 
 
@@ -82,6 +86,14 @@ export default function App() {
         <Route path="/doctor/:id" element={<DoctorDetails />} />
         <Route path="/specialised-doctor" element={<SpecialisedDoctor />} /> {/* ✅ New route */}
         <Route path="/clinics" element={<Clinics />} /> {/* ✅ New route for clinics */}
+
+        {/* Telemedicine */}
+        <Route path="/telemedicine" element={<Telemedicine />} />
+        <Route path="/telemedicine-setup/:doctorId" element={<TelemedicineSetup />} />
+
+        {/* Video Call Routes */}
+        <Route path="/video-setup/:doctorId" element={<VideoCallSetup />} />
+        <Route path="/video-call/:roomId" element={<VideoCall />} />
 
         {/* Login page */}
         <Route path="/login" element={<LoginForm />} />
