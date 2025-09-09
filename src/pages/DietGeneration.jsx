@@ -366,7 +366,7 @@ const DietForm = () => {
             }
             className="px-6 sm:px-8 py-3 text-base sm:text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-all duration-200 bg-green-500 text-white hover:bg-green-600 focus:ring-2 focus:ring-green-400 focus:ring-offset-2 rounded-lg hover:cursor-pointer disabled:hover:bg-green-500"
           >
-            Generate My Diet Plan
+            Create My Diet Plan
           </button>
         </div>
       </div>

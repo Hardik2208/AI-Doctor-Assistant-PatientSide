@@ -65,7 +65,7 @@ const LandingVdo = () => {
             to="/DietGeneration"
             className="bg-white hover:bg-gray-100 text-gray-900 font-semibold py-3 px-8 rounded-full shadow-xl transition-all duration-300 flex items-center"
           >
-            Generate Diet
+            Diet Planner
             <ArrowRightIcon className="h-5 w-5 ml-2" />
           </Link>
         </div>
