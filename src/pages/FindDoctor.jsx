@@ -12,6 +12,7 @@ import {
   MapPin,
   Clock,
   Calendar,
+  Video,
 } from "lucide-react";
 import Header from "../assets/component/Header";
 import Footer from "../assets/component/Footer.jsx";
@@ -67,6 +68,19 @@ export default function FindDoctor() {
 
     const roomId = generateRoomId(currentUser.id, doctorId);
     navigate(`/chat/${roomId}?user=${currentUser.email}`);
+  };
+
+  const handleVideoCall = (doctorId) => {
+    const currentUser = getCurrentUser();
+
+    if (!currentUser) {
+      alert("Please login first to start a video consultation");
+      navigate("/login");
+      return;
+    }
+
+    // Navigate to video call setup page
+    navigate(`/video-setup/${doctorId}`);
   };
 
   if (loading) {
@@ -206,6 +220,13 @@ export default function FindDoctor() {
                       </p>
                     </div>
                     <div className="flex gap-2 mt-4">
+                      <button
+                        onClick={() => handleVideoCall(doc.supabaseId)}
+                        className="bg-blue-500 text-white py-2 px-3 rounded-lg font-medium transition-all duration-300 hover:bg-blue-600 flex items-center gap-2"
+                      >
+                        <Video className="w-4 h-4" />
+                        Video Call
+                      </button>
                       <button
                         // Pass the doctor's supabaseId to the chat handler
                         onClick={() => handleChatWithDoctor(doc.supabaseId)}

@@ -107,7 +107,7 @@ const WellnessJourneyPage = () => {
               link="/Gym"
             />
             <Card
-              title="Diet Generation"
+              title="Diet Planner"
               icon="🥗"
               bgColor="bg-purple-100"
               rating="4.9"
