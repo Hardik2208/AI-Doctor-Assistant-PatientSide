@@ -23,7 +23,6 @@ import WellnessJournerPage from './pages/WellnessJourneyPage.jsx'
 import CycleTracker from './pages/CycleTracker.jsx';
 import CommonIllness from './pages/CommonIllness.jsx';
 
-
 import FindDoctor from "./pages/FindDoctor.jsx";
 import DoctorDetails from "./pages/DoctorDetails.jsx";
 import Fitness from "./pages/Fitness.jsx";
@@ -33,8 +32,7 @@ import VideoCall from "./components/VideoCall.jsx";
 import VideoCallSetup from "./components/VideoCallSetup.jsx";
 import Telemedicine from "./pages/Telemedicine.jsx";
 import TelemedicineSetup from "./components/TelemedicineSetup.jsx";
-import Clinics from "./pages/Clinics.jsx";  // ✅ New import for clinics
-
+import Clinics from "./pages/Clinics.jsx"; 
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -85,8 +83,14 @@ export default function App() {
         {/* Doctor pages */}
         <Route path="/find-doctor" element={<FindDoctor />} />
         <Route path="/doctor/:id" element={<DoctorDetails />} />
-        <Route path="/specialised-doctor" element={<SpecialisedDoctor />} /> {/* ✅ New route */}
-        <Route path="/clinics" element={<Clinics />} /> {/* ✅ New route for clinics */}
+        <Route path="/specialised-doctor" element={<SpecialisedDoctor />} />
+        <Route path="/clinics" element={<Clinics />} />
+
+        {/* Telemedicine and Video Call pages */}
+        <Route path="/telemedicine" element={<Telemedicine />} />
+        <Route path="/telemedicine-setup" element={<TelemedicineSetup />} />
+        <Route path="/video-call" element={<VideoCall />} />
+        <Route path="/video-call-setup" element={<VideoCallSetup />} />
 
         {/* Login page */}
         <Route path="/login" element={<LoginForm />} />
