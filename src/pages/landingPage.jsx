@@ -1,5 +1,6 @@
 // LandingPage.jsx
-import React, { useRef, useState, lazy, Suspense } from "react";
+
+import React, { useState, lazy, Suspense } from "react";
 import Header from "../assets/component/Header.jsx";
 import { Link } from "react-router-dom";
 import bg from "../assets/component/bg.png"; 
@@ -12,6 +13,8 @@ import {
 } from "@heroicons/react/24/solid";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import { FaStethoscope } from "react-icons/fa";
+// LandingVdo component is no longer imported
+import FindDoctorButton from "../assets/component/FindDoctorButton.jsx"; // Importing the new component
 
 // Lazy-load the Chatbot and Footer components
 const Chatbot = lazy(() => import("./Chatbot.jsx"));
@@ -144,13 +147,12 @@ export default function LandingPage({ user }) {
   const [selectedSymptom, setSelectedSymptom] = useState(null);
   return (
     <>
+      <FindDoctorButton />
       <Suspense fallback={<div>Loading Chatbot...</div>}>
         <Chatbot />
       </Suspense>
       <Header user={user} />
-      <main className="bg-gradient-to-br from-white to-blue-50 ">
-        {/* LandingVdo removed */}
-      </main>
+      {/* The main content now starts with the Hero Section directly, as LandingVdo has been removed */}
 
       {/* Hero Section */}
       <div
