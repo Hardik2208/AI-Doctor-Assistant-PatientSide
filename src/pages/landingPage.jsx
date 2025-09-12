@@ -1,21 +1,14 @@
 // LandingPage.jsx
-import React, { useRef } from "react";
+
+import React, { useState } from "react";
 import Header from "../assets/component/Header.jsx";
 import { Link } from "react-router-dom";
-import bg from "../assets/component/bg.png";
 import Footer from "../assets/component/Footer.jsx";
 import Chatbot from "./Chatbot.jsx";
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from "react";
-import {
-  HeartIcon,
-  ShieldCheckIcon,
-  CheckBadgeIcon,
-  UserGroupIcon,
-} from "@heroicons/react/24/solid";
-import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import { FaStethoscope } from "react-icons/fa";
 import LandingVdo from "../assets/component/landingvdo.jsx";
+import FindDoctorButton from "../assets/component/FindDoctorButton.jsx"; // Naya button import hua hai
 
 const symptoms = [
   {
@@ -119,7 +112,6 @@ const careOptions = [
     buttonText: "Get Urgent Care",
     stats: "Average 15min wait"
   },
-  // Added new cards with placeholder images
   {
     type: "Personal Health",
     title: "Menstrual Cycle Tracker",
@@ -147,7 +139,9 @@ export default function LandingPage({user}) {
   const [selectedSymptom, setSelectedSymptom] = useState(null);
   return (
     <>
-    <Chatbot/>
+      <FindDoctorButton /> {/* Yahan naya button add ho gaya hai */}
+      <Chatbot/>
+    
       <Header user={user} />
       <main className="bg-gradient-to-br from-white to-blue-50 ">
         <LandingVdo/>
@@ -187,15 +181,13 @@ export default function LandingPage({user}) {
               <div
                 key={index}
                 className="relative group overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105
-                           ring-1 ring-inset ring-gray-200/50 group-hover:ring-blue-500/50"
+                                ring-1 ring-inset ring-gray-200/50 group-hover:ring-blue-500/50"
               >
                 {/* Image background with overlay */}
                 <div
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
                   style={{ backgroundImage: `url(${option.image})` }}
                 >
-                  {/* Adjusted: Removed bg-white/50 and backdrop-blur-sm from here.
-                      Increased the dark overlay to ensure text readability against the image. */}
                   <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors duration-300"></div>
                 </div>
 
