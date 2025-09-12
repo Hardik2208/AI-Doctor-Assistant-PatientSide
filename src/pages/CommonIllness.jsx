@@ -18,7 +18,7 @@ const illnesses = [
     prevention: "Stay hydrated, wear light clothing, work during cooler hours, and take frequent breaks in the shade.",
     icon: (
       <img
-        src="https://images.pexels.com/photos/17234698/pexels-photo-17234698/free-photo-of-close-up-of-a-person-in-a-field.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+        src="/images/heatExhaustion.jpg"
         alt="Heat Exhaustion"
         className="w-12 h-12 rounded-xl object-cover"
       />
@@ -30,7 +30,7 @@ const illnesses = [
     prevention: "Use proper protective equipment (gloves, masks, long sleeves), follow safety instructions, and wash hands thoroughly after use.",
     icon: (
       <img
-        src="https://images.pexels.com/photos/6154562/pexels-photo-6154562.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+        src="/images/pesticide.jpg"
         alt="Pesticide Poisoning"
         className="w-12 h-12 rounded-xl object-cover"
       />
@@ -42,7 +42,7 @@ const illnesses = [
     prevention: "Use broad-spectrum sunscreen with high SPF, wear a wide-brimmed hat and long-sleeved shirts, and seek shade when possible.",
     icon: (
       <img
-        src="https://images.pexels.com/photos/8086082/pexels-photo-8086082.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+        src="/images/sunburn.jpg"
         alt="Sunburn"
         className="w-12 h-12 rounded-xl object-cover"
       />
@@ -54,7 +54,7 @@ const illnesses = [
     prevention: "Use proper lifting techniques, stretch regularly, take breaks to rest muscles, and use ergonomic tools where possible.",
     icon: (
       <img
-        src="https://images.pexels.com/photos/4031780/pexels-photo-4031780.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+        src="/images/musculoskeletal.jpg"
         alt="Musculoskeletal Disorders"
         className="w-12 h-12 rounded-xl object-cover"
       />
@@ -66,7 +66,7 @@ const illnesses = [
     prevention: "Wear a face mask to avoid inhaling dust, mold, and pollen. Ensure proper ventilation in barns and storage areas.",
     icon: (
       <img
-        src="https://images.pexels.com/photos/3739198/pexels-photo-3739198.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+        src="/images/respiratory.jpg"
         alt="Respiratory Illnesses"
         className="w-12 h-12 rounded-xl object-cover"
       />
@@ -78,7 +78,7 @@ const illnesses = [
     prevention: "Practice good hygiene, wear gloves when handling animals, and get vaccinated against diseases like rabies.",
     icon: (
       <img
-        src="https://images.pexels.com/photos/3768911/pexels-photo-3768911.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+        src="/images/zoonotonic.jpg"
         alt="Zoonotic Diseases"
         className="w-12 h-12 rounded-xl object-cover"
       />
