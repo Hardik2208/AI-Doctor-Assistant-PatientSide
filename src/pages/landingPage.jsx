@@ -155,7 +155,7 @@ export default function LandingPage({ user }) {
       {/* Hero Section */}
       <div
         className="relative bg-cover bg-center bg-no-repeat min-h-[80vh]"
-        style={{ backgroundImage: `url(/images/landingPage33.png)` }}
+        style={{ backgroundImage: `url(/images/landingPage.png)` }}
       >
         {/* Dark overlay for better readability */}
         <div className="absolute inset-0 bg-black/40"></div>
