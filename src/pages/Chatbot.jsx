@@ -19,10 +19,12 @@ const Chatbot = () => {
         setMessages(prev => [...prev, userMessage]);
         setInput('');
         setLoading(true);
-        const API_BASE =
+
+const API_BASE =
   import.meta.env.VITE_APP_API_BASE_URL ||
-  "http://localhost:3001" || 
-  "https://ai-doctor-assistant-backend-ai-ml.onrender.com";
+  "https://ai-doctor-assistant-backend-ai-ml.onrender.com" ||
+  "http://localhost:3001";
+
 
         try {
 const response = await fetch(
