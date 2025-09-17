@@ -28,5 +28,5 @@ export const symptoms = [
   { id: "nausea", name: "Nausea", category: "Gastrointestinal", icon: <X className="w-4 h-4" /> },
   { id: "vomiting", name: "Vomiting", category: "Gastrointestinal", icon: <Syringe className="w-4 h-4" /> },
   { id: "diarrhea", name: "Diarrhea", category: "Gastrointestinal", icon: <Clipboard className="w-4 h-4" /> },
-  { id: "abdominal-pain", name: "Abdominal pain", category: "Gastrointestinal", icon: <Scan className="w-4 h-4" /> },
+  { id: "abdominal-pain", name: "Stomach ache", category: "Gastrointestinal", icon: <Scan className="w-4 h-4" /> },
 ];

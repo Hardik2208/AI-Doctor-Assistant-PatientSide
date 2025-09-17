@@ -3,8 +3,8 @@
 import React, { useState, lazy, Suspense } from "react";
 import Header from "../assets/component/Header.jsx";
 import { Link } from "react-router-dom";
-import bg from "../assets/component/bg.png"; 
-import { motion, AnimatePresence } from 'framer-motion';
+import bg from "../assets/component/bg.png";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   HeartIcon,
   ShieldCheckIcon,
@@ -69,7 +69,7 @@ const symptoms = [
     description:
       "Skin allergies can present as rashes, redness, itching, or swelling. Common causes include food, medications, or environmental triggers. A dermatologist can help diagnose and recommend treatment, including topical creams or antihistamines.",
     specialist: "Dermatologist",
-    bgImage: "https://images.pexels.com/photos/674977/pexels-photo-674977.jpeg",
+    bgImage: "/images/quicksymptom/skininfection.jpg",
   },
   {
     title: "Eye Infections",
@@ -82,64 +82,58 @@ const symptoms = [
 
 const careOptions = [
   {
-    type: "Digital Care",
+    // type: "Digital Care",
     title: "Telemedicine",
-    description: "Virtual consultations from the comfort of your home with certified healthcare professionals.",
-    brief: "Connect instantly with doctors through secure video calls, get prescriptions, and receive medical advice without leaving home.",
+    brief:
+      "Connect instantly with doctors through secure video calls, get prescriptions, and receive medical advice without leaving home.",
     image: "/images/telemedicine.png",
     link: "/telemedicine",
-    buttonText: "Explore Telemedicine",
-    stats: "Available 24/7"
+    stats: "Available 24/7",
   },
   {
-    type: "Primary Care",
+    // type: "Primary Care",
     title: "Local Clinics",
-    description: "Find nearby medical clinics for routine checkups and comprehensive healthcare services.",
-    brief: "Discover trusted local healthcare providers in your area for regular health maintenance, preventive care, and family medicine.",
+    brief:
+      "Discover trusted local healthcare providers in your area for regular health maintenance, preventive care, and family medicine.",
     image: "/images/clinic.png",
     link: "/clinics",
-    buttonText: "Find Clinics",
-    stats: "500+ Locations"
+    stats: "500+ Locations",
   },
   {
-    type: "Specialized Care",
+    // type: "Specialized Care",
     title: "Specialist Doctors",
-    description: "Connect with specialized healthcare professionals for expert medical care and treatment.",
-    brief: "Access board-certified specialists across various medical fields including cardiology, dermatology, orthopedics, and more.",
+    brief:
+      "Access board-certified specialists across various medical fields including cardiology, dermatology, orthopedics, and more.",
     image: "/images/specialisedDoctor.png",
     link: "/specialised-doctor",
-    buttonText: "View Specialists",
-    stats: "200+ Specialists"
+    stats: "200+ Specialists",
   },
   {
-    type: "Immediate Care",
+    // type: "Immediate Care",
     title: "Urgent Care",
-    description: "Immediate medical attention for non-emergency situations when you need care now.",
-    brief: "Fast-track medical services for injuries, illnesses, and health concerns that require prompt attention but aren't life-threatening.",
+    brief:
+      "Fast-track medical services for injuries, illnesses, and health concerns that require prompt attention but aren't life-threatening.",
     image: "/images/urgentCare.png",
     link: "/urgent-care",
-    buttonText: "Get Urgent Care",
-    stats: "Average 15min wait"
+    stats: "Average 15min wait",
   },
   {
-    type: "Personal Health",
+    // type: "Personal Health",
     title: "Menstrual Cycle Tracker",
-    description: "Track your menstrual health and gain insights into your cycle with personalized data and health tips.",
-    brief: "Monitor your cycle, predict fertile windows, and understand your body better with a simple-to-use tracker.",
+    brief:
+      "Monitor your cycle, predict fertile windows, and understand your body better with a simple-to-use tracker.",
     image: "/images/MenstrualCycle.png",
     link: "/cycle-tracker",
-    buttonText: "Start Tracking",
-    stats: "2.5M+ Users"
+    stats: "2.5M+ Users",
   },
   {
-    type: "Wellness",
+    // type: "Wellness",
     title: "Common Illnesses",
-    description: "Learn about symptoms, causes, and home remedies for everyday ailments to stay informed and healthy.",
-    brief: "A comprehensive guide to common health issues like colds, flu, and headaches, with expert advice for care and prevention.",
+    brief:
+      "A comprehensive guide to common health issues like colds, flu, and headaches, with expert advice for care and prevention.",
     image: "/images/commonillness.png",
     link: "/common-illnesses",
-    buttonText: "Learn More",
-    stats: "Expert Verified"
+    stats: "Expert Verified",
   },
 ];
 
@@ -184,7 +178,9 @@ export default function LandingPage({ user }) {
               Your Health,<span className="text-green-300">Our Priority</span>
             </h2>
             <p className="text-lg text-gray-100">
-              Comprehensive healthcare solutions at your fingertips. From symptom checking to specialized care, we're here to support your wellness journey every step of the way.
+              Comprehensive healthcare solutions at your fingertips. From
+              symptom checking to specialized care, we're here to support your
+              wellness journey every step of the way.
             </p>
           </div>
 
@@ -214,18 +210,23 @@ export default function LandingPage({ user }) {
             <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
               <div className="flex items-center justify-center bg-white/20 px-6 py-2 rounded-full backdrop-blur-sm">
                 <ShieldCheckIcon className="w-5 h-5 text-blue-400 mr-2" />
-                <span className="text-sm text-gray-200">Secure & Confidential</span>
+                <span className="text-sm text-gray-200">
+                  Secure & Confidential
+                </span>
               </div>
               <div className="flex items-center justify-center bg-white/20 px-6 py-2 rounded-full backdrop-blur-sm">
                 <CheckBadgeIcon className="w-5 h-5 text-green-400 mr-2" />
-                <span className="text-sm text-gray-200">Medically Verified</span>
+                <span className="text-sm text-gray-200">
+                  Medically Verified
+                </span>
               </div>
               <div className="flex items-center justify-center bg-white/20 px-6 py-2 rounded-full backdrop-blur-sm">
                 <UserGroupIcon className="w-5 h-5 text-purple-400 mr-2" />
-                <span className="text-sm text-gray-200">Expert Care Network</span>
+                <span className="text-sm text-gray-200">
+                  Expert Care Network
+                </span>
               </div>
             </div>
-
           </div>
         </div>
       </div>
@@ -250,13 +251,13 @@ export default function LandingPage({ user }) {
 
         {/* Heading */}
         <h2 className="text-3xl md:text-5xl font-extrabold leading-tight mb-4">
-          Find the{" "}
-          <span className="text-blue-500">Perfect Care</span>
+          Find the <span className="text-blue-500">Perfect Care</span>
         </h2>
 
         {/* Subheading */}
         <p className="text-lg text-gray-600 max-w-xl">
-          Discover healthcare solutions tailored to your specific needs and preferences
+          Discover healthcare solutions tailored to your specific needs and
+          preferences
         </p>
       </div>
 
@@ -276,31 +277,15 @@ export default function LandingPage({ user }) {
                   <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors duration-300"></div>
                 </div>
 
-                <div className="relative p-4 h-full flex flex-col justify-end text-white">
+                <div className="relative px-8 pb-0 h-full flex flex-col justify-end text-white">
                   <div className="space-y-3">
                     <p className="text-xs font-semibold uppercase tracking-wide text-gray-200">
                       {option.type}
                     </p>
-                    <h3 className="text-xl font-bold leading-tight">{option.title}</h3>
-                    <p className="text-xs text-gray-100 leading-relaxed">{option.description}</p>
-                  </div>
-                  <div className="mt-3">
-                    <span className="inline-flex items-center text-blue-300 hover:text-blue-500 transition-colors duration-200 font-semibold">
-                      {option.buttonText}
-                      <svg
-                        className="w-4 h-4 ml-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </span>
+                    <h3 className="text-2xl font-bold leading-tight pb-4">
+
+                      {option.title}
+                    </h3>
                   </div>
                 </div>
               </Link>
@@ -319,7 +304,8 @@ export default function LandingPage({ user }) {
               Quick Symptom Guide
             </h2>
             <p className="text-lg text-gray-600 max-w-xl">
-              Understand your symptoms and find the right specialist for your needs
+              Understand your symptoms and find the right specialist for your
+              needs
             </p>
           </div>
 
@@ -332,8 +318,8 @@ export default function LandingPage({ user }) {
                 className="flex-none w-72 h-80 bg-white rounded-2xl shadow-md border hover:shadow-lg transition-shadow duration-300 cursor-pointer overflow-hidden relative"
                 style={{
                   backgroundImage: `url(${symptom.bgImage})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center'
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
                 }}
               >
                 <div className="absolute inset-0 bg-black/40 hover:bg-black/30 transition-colors duration-300"></div>
@@ -396,23 +382,29 @@ export default function LandingPage({ user }) {
                     <div className="flex items-center justify-between border-t pt-4">
                       <div className="flex-1">
                         <span className="text-sm font-medium text-gray-500 block mb-2">
-                          Specialist: <span className="text-blue-600 font-bold">{selectedSymptom.specialist}</span>
+                          Specialist:{" "}
+                          <span className="text-blue-600 font-bold">
+                            {selectedSymptom.specialist}
+                          </span>
                         </span>
+                      </div>
+
+                      <div className="flex items-center space-x-4">
                         <Link
                           to={`/find-doctor?specialist=${selectedSymptom.specialist}`}
                           className="px-4 py-2 text-sm bg-green-500 text-white rounded-lg hover:bg-green-600 transition inline-flex items-center"
                         >
-                          Find a {selectedSymptom.specialist}
+                          Find a Doctor
                           <ArrowRightIcon className="w-4 h-4 ml-2" />
                         </Link>
-                      </div>
 
-                      <button
-                        onClick={() => setSelectedSymptom(null)}
-                        className="px-4 py-2 text-sm bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition ml-4"
-                      >
-                        Close
-                      </button>
+                        <button
+                          onClick={() => setSelectedSymptom(null)}
+                          className="px-4 py-2 text-sm bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
+                        >
+                          Close
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
