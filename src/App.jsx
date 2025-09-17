@@ -12,6 +12,7 @@ import ChoicePage from "./pages/ChoicePage";
 import VocalInputPage from "./pages/VocalInputPage";
 import SymptomForm from "./pages/SymptomForm";
 import Chatbot from "./pages/Chatbot";
+import TestPage from "./pages/TestPage.jsx";
 
 // Lazy load heavy feature pages
 const Yoga = React.lazy(() => import("./pages/Yoga"));
@@ -33,7 +34,7 @@ const Fitness = React.lazy(() => import("./pages/Fitness.jsx"));
 const SpecialisedDoctor = React.lazy(() => import("./pages/SpecialisedDoctor.jsx"));
 const ChatRoom = React.lazy(() => import("./pages/ChatRoom.jsx"));
 const Telemedicine = React.lazy(() => import("./pages/Telemedicine.jsx"));
-const Clinics = React.lazy(() => import("./pages/Clinics.jsx"));
+const Clinics = React.lazy(() => import("./pages/ClinicsNew.jsx"));
 
 // Video components - lazy load
 const VideoCall = React.lazy(() => import("./components/VideoCall.jsx"));
@@ -99,6 +100,7 @@ export default function App() {
           <Route path="/doctor/:id" element={<DoctorDetails />} />
           <Route path="/specialised-doctor" element={<SpecialisedDoctor />} />
           <Route path="/clinics" element={<Clinics />} />
+          <Route path="/test" element={<TestPage />} />
 
           {/* Telemedicine and Video Call pages */}
           <Route path="/telemedicine" element={<Telemedicine />} />
