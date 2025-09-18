@@ -113,9 +113,9 @@ const careOptions = [
     // type: "Immediate Care",
     title: "Find Medicine",
     brief:
-      "Fast-track medical services for injuries, illnesses, and health concerns that require prompt attention but aren't life-threatening.",
+      "Search for medicine availability at nearby pharmacies in real-time. Check stock, prices, and get directions to the nearest pharmacy.",
     image: "/images/urgentCare.png",
-    link: "/urgent-care",
+    link: "/find-medicine",
     stats: "Average 15min wait",
   },
   {

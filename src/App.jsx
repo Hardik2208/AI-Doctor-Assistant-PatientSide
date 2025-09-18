@@ -35,6 +35,7 @@ const SpecialisedDoctor = React.lazy(() => import("./pages/SpecialisedDoctor.jsx
 const ChatRoom = React.lazy(() => import("./pages/ChatRoom.jsx"));
 const Telemedicine = React.lazy(() => import("./pages/Telemedicine.jsx"));
 const Clinics = React.lazy(() => import("./pages/ClinicsNew.jsx"));
+const FindMedicine = React.lazy(() => import("./pages/FindMedicine.jsx"));
 
 // Video components - lazy load
 const VideoCall = React.lazy(() => import("./components/VideoCall.jsx"));
@@ -100,6 +101,8 @@ export default function App() {
           <Route path="/doctor/:id" element={<DoctorDetails />} />
           <Route path="/specialised-doctor" element={<SpecialisedDoctor />} />
           <Route path="/clinics" element={<Clinics />} />
+          <Route path="/find-medicine" element={<FindMedicine />} />
+          <Route path="/urgent-care" element={<FindMedicine />} />
           <Route path="/test" element={<TestPage />} />
 
           {/* Telemedicine and Video Call pages */}

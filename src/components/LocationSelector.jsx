@@ -179,7 +179,9 @@ const LocationSelector = ({ onLocationSelect, currentLocation }) => {
       {/* Major Cities Grid */}
       {!showSuggestions && (
         <div>
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Popular Cities:</h3>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+            🏥 Medical Cities in Punjab Region:
+          </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filteredCities.slice(0, 16).map((city, index) => (
               <button
@@ -210,6 +212,11 @@ const LocationSelector = ({ onLocationSelect, currentLocation }) => {
                     <div className="text-sm text-gray-500">
                       {city.state}, {city.country}
                     </div>
+                    {city.distance && (
+                      <div className="text-xs text-gray-400 mt-1">
+                        📍 {city.distance} from Nabha
+                      </div>
+                    )}
                   </div>
                 </div>
               </button>
