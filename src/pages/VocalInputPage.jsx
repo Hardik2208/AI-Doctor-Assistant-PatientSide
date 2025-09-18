@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   Card,
   CardContent,
@@ -19,9 +20,17 @@ import {
   Thermometer,
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import ReportDisplay from "./ReportDisplay"; // New component to display the report
+import ReportDisplay from "./ReportDisplay";
+
+// Map language codes from i18next to Web Speech API codes
+const langCodeMap = {
+  en: "en-US",
+  hi: "hi-IN",
+  pa: "pa-IN",
+};
 
 const VocalInputPage = () => {
+  const { t, i18n } = useTranslation('symptomsPage'); // Use the merged namespace
   const [isRecording, setIsRecording] = useState(false);
   const [patientDetails, setPatientDetails] = useState({
     name: "",
@@ -30,67 +39,50 @@ const VocalInputPage = () => {
     temperature: "",
     symptoms: "",
   });
-  const [step, setStep] = useState(0); // 0: Name, 1: Age, 2: BP, 3: Temp, 4: Symptoms
+  const [step, setStep] = useState(0);
   const recognitionRef = useRef(null);
   const [prompt, setPrompt] = useState("");
-  const [report, setReport] = useState(null); // State to store the AI-generated report
+  const [report, setReport] = useState(null);
 
-  const prompts = [
-    "What is your name?",
-    "How old are you?",
-    "What is your blood pressure?",
-    "What is your body temperature?",
-    "Please describe the symptoms you are experiencing.",
-  ];
+  // Dynamically get prompts from the translation file
+  const prompts = useMemo(() => t('vocalInput.prompts', { returnObjects: true }), [t]);
 
   useEffect(() => {
     setPrompt(prompts[step]);
     speak(prompts[step]);
-  }, [step]);
+  }, [step, prompts]);
 
   const speak = (text) => {
     if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel(); // Cancel any previous speech
       const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = langCodeMap[i18n.language] || "en-US";
       window.speechSynthesis.speak(utterance);
     }
   };
 
   const handleMicClick = () => {
     if (!("webkitSpeechRecognition" in window)) {
-      alert(
-        "Your browser does not support the Web Speech API. Please use Google Chrome."
-      );
+      alert(t('vocalInput.alerts.noSupport'));
       return;
     }
 
     if (isRecording) {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
+      recognitionRef.current?.stop();
       setIsRecording(false);
     } else {
       const recognition = new window.webkitSpeechRecognition();
-      recognition.lang = "en-US";
+      recognition.lang = langCodeMap[i18n.language] || "en-US"; // Set language dynamically
       recognition.interimResults = false;
       recognition.maxAlternatives = 1;
 
-      recognition.onstart = () => {
-        setIsRecording(true);
-      };
-
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        processTranscript(transcript);
-      };
-
+      recognition.onstart = () => setIsRecording(true);
+      recognition.onresult = (event) => processTranscript(event.results[0][0].transcript);
       recognition.onerror = (event) => {
         console.error("Speech recognition error:", event.error);
         setIsRecording(false);
       };
-
-      recognition.onend = () => {
-        setIsRecording(false);
-      };
+      recognition.onend = () => setIsRecording(false);
 
       recognition.start();
       recognitionRef.current = recognition;
@@ -106,27 +98,20 @@ const VocalInputPage = () => {
         break;
       case 1:
         const ageMatch = /(\d+)/.exec(transcript);
-        if (ageMatch && ageMatch[1]) {
-          newDetails.age = ageMatch[1];
-        }
+        if (ageMatch?.[1]) newDetails.age = ageMatch[1];
         break;
       case 2:
-        const bpMatch = /(\d+)\s*(over)?\s*(\d+)?/i.exec(transcript);
-        if (bpMatch && bpMatch[1]) {
-          const systolic = bpMatch[1];
-          const diastolic = bpMatch[3] || "80";
-          newDetails.bloodPressure = `${systolic}/${diastolic}`;
+        const bpMatch = /(\d+)\s*(over|by)?\s*(\d+)?/i.exec(transcript);
+        if (bpMatch?.[1]) {
+          newDetails.bloodPressure = `${bpMatch[1]}/${bpMatch[3] || '80'}`;
         }
         break;
       case 3:
         const tempMatch = /(\d+(\.\d+)?)/.exec(transcript);
-        if (tempMatch && tempMatch[1]) {
-          newDetails.temperature = tempMatch[1];
-        }
+        if (tempMatch?.[1]) newDetails.temperature = tempMatch[1];
         break;
       case 4:
-        newDetails.symptoms =
-          (newDetails.symptoms ? newDetails.symptoms + " " : "") + transcript;
+        newDetails.symptoms = (newDetails.symptoms ? `${newDetails.symptoms} ` : "") + transcript;
         break;
       default:
         break;
@@ -152,38 +137,25 @@ const VocalInputPage = () => {
   };
 
   const resetForm = () => {
-    setPatientDetails({
-      name: "",
-      age: "",
-      bloodPressure: "",
-      temperature: "",
-      symptoms: "",
-    });
+    setPatientDetails({ name: "", age: "", bloodPressure: "", temperature: "", symptoms: "" });
     setStep(0);
     setReport(null);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (
-      !patientDetails.name ||
-      !patientDetails.age ||
-      !patientDetails.symptoms
-    ) {
-      alert("Please provide all required details and symptoms.");
+    if (!patientDetails.name || !patientDetails.age || !patientDetails.symptoms) {
+      alert(t('vocalInput.alerts.allDetailsRequired'));
       return;
     }
 
     const formData = {
-      name: patientDetails.name,
-      age: patientDetails.age,
-      bloodPressure: patientDetails.bloodPressure,
-      temperature: patientDetails.temperature,
-      selectedSymptoms: patientDetails.symptoms.split(",").map((symptom) => {
-        const trimmedSymptom = symptom.trim();
+      ...patientDetails,
+      selectedSymptoms: patientDetails.symptoms.split(/,|\sand\s/i).map(symptom => {
+        const trimmed = symptom.trim();
         return {
-          id: trimmedSymptom.toLowerCase().replace(/\s/g, "-"),
-          name: trimmedSymptom,
+          id: trimmed.toLowerCase().replace(/\s/g, "-"),
+          name: trimmed,
           category: "Voice Input",
         };
       }),
@@ -192,22 +164,15 @@ const VocalInputPage = () => {
     try {
       const response = await fetch("https://ai-doctor-assistant-backend-ai-ml.onrender.com/api/reports", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
       const result = await response.json();
-      console.log("Success:", result);
       setReport(result.report);
     } catch (error) {
       console.error("Error submitting data:", error);
-      alert("There was an error submitting your data. Please try again.");
+      alert(t('vocalInput.alerts.submitError'));
     }
   };
 
@@ -215,165 +180,88 @@ const VocalInputPage = () => {
     return <ReportDisplay reportData={report} onReset={resetForm} />;
   }
 
+  // Helper to render the current input field
+  const renderInputField = () => {
+    const fields = [
+      { id: 'name', icon: <User className="w-4 h-4 mr-2" />, type: 'text' },
+      { id: 'age', icon: <TrendingUp className="w-4 h-4 mr-2" />, type: 'number' },
+      { id: 'bloodPressure', icon: <Heart className="w-4 h-4 mr-2" />, type: 'text' },
+      { id: 'temperature', icon: <Thermometer className="w-4 h-4 mr-2" />, type: 'text' },
+      { id: 'symptoms', icon: <Activity className="w-4 h-4 mr-2" />, type: 'textarea' },
+    ];
+    const currentField = fields[step];
+    if (!currentField) return null;
+
+    return (
+        <motion.div
+          key={currentField.id}
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -50 }}
+          transition={{ duration: 0.3 }}
+          className="space-y-1"
+        >
+          <Label htmlFor={currentField.id} className="flex items-center">
+            {currentField.icon} {t(`vocalInput.labels.${currentField.id}`)}
+          </Label>
+          {currentField.type === 'textarea' ? (
+            <textarea
+              id={currentField.id}
+              className="w-full h-32 p-3 text-lg border border-gray-300 rounded-lg focus:outline-none focus:border-sky-500"
+              value={patientDetails[currentField.id]}
+              onChange={handleInputChange}
+              readOnly={isRecording}
+            />
+          ) : (
+            <Input
+              id={currentField.id}
+              type={currentField.type}
+              value={patientDetails[currentField.id]}
+              onChange={handleInputChange}
+              readOnly={isRecording}
+            />
+          )}
+        </motion.div>
+    );
+  }
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 bg-gray-50"> {/* Adjusted padding */}
-      <div className="absolute top-4 left-4 z-10"> {/* Added z-index to keep button on top */}
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 bg-gray-50">
+      <div className="absolute top-4 left-4 z-10">
         <Link to="/">
-          <Button>← Go Back</Button>
+          <Button>{t('vocalInput.goBackButton')}</Button>
         </Link>
       </div>
 
-      <Card className="max-w-md w-full sm:max-w-2xl"> {/* Adjusted max-width for better mobile display */}
+      <Card className="max-w-md w-full sm:max-w-2xl">
         <CardHeader className="text-center">
-          <CardTitle className="text-xl sm:text-2xl font-bold"> {/* Adjusted font size */}
-            Voice Symptom Assessment
-          </CardTitle>
-          <CardDescription className="text-sm text-gray-500">
-            {prompt}
-          </CardDescription>
+          <CardTitle className="text-xl sm:text-2xl font-bold">{t('vocalInput.title')}</CardTitle>
+          <CardDescription className="text-sm text-gray-500 min-h-[20px]">{prompt}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex justify-center">
             <motion.button
-              className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center text-white text-3xl sm:text-4xl shadow-lg transition-all duration-300 ${ // Adjusted size and font
-                isRecording ? "bg-red-500" : "bg-sky-500 hover:bg-sky-600"
-              }`}
+              className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center text-white text-3xl sm:text-4xl shadow-lg transition-all duration-300 ${isRecording ? "bg-red-500" : "bg-sky-500 hover:bg-sky-600"}`}
               onClick={handleMicClick}
               animate={{ scale: isRecording ? [1, 1.2, 1] : 1 }}
               transition={{ duration: 1, repeat: Infinity }}
             >
-              <Mic
-                className={`w-10 h-10 sm:w-12 sm:h-12 ${isRecording ? "animate-pulse" : ""}`} // Adjusted icon size
-              />
+              <Mic className={`w-10 h-10 sm:w-12 sm:h-12 ${isRecording ? "animate-pulse" : ""}`} />
             </motion.button>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {step === 0 && (
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key="name"
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -50 }}
-                  transition={{ duration: 0.3 }}
-                  className="space-y-1"
-                >
-                  <Label htmlFor="name" className="flex items-center">
-                    <User className="w-4 h-4 mr-2" />
-                    Full Name
-                  </Label>
-                  <Input
-                    id="name"
-                    value={patientDetails.name}
-                    onChange={handleInputChange}
-                    readOnly={isRecording}
-                  />
-                </motion.div>
-              </AnimatePresence>
-            )}
-            {step === 1 && (
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key="age"
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -50 }}
-                  transition={{ duration: 0.3 }}
-                  className="space-y-1"
-                >
-                  <Label htmlFor="age" className="flex items-center">
-                    <TrendingUp className="w-4 h-4 mr-2" />
-                    Age
-                  </Label>
-                  <Input
-                    id="age"
-                    type="number"
-                    value={patientDetails.age}
-                    onChange={handleInputChange}
-                    readOnly={isRecording}
-                  />
-                </motion.div>
-              </AnimatePresence>
-            )}
-            {step === 2 && (
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key="bp"
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -50 }}
-                  transition={{ duration: 0.3 }}
-                  className="space-y-1"
-                >
-                  <Label htmlFor="bloodPressure" className="flex items-center">
-                    <Heart className="w-4 h-4 mr-2" />
-                    Blood Pressure
-                  </Label>
-                  <Input
-                    id="bloodPressure"
-                    value={patientDetails.bloodPressure}
-                    onChange={handleInputChange}
-                    readOnly={isRecording}
-                  />
-                </motion.div>
-              </AnimatePresence>
-            )}
-            {step === 3 && (
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key="temp"
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -50 }}
-                  transition={{ duration: 0.3 }}
-                  className="space-y-1"
-                >
-                  <Label htmlFor="temperature" className="flex items-center">
-                    <Thermometer className="w-4 h-4 mr-2" />
-                    Temperature
-                  </Label>
-                  <Input
-                    id="temperature"
-                    value={patientDetails.temperature}
-                    onChange={handleInputChange}
-                    readOnly={isRecording}
-                  />
-                </motion.div>
-              </AnimatePresence>
-            )}
-            {step === 4 && (
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key="symptoms"
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -50 }}
-                  transition={{ duration: 0.3 }}
-                  className="space-y-1"
-                >
-                  <Label htmlFor="symptoms" className="flex items-center">
-                    <Activity className="w-4 h-4 mr-2" />
-                    Symptoms
-                  </Label>
-                  <textarea
-                    id="symptoms"
-                    className="w-full h-32 p-3 text-lg border border-gray-300 rounded-lg focus:outline-none focus:border-sky-500"
-                    value={patientDetails.symptoms}
-                    onChange={handleInputChange}
-                    readOnly={isRecording}
-                  />
-                </motion.div>
-              </AnimatePresence>
-            )}
+            <AnimatePresence mode="wait">
+              {renderInputField()}
+            </AnimatePresence>
 
-            <div className="flex justify-between mt-6"> {/* Added margin-top */}
+            <div className="flex justify-between mt-6">
               <Button type="button" onClick={handleBack} disabled={step === 0}>
-                Back
+                {t('vocalInput.buttons.back')}
               </Button>
               {step < prompts.length - 1 ? (
                 <Button type="button" onClick={handleNext}>
-                  Next
+                  {t('vocalInput.buttons.next')}
                 </Button>
               ) : (
                 <Button
@@ -381,7 +269,7 @@ const VocalInputPage = () => {
                   className="bg-sky-500 text-white font-semibold hover:bg-sky-600"
                   disabled={!patientDetails.symptoms}
                 >
-                  Submit Assessment
+                  {t('vocalInput.buttons.submit')}
                 </Button>
               )}
             </div>
