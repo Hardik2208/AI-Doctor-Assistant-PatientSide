@@ -77,6 +77,9 @@ const MenstrualTracker = () => {
   const [selectedDate, setSelectedDate] = useState(fmt(today));
   const [q, setQ] = useState("");
   const [storeArea, setStoreArea] = useState("");
+  // State variables for the new pop-ups
+  const [isPracticesModalOpen, setIsPracticesModalOpen] = useState(false);
+  const [isMythsModalOpen, setIsMythsModalOpen] = useState(false);
 
   const storesRef = useRef(null);
   const educationRef = useRef(null);
@@ -171,7 +174,7 @@ const MenstrualTracker = () => {
     ).sort((a, b) => a.distanceKm - b.distanceKm);
   }, [q, storeArea]);
   
-  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent,index }) => {
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, name, index }) => {
     const RADIAN = Math.PI / 180;
     const radius = outerRadius + 20;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -184,6 +187,68 @@ const MenstrualTracker = () => {
     );
   };
   
+  // Data for the Healthy Period Practices modal
+  const HEALTHY_PRACTICES_DETAILS = [
+    {
+      title: "Use Clean Pads or Cloths",
+      text: "Always use sanitary pads or a clean cotton cloth. If using cloth, wash it properly with soap and water, and dry it in sunlight."
+    },
+    {
+      title: "Change Regularly",
+      text: "Change your pad or cloth every 4–6 hours, even if the flow is light. This prevents infections and bad odor."
+    },
+    {
+      title: "Maintain Personal Hygiene",
+      text: "Wash your hands before and after changing pads. Keep the vaginal area clean by washing with clean water (no harsh soaps needed)."
+    },
+    {
+      title: "Dispose Safely",
+      text: "Wrap used pads in paper and throw them in a dustbin. Do not flush pads or throw them in open areas."
+    },
+    {
+      title: "Eat & Rest Well",
+      text: "Drink plenty of water and eat iron-rich foods (like jaggery, spinach, pulses). Take rest, but also try light activity like walking or stretching to reduce cramps."
+    },
+    {
+      title: "Know When to See a Doctor",
+      text: "If you have very heavy bleeding, severe pain, or irregular cycles, consult a doctor or ASHA worker."
+    }
+  ];
+
+  const BREAKING_MYTHS_DETAILS = [
+    {
+      title: "Myth: Women are “impure” during periods.",
+      text: "Truth: Periods are natural. A woman is not dirty or untouchable. She can cook, pray, and do daily activities if she feels comfortable."
+    },
+    {
+      title: "Myth: Women cannot enter temples or pray during periods.",
+      text: "Truth: Periods are created by God Himself. They are not a sin or impurity. A woman is always pure in God’s eyes, whether she has her period or not."
+    },
+    {
+      title: "Myth: Touching religious items during periods brings bad luck.",
+      text: "Truth: No religion teaches that women are “untouchable.” Menstruation is a sign of life and health. God never punishes women for something natural."
+    },
+    {
+      title: "Myth: You should not eat certain foods during periods.",
+      text: "Truth: Eating fruits, vegetables, and warm foods actually helps you feel better. There is no food that must be avoided."
+    },
+    {
+      title: "Myth: Period blood is dirty.",
+      text: "Truth: Menstrual blood is just blood from your body. It is not waste or poison—it is a healthy sign that your body is working properly."
+    },
+    {
+      title: "Myth: Girls should not talk openly about periods.",
+      text: "Truth: Talking about periods helps women learn, stay healthy, and support each other. There is nothing to hide or feel shy about."
+    },
+    {
+      title: "Myth: Women should stay away from kitchens and family during periods.",
+      text: "Truth: Periods do not spoil food or harm anyone. This belief comes from old traditions, not God. Women should rest if they feel tired, but they are never “dirty.”"
+    },
+    {
+      title: "Myth: Periods are a disease.",
+      text: "Truth: Periods are not an illness. They are a normal monthly process in every healthy woman."
+    },
+  ];
 
   return (
     <>
@@ -341,7 +406,6 @@ const MenstrualTracker = () => {
                     title={phase}
                   >
                     <span className={`font-medium ${isSelected ? "text-white" : ""}`}>{dateObj.getDate()}</span>
-                    {/* Applied responsive fix for phase labels */}
                     <span className={`px-2 py-0.5 rounded-full text-[9px] leading-3 capitalize whitespace-nowrap overflow-hidden max-w-full
                       ${isSelected ? "bg-white/20" : PHASE_COLORS_NEW[phase]}`}>
                       {phase === "none" ? "" : phase}
@@ -351,23 +415,27 @@ const MenstrualTracker = () => {
                 );
               })}
             </div>
-
+            
             <div ref={educationRef} className="mt-8 pt-8 border-t border-gray-200">
-              <h3 className="text-xl font-semibold mb-6">Health Insights & Education</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                <PhaseCard title="Menstrual" text="Day 1–5 • Bleeding • Low energy" color="purple" />
-                <PhaseCard title="Follicular" text="Day 5–13 • High energy • Estrogen rising" color="emerald" />
-                <PhaseCard title="Ovulation" text="Day 14 • Peak fertility" color="rose" />
-                <PhaseCard title="Luteal" text="Day 15–28 • PMS likely" color="indigo" />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
-                <InfoCard icon={<Leaf />} title="Healthy Period Practices"
-                  bullets={["Change pads every 4–6 hours", "Stay hydrated, eat iron-rich foods", "Gentle movement helps cramps"]}
-                />
-                <InfoCard icon={<ShieldQuestion />} title="Breaking Myths"
-                  bullets={["Periods ≠ impurity", "Exercising is safe", "Pain isn’t ‘normal’ if severe—consult a doctor"]}
-                />
-              </div>
+                <h3 className="text-xl font-semibold mb-6">Health Insights & Education</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                    <PhaseCard title="Menstrual" text="Day 1–5 • Bleeding • Low energy" color="purple" />
+                    <PhaseCard title="Follicular" text="Day 5–13 • High energy • Estrogen rising" color="emerald" />
+                    <PhaseCard title="Ovulation" text="Day 14 • Peak fertility" color="rose" />
+                    <PhaseCard title="Luteal" text="Day 15–28 • PMS likely" color="indigo" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
+                    <InfoCard
+                        icon={<Leaf />}
+                        title="Healthy Period Practices"
+                        onClick={() => setIsPracticesModalOpen(true)}
+                    />
+                    <InfoCard
+                        icon={<ShieldQuestion />}
+                        title="Breaking Myths"
+                        onClick={() => setIsMythsModalOpen(true)}
+                    />
+                </div>
             </div>
           </Card>
         </div>
@@ -469,7 +537,6 @@ const MenstrualTracker = () => {
                     {s.items.map((it, idx) => (
                       <div key={idx} className="flex items-center justify-between text-sm">
                         <span className="font-medium text-gray-700">{it.brand}</span>
-                        {/* Fix for price alignment */}
                         <div className="flex-1 text-right text-gray-500">
                           <span>₹{it.price}</span>
                         </div>
@@ -492,6 +559,21 @@ const MenstrualTracker = () => {
         </section>
 
       </main>
+
+      {/* Info Modals */}
+      <InfoModal
+        isOpen={isPracticesModalOpen}
+        onClose={() => setIsPracticesModalOpen(false)}
+        title="Healthy Period Practices"
+        data={HEALTHY_PRACTICES_DETAILS}
+      />
+
+      <InfoModal
+        isOpen={isMythsModalOpen}
+        onClose={() => setIsMythsModalOpen(false)}
+        title="Breaking Myths"
+        data={BREAKING_MYTHS_DETAILS}
+      />
 
       <Footer />
     </>
@@ -584,26 +666,47 @@ const PhaseCard = ({ title, text, color }) => (
   </div>
 );
 
-const InfoCard = ({ icon, title, bullets, onClick }) => {
-  const [isHovered, setIsHovered] = useState(false);
+const InfoCard = ({ icon, title, onClick }) => {
   return (
     <div
       className="rounded-xl border border-gray-200/50 p-4 cursor-pointer shadow-sm hover:shadow-md transition bg-white"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
       onClick={onClick}
     >
       <div className="flex items-center gap-2 text-gray-800 font-semibold mb-2">
         {icon} {title}
       </div>
-      <ul className={`list-disc pl-5 text-sm text-gray-700 space-y-1 overflow-hidden transition-all duration-300 ${isHovered ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
-        {bullets.map((b, i) => (
-          <li key={i}>{b}</li>
-        ))}
-      </ul>
     </div>
   );
 };
+
+const InfoModal = ({ isOpen, onClose, title, data }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+      <div className="bg-white rounded-3xl p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto relative">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl font-bold"
+        >
+          &times;
+        </button>
+        <div className="flex items-center gap-3 text-2xl font-semibold mb-4 text-gray-800">
+          {title}
+        </div>
+        <div className="text-base text-gray-700 space-y-4">
+          {data.map((item, index) => (
+            <div key={index}>
+              <h4 className="font-semibold text-gray-900">{item.title}</h4>
+              <p>{item.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 
 const SummaryBlock = ({ dateStr, logs, schedule }) => {
   const l = logs[dateStr];
