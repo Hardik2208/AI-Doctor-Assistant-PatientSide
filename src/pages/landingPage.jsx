@@ -10,6 +10,7 @@ import {
   ShieldCheckIcon,
   CheckBadgeIcon,
   UserGroupIcon,
+  CalendarDaysIcon,
 } from "@heroicons/react/24/solid";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import { FaStethoscope } from "react-icons/fa";
@@ -110,21 +111,12 @@ const careOptions = [
   },
   {
     // type: "Immediate Care",
-    title: "Urgent Care",
+    title: "Find Medicine",
     brief:
       "Fast-track medical services for injuries, illnesses, and health concerns that require prompt attention but aren't life-threatening.",
     image: "/images/urgentCare.png",
     link: "/urgent-care",
     stats: "Average 15min wait",
-  },
-  {
-    // type: "Personal Health",
-    title: "Menstrual Cycle Tracker",
-    brief:
-      "Monitor your cycle, predict fertile windows, and understand your body better with a simple-to-use tracker.",
-    image: "/images/MenstrualCycle.png",
-    link: "/cycle-tracker",
-    stats: "2.5M+ Users",
   },
   {
     // type: "Wellness",
@@ -135,6 +127,16 @@ const careOptions = [
     link: "/common-illnesses",
     stats: "Expert Verified",
   },
+  {
+    // type: "Personal Health",
+    title: "Menstrual Cycle Tracker",
+    brief:
+      "Monitor your cycle, predict fertile windows, and understand your body better with a simple-to-use tracker.",
+    image: "/images/MenstrualCycle.png",
+    link: "/cycle-tracker",
+    stats: "2.5M+ Users",
+  },
+
 ];
 
 export default function LandingPage({ user }) {
@@ -150,7 +152,7 @@ export default function LandingPage({ user }) {
 
       {/* Hero Section */}
       <div
-        className="relative bg-cover bg-center bg-no-repeat min-h-[80vh]"
+        className="relative bg-cover bg-center bg-no-repeat min-h-[92vh]"
         style={{ backgroundImage: `url(/images/landingPage.png)` }}
       >
         {/* Dark overlay for better readability */}
@@ -202,6 +204,7 @@ export default function LandingPage({ user }) {
                 to="/dietgeneration"
                 className="flex items-center justify-center w-full md:w-auto px-6 py-3 rounded-full font-semibold text-base text-[#06779B] bg-white border border-[#06779B] hover:bg-[#e6f7fb] transition-colors duration-300 shadow-lg"
               >
+                <CalendarDaysIcon className="w-5 h-5 mr-3" />
                 Diet Planner
                 <ArrowRightIcon className="w-4 h-4 ml-3" />
               </Link>

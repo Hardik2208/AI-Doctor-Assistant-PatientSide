@@ -10,79 +10,43 @@ import {
   HandThumbUpIcon,
 } from "@heroicons/react/24/solid";
 
-// Data for common illnesses among farmers
+// Data for common illnesses among farmers (Updated structure)
 const illnesses = [
   {
     title: "Heat Exhaustion",
     symptoms: "Dizziness, heavy sweating, nausea, rapid heartbeat, and headache.",
     prevention: "Stay hydrated, wear light clothing, work during cooler hours, and take frequent breaks in the shade.",
-    icon: (
-      <img
-        src="/images/heatExhaustion.jpg"
-        alt="Heat Exhaustion"
-        className="w-12 h-12 rounded-xl object-cover"
-      />
-    ),
+    imageSrc: "/images/heatExhaustion.jpg", // Changed from 'icon' to 'imageSrc'
   },
   {
     title: "Pesticide Poisoning",
     symptoms: "Nausea, vomiting, skin rashes, muscle cramps, and difficulty breathing.",
     prevention: "Use proper protective equipment (gloves, masks, long sleeves), follow safety instructions, and wash hands thoroughly after use.",
-    icon: (
-      <img
-        src="/images/pesticide.jpg"
-        alt="Pesticide Poisoning"
-        className="w-12 h-12 rounded-xl object-cover"
-      />
-    ),
+    imageSrc: "/images/pesticide.jpg",
   },
   {
     title: "Sunburn and Skin Damage",
     symptoms: "Red, painful skin, blisters, and long-term risk of skin cancer.",
     prevention: "Use broad-spectrum sunscreen with high SPF, wear a wide-brimmed hat and long-sleeved shirts, and seek shade when possible.",
-    icon: (
-      <img
-        src="/images/sunburn.jpg"
-        alt="Sunburn"
-        className="w-12 h-12 rounded-xl object-cover"
-      />
-    ),
+    imageSrc: "/images/sunburn.jpg",
   },
   {
     title: "Musculoskeletal Disorders",
     symptoms: "Chronic back pain, joint stiffness, muscle strain, and carpal tunnel syndrome.",
     prevention: "Use proper lifting techniques, stretch regularly, take breaks to rest muscles, and use ergonomic tools where possible.",
-    icon: (
-      <img
-        src="/images/musculoskeletal.jpg"
-        alt="Musculoskeletal Disorders"
-        className="w-12 h-12 rounded-xl object-cover"
-      />
-    ),
+    imageSrc: "/images/musculoskeletal.jpg",
   },
   {
     title: "Respiratory Illnesses",
     symptoms: "Coughing, wheezing, shortness of breath, and asthma.",
     prevention: "Wear a face mask to avoid inhaling dust, mold, and pollen. Ensure proper ventilation in barns and storage areas.",
-    icon: (
-      <img
-        src="/images/respiratory.jpg"
-        alt="Respiratory Illnesses"
-        className="w-12 h-12 rounded-xl object-cover"
-      />
-    ),
+    imageSrc: "/images/respiratory.jpg",
   },
   {
     title: "Zoonotic Diseases",
     symptoms: "Fever, headaches, and other symptoms depending on the specific animal-transmitted disease (e.g., leptospirosis, brucellosis).",
     prevention: "Practice good hygiene, wear gloves when handling animals, and get vaccinated against diseases like rabies.",
-    icon: (
-      <img
-        src="/images/zoonotonic.jpg"
-        alt="Zoonotic Diseases"
-        className="w-12 h-12 rounded-xl object-cover"
-      />
-    ),
+    imageSrc: "/images/zoonotonic.jpg", // Corrected typo from zoonotonic to zoonotic if needed
   },
 ];
 
@@ -104,35 +68,46 @@ export default function CommonIllness() {
         </div>
       </section>
       
-      ---
-
-      {/* Illnesses Grid */}
+      {/* Illnesses Grid - MODIFIED SECTION */}
       <section className="bg-white py-16 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Main grid now has 2 columns on medium screens and up */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             {illnesses.map((illness, index) => (
               <div
                 key={index}
-                className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl hover:scale-[1.01]"
+                className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]"
               >
-                <div className="flex items-center space-x-4 mb-4">
-                  {illness.icon}
-                  <h3 className="text-xl font-bold text-gray-900">
-                    {illness.title}
-                  </h3>
-                </div>
-                <div className="space-y-4">
-                  <div className="bg-blue-50 p-4 rounded-xl">
-                    <h4 className="font-semibold text-blue-700">Symptoms:</h4>
-                    <p className="text-sm text-blue-900 mt-1">
-                      {illness.symptoms}
-                    </p>
+                {/* Each card is now a grid: Image on left, Text on right (on large screens) */}
+                <div className="grid grid-cols-1 lg:grid-cols-2">
+                  {/* Image Section */}
+                  <div className="flex items-center justify-center p-4">
+                    <img
+                      src={illness.imageSrc}
+                      alt={illness.title}
+                      className="w-full h-64 object-cover rounded-xl"
+                    />
                   </div>
-                  <div className="bg-green-50 p-4 rounded-xl">
-                    <h4 className="font-semibold text-green-700">Prevention:</h4>
-                    <p className="text-sm text-green-900 mt-1">
-                      {illness.prevention}
-                    </p>
+                  
+                  {/* Content Section */}
+                  <div className="p-6 flex flex-col justify-center">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                      {illness.title}
+                    </h3>
+                    <div className="space-y-4">
+                      <div className="bg-blue-50 p-4 rounded-xl">
+                        <h4 className="font-semibold text-blue-700">Symptoms:</h4>
+                        <p className="text-sm text-blue-900 mt-1">
+                          {illness.symptoms}
+                        </p>
+                      </div>
+                      <div className="bg-green-50 p-4 rounded-xl">
+                        <h4 className="font-semibold text-green-700">Prevention:</h4>
+                        <p className="text-sm text-green-900 mt-1">
+                          {illness.prevention}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
