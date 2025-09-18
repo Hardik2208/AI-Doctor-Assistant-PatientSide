@@ -80,7 +80,7 @@ const LocationSelector = ({ onLocationSelect, currentLocation }) => {
     : majorCities.filter(city => city.country === selectedCountry);
 
   return (
-    <div className="w-full max-w-4xl mx-auto bg-gradient-to-br from-white via-blue-50 to-indigo-50 rounded-2xl shadow-2xl border border-blue-100/50 p-8 mb-8 backdrop-blur-sm">
+    <div className="w=full max-w-7xl mx-auto bg-gradient-to-br from-white via-blue-50 to-indigo-50 rounded-2xl shadow-2xl border border-blue-100/50 p-8 mb-8 backdrop-blur-sm">
       <div className="flex items-center gap-3 mb-6">
         <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full shadow-lg">
           <MapPin className="text-white" size={28} />
@@ -173,29 +173,15 @@ const LocationSelector = ({ onLocationSelect, currentLocation }) => {
         )}
       </div>
 
-      {/* Country Filter */}
-      <div className="mb-6">
-        <label className="block text-sm font-semibold text-gray-700 mb-3">
-          Or browse by country:
-        </label>
-        <select
-          value={selectedCountry}
-          onChange={(e) => setSelectedCountry(e.target.value)}
-          className="w-full p-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm"
-        >
-          <option value="All">🌍 All Countries</option>
-          {countries.map(country => (
-            <option key={country} value={country}>
-              {country === 'India' ? '🇮🇳' : country === 'USA' ? '🇺🇸' : country === 'UK' ? '🇬🇧' : '🌐'} {country}
-            </option>
-          ))}
-        </select>
-      </div>
+    
+      
 
       {/* Major Cities Grid */}
       {!showSuggestions && (
         <div>
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Popular Cities:</h3>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+            🏥 Medical Cities in Punjab Region:
+          </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filteredCities.slice(0, 16).map((city, index) => (
               <button
@@ -226,6 +212,11 @@ const LocationSelector = ({ onLocationSelect, currentLocation }) => {
                     <div className="text-sm text-gray-500">
                       {city.state}, {city.country}
                     </div>
+                    {city.distance && (
+                      <div className="text-xs text-gray-400 mt-1">
+                        📍 {city.distance} from Nabha
+                      </div>
+                    )}
                   </div>
                 </div>
               </button>

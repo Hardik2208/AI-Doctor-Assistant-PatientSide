@@ -69,50 +69,42 @@ class ManualLocationService {
 
   /**
    * Get predefined major cities with coordinates
+   * Focused on Nabha, Punjab and surrounding cities
    * @returns {Array} Array of major cities
    */
   getMajorCities() {
     return [
-      // India
-      { name: 'Delhi', lat: 28.6139, lng: 77.2090, country: 'India', state: 'Delhi' },
-      { name: 'Mumbai', lat: 19.0760, lng: 72.8777, country: 'India', state: 'Maharashtra' },
-      { name: 'Bangalore', lat: 12.9716, lng: 77.5946, country: 'India', state: 'Karnataka' },
-      { name: 'Hyderabad', lat: 17.3850, lng: 78.4867, country: 'India', state: 'Telangana' },
-      { name: 'Chennai', lat: 13.0827, lng: 80.2707, country: 'India', state: 'Tamil Nadu' },
-      { name: 'Kolkata', lat: 22.5726, lng: 88.3639, country: 'India', state: 'West Bengal' },
-      { name: 'Pune', lat: 18.5204, lng: 73.8567, country: 'India', state: 'Maharashtra' },
-      { name: 'Ahmedabad', lat: 23.0225, lng: 72.5714, country: 'India', state: 'Gujarat' },
-      { name: 'Jaipur', lat: 26.9124, lng: 75.7873, country: 'India', state: 'Rajasthan' },
-      { name: 'Lucknow', lat: 26.8467, lng: 80.9462, country: 'India', state: 'Uttar Pradesh' },
+      // Primary Location - Nabha, Punjab
+      { name: 'Nabha', lat: 30.3747, lng: 76.1434, country: 'India', state: 'Punjab' },
       
-      // USA
-      { name: 'New York', lat: 40.7128, lng: -74.0060, country: 'USA', state: 'New York' },
-      { name: 'Los Angeles', lat: 34.0522, lng: -118.2437, country: 'USA', state: 'California' },
-      { name: 'Chicago', lat: 41.8781, lng: -87.6298, country: 'USA', state: 'Illinois' },
-      { name: 'Houston', lat: 29.7604, lng: -95.3698, country: 'USA', state: 'Texas' },
-      { name: 'Phoenix', lat: 33.4484, lng: -112.0740, country: 'USA', state: 'Arizona' },
+      // Nearby Cities in Punjab (within 50km of Nabha)
+      { name: 'Patiala', lat: 30.3398, lng: 76.3869, country: 'India', state: 'Punjab', distance: '18 km' },
+      { name: 'Sangrur', lat: 30.2486, lng: 75.8450, country: 'India', state: 'Punjab', distance: '25 km' },
+      { name: 'Rajpura', lat: 30.4789, lng: 76.5950, country: 'India', state: 'Punjab', distance: '35 km' },
+      { name: 'Samana', lat: 30.1463, lng: 76.1971, country: 'India', state: 'Punjab', distance: '28 km' },
+      { name: 'Khanna', lat: 30.7046, lng: 76.2222, country: 'India', state: 'Punjab', distance: '45 km' },
       
-      // Europe
+      // Major Punjab Cities
+      { name: 'Chandigarh', lat: 30.7333, lng: 76.7794, country: 'India', state: 'Chandigarh', distance: '65 km' },
+      { name: 'Ludhiana', lat: 30.9010, lng: 75.8573, country: 'India', state: 'Punjab', distance: '85 km' },
+      { name: 'Mohali', lat: 30.7046, lng: 76.7179, country: 'India', state: 'Punjab', distance: '68 km' },
+      { name: 'Bathinda', lat: 30.2110, lng: 74.9455, country: 'India', state: 'Punjab', distance: '120 km' },
+      { name: 'Amritsar', lat: 31.6340, lng: 74.8723, country: 'India', state: 'Punjab', distance: '160 km' },
+      { name: 'Jalandhar', lat: 31.3260, lng: 75.5762, country: 'India', state: 'Punjab', distance: '140 km' },
+      
+      // Nearby Haryana Cities
+      { name: 'Ambala', lat: 30.3783, lng: 76.7767, country: 'India', state: 'Haryana', distance: '70 km' },
+      { name: 'Kurukshetra', lat: 29.9693, lng: 76.8783, country: 'India', state: 'Haryana', distance: '85 km' },
+      { name: 'Karnal', lat: 29.6857, lng: 76.9905, country: 'India', state: 'Haryana', distance: '110 km' },
+      
+      // Major Regional Centers
+      { name: 'Delhi', lat: 28.6139, lng: 77.2090, country: 'India', state: 'Delhi', distance: '250 km' },
+      { name: 'Shimla', lat: 31.1048, lng: 77.1734, country: 'India', state: 'Himachal Pradesh', distance: '140 km' },
+      
+      // International (if needed)
       { name: 'London', lat: 51.5074, lng: -0.1278, country: 'UK', state: 'England' },
-      { name: 'Paris', lat: 48.8566, lng: 2.3522, country: 'France', state: 'Île-de-France' },
-      { name: 'Berlin', lat: 52.5200, lng: 13.4050, country: 'Germany', state: 'Berlin' },
-      { name: 'Madrid', lat: 40.4168, lng: -3.7038, country: 'Spain', state: 'Madrid' },
-      { name: 'Rome', lat: 41.9028, lng: 12.4964, country: 'Italy', state: 'Lazio' },
-      
-      // Asia
-      { name: 'Tokyo', lat: 35.6762, lng: 139.6503, country: 'Japan', state: 'Tokyo' },
-      { name: 'Seoul', lat: 37.5665, lng: 126.9780, country: 'South Korea', state: 'Seoul' },
-      { name: 'Singapore', lat: 1.3521, lng: 103.8198, country: 'Singapore', state: 'Singapore' },
-      { name: 'Bangkok', lat: 13.7563, lng: 100.5018, country: 'Thailand', state: 'Bangkok' },
-      { name: 'Dubai', lat: 25.2048, lng: 55.2708, country: 'UAE', state: 'Dubai' },
-      
-      // Australia
-      { name: 'Sydney', lat: -33.8688, lng: 151.2093, country: 'Australia', state: 'New South Wales' },
-      { name: 'Melbourne', lat: -37.8136, lng: 144.9631, country: 'Australia', state: 'Victoria' },
-      
-      // Canada
-      { name: 'Toronto', lat: 43.6532, lng: -79.3832, country: 'Canada', state: 'Ontario' },
-      { name: 'Vancouver', lat: 49.2827, lng: -123.1207, country: 'Canada', state: 'British Columbia' }
+      { name: 'New York', lat: 40.7128, lng: -74.0060, country: 'USA', state: 'New York' },
+      { name: 'Toronto', lat: 43.6532, lng: -79.3832, country: 'Canada', state: 'Ontario' }
     ].map(city => ({
       ...city,
       source: 'predefined',
@@ -211,11 +203,11 @@ class ManualLocationService {
   }
 
   /**
-   * Get default location (Delhi)
+   * Get default location (Nabha, Punjab)
    * @returns {Object} Default location
    */
   getDefaultLocation() {
-    const defaultCity = this.getMajorCities().find(city => city.name === 'Delhi');
+    const defaultCity = this.getMajorCities().find(city => city.name === 'Nabha');
     return {
       ...defaultCity,
       source: 'default'

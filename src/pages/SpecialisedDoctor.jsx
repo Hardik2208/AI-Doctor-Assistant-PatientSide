@@ -15,7 +15,7 @@ const doctors = [
     img: "https://akam.cdn.jdmagicbox.com/images/icons/iphone/newfilter/ip-pediatric-web.png?w=256&q=75",
   },
   {
-    title: "Gynecologist / Obstetrician (Women’s Health)",
+    title: "Gynecologist / Obstetrician ",
     img: "https://akam.cdn.jdmagicbox.com/images/icons/iphone/newfilter/ip-gynic-web.png?w=256&q=75",
   },
   {

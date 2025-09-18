@@ -220,13 +220,13 @@ export default function FindDoctor() {
                       </p>
                     </div>
                     <div className="flex gap-2 mt-4">
-                      <button
+                      {/* <button
                         onClick={() => handleVideoCall(doc.supabaseId)}
                         className="bg-blue-500 text-white py-2 px-3 rounded-lg font-medium transition-all duration-300 hover:bg-blue-600 flex items-center gap-2"
                       >
                         <Video className="w-4 h-4" />
-                        Video Call
-                      </button>
+                        Video Call */}
+                      {/* </button> */}
                       <button
                         // Pass the doctor's supabaseId to the chat handler
                         onClick={() => handleChatWithDoctor(doc.supabaseId)}
