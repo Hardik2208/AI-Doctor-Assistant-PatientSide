@@ -197,7 +197,7 @@ const Chatbot = () => {
                                     <Bot className="w-6 h-6" />
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-lg">SANCTUA</h3>
+                                    <h3 className="font-bold text-lg">Gramin Care</h3>
                                     <p className="text-blue-100 text-xs">AI Health Assistant</p>
                                 </div>
                             </div>
@@ -239,7 +239,7 @@ const Chatbot = () => {
                                         <Bot className="w-8 h-8 text-white" />
                                     </div>
                                     <p className="text-gray-500 text-sm">
-                                        👋 Hello! I'm SANCTUA, your AI health assistant.<br/>
+                                        👋 Hello! I'm Gramin Care, your AI health assistant.<br/>
                                         How can I help you today?
                                     </p>
                                     {speechSupported && (
@@ -270,7 +270,7 @@ const Chatbot = () => {
                                             <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
                                             <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                                         </div>
-                                        <span className="text-sm text-gray-500">SANCTUA is typing...</span>
+                                        <span className="text-sm text-gray-500">bot is typing...</span>
                                     </div>
                                 </div>
                             )}
