@@ -60,5 +60,33 @@
     "vomiting": { "name": "Vomiting", "category": "Gastrointestinal" },
     "diarrhea": { "name": "Diarrhea", "category": "Gastrointestinal" },
     "abdominal-pain": { "name": "Stomach ache", "category": "Gastrointestinal" }
+  },
+  "vocalInput": {
+    "title": "Symptom Assessment by Voice",
+    "goBackButton": "← Go Back",
+    "prompts": [
+      "What is your name?",
+      "What is your age?",
+      "What is your blood pressure?",
+      "What is your body temperature?",
+      "Please describe your symptoms."
+    ],
+    "labels": {
+      "name": "Full Name",
+      "age": "Age",
+      "bloodPressure": "Blood Pressure",
+      "temperature": "Temperature",
+      "symptoms": "Symptoms"
+    },
+    "buttons": {
+      "back": "Back",
+      "next": "Next",
+      "submit": "Submit Assessment"
+    },
+    "alerts": {
+      "noSupport": "Your browser does not support the Web Speech API. Please use Google Chrome.",
+      "allDetailsRequired": "Please provide all required details and symptoms.",
+      "submitError": "There was an error submitting your data. Please try again."
+    }
   }
 }
