@@ -1,5 +1,3 @@
-// LandingPage.jsx
-
 import React, { useState, useMemo, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import Header from "../assets/component/Header.jsx";
@@ -39,25 +37,37 @@ const careOptionImageMap = {
   cycleTracker: "/images/MenstrualCycle.png",
 };
 
+// --- Explicit link mapping to match your App.jsx routes ---
+const careOptionLinkMap = {
+    telemedicine: "/telemedicine",
+    clinics: "/clinics",
+    specialists: "/specialised-doctor",
+    medicine: "/find-medicine",
+    commonIllnesses: "/common-illnesses",
+    cycleTracker: "/cycle-tracker",
+};
+
+
 const symptomKeys = Object.keys(symptomImageMap);
 const careOptionKeys = Object.keys(careOptionImageMap);
 
 export default function LandingPage({ user }) {
-  const { t } = useTranslation(['landingPage', 'common']);
+  const { t, i18n } = useTranslation(['landingPage', 'common']);
   const [selectedSymptom, setSelectedSymptom] = useState(null);
 
   const symptoms = useMemo(() => symptomKeys.map(key => ({
       ...t(`symptoms.${key}`, { ns: 'landingPage', returnObjects: true }),
       key: key,
       bgImage: symptomImageMap[key],
-  })), [t]);
+  })), [t, i18n.language]);
 
+  // CORRECTED: This now uses the careOptionLinkMap to generate the correct links
   const careOptions = useMemo(() => careOptionKeys.map(key => ({
       ...t(`careOptions.${key}`, { ns: 'landingPage', returnObjects: true }),
       key: key,
       image: careOptionImageMap[key],
-      link: `/${key}`,
-  })), [t]);
+      link: careOptionLinkMap[key], 
+  })), [t, i18n.language]);
 
   const currentSelectedSymptom = selectedSymptom
     ? symptoms.find(s => s.key === selectedSymptom.key)
@@ -67,13 +77,11 @@ export default function LandingPage({ user }) {
     <div className="flex flex-col min-h-screen">
       <Header user={user} />
       
-      {/* Floating components remain outside the main flow */}
       <FindDoctorButton />
       <Suspense fallback={<div>{t('loading', { ns: 'common' })}...</div>}>
         <Chatbot />
       </Suspense>
 
-      {/* Main content wrapper */}
       <main className="flex-grow">
         {/* Hero Section */}
         <div
@@ -218,7 +226,6 @@ export default function LandingPage({ user }) {
         </div>
       </main>
 
-      {/* Footer is the last element */}
       <Suspense fallback={<div>{t('loading', { ns: 'common' })}...</div>}>
           <Footer />
       </Suspense>
