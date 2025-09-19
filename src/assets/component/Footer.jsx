@@ -23,7 +23,7 @@ const Footer = () => {
                 />
               </svg>
             </div>
-            <span className="text-xl font-semibold text-green-500">SANCTUA</span>
+            <span className="text-xl font-semibold text-green-500">GRAMIN CARE</span>
           </div>
           <p className="text-sm leading-relaxed">
             Your trusted healthcare companion, providing comprehensive medical
@@ -192,7 +192,7 @@ const Footer = () => {
               />
             </svg>
             <div className="text-sm">
-              <p className="font-medium">care@sanctua.com</p>
+              <p className="font-medium">care@gramincare.com</p>
               <p className="text-xs text-gray-500">General Inquiries</p>
             </div>
           </div>
