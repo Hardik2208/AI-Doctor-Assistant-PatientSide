@@ -41,7 +41,7 @@
     "gastrointestinal": "Gastrointestinal"
   },
   "symptoms": {
-    "fever": { "name": "Fever", "category": "General" },
+    "fever": { "name": "Feverr", "category": "General" },
     "fatigue": { "name": "Fatigue", "category": "General" },
     "chills": { "name": "Chills", "category": "General" },
     "weakness": { "name": "Weakness", "category": "General" },
