@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "start": "vite",
-    "build": "vite build",
+    "build": "vite build && npm run copy-redirects",
+    "build:render": "vite build && cp _redirects dist/ && cp netlify.toml dist/ || copy _redirects dist\\ && copy netlify.toml dist\\",
+    "copy-redirects": "cp _redirects dist/ || copy _redirects dist\\",
     "lint": "eslint .",
     "preview": "vite preview"
   },
