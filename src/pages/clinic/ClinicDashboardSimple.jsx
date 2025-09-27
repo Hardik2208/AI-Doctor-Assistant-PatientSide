@@ -4,7 +4,7 @@ import {
   Users, Clock, Video, FileText, Calendar, Activity,
   AlertCircle, CheckCircle, Phone, MapPin, Settings,
   TrendingUp, Download, RefreshCw, Wifi, WifiOff,
-  Bell, Plus, Search, Filter, ArrowLeft
+  Bell, Plus, Search, Filter, ArrowLeft, BookOpen
 } from 'lucide-react';
 
 const ClinicDashboardSimple = () => {
@@ -340,6 +340,14 @@ const ClinicDashboardSimple = () => {
                 >
                   <TrendingUp className="w-5 h-5 text-orange-600" />
                   <span>Efficiency Dashboard</span>
+                </button>
+                
+                <button 
+                  onClick={() => navigate('/clinic/training')}
+                  className="w-full text-left px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center space-x-3"
+                >
+                  <BookOpen className="w-5 h-5 text-purple-600" />
+                  <span>Worker Training</span>
                 </button>
                 
                 <button className="w-full text-left px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center space-x-3">

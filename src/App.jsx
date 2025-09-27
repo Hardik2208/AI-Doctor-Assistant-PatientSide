@@ -50,6 +50,7 @@ const PatientQueue = React.lazy(() => import("./pages/clinic/PatientQueueSimple.
 const ClinicEfficiencyDashboard = React.lazy(() => import("./pages/clinic/ClinicEfficiencyDashboard.jsx"));
 const ClinicSymptomTracker = React.lazy(() => import("./pages/clinic/ClinicSymptomTracker.jsx"));
 const ClinicAIReportsView = React.lazy(() => import("./pages/clinic/ClinicAIReportsView.jsx"));
+const ClinicWorkerTraining = React.lazy(() => import("./pages/clinic/ClinicWorkerTraining.jsx"));
 const AssistedVideoCall = React.lazy(() => import("./components/clinic/AssistedVideoCallSimple.jsx"));
 
 // Loading component
@@ -139,6 +140,7 @@ export default function App() {
           <Route path="/clinic/efficiency" element={<ClinicEfficiencyDashboard />} />
           <Route path="/clinic/symptom-tracker/:patientId" element={<ClinicSymptomTracker />} />
           <Route path="/clinic/ai-reports" element={<ClinicAIReportsView />} />
+          <Route path="/clinic/training" element={<ClinicWorkerTraining />} />
           <Route path="/clinic/video-call/:roomId/:patientId" element={<AssistedVideoCall />} />
 
         </Routes>
