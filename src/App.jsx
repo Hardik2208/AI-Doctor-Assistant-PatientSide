@@ -42,6 +42,16 @@ const VideoCall = React.lazy(() => import("./components/VideoCall.jsx"));
 const VideoCallSetup = React.lazy(() => import("./components/VideoCallSetup.jsx"));
 const TelemedicineSetup = React.lazy(() => import("./components/TelemedicineSetup.jsx"));
 
+// Clinic components - lazy load
+const ClinicLandingPage = React.lazy(() => import("./pages/clinic/ClinicLandingPage.jsx"));
+const ClinicDashboard = React.lazy(() => import("./pages/clinic/ClinicDashboardSimple.jsx"));
+const PatientRegistration = React.lazy(() => import("./pages/clinic/PatientRegistrationSimple.jsx"));
+const PatientQueue = React.lazy(() => import("./pages/clinic/PatientQueueSimple.jsx"));
+const ClinicEfficiencyDashboard = React.lazy(() => import("./pages/clinic/ClinicEfficiencyDashboard.jsx"));
+const ClinicSymptomTracker = React.lazy(() => import("./pages/clinic/ClinicSymptomTracker.jsx"));
+const ClinicAIReportsView = React.lazy(() => import("./pages/clinic/ClinicAIReportsView.jsx"));
+const AssistedVideoCall = React.lazy(() => import("./components/clinic/AssistedVideoCallSimple.jsx"));
+
 // Loading component
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-screen">
@@ -120,6 +130,16 @@ export default function App() {
           
           {/* Common Illnesses page route */}
           <Route path="/common-illnesses" element={<CommonIllness />} />
+
+          {/* Clinic Dashboard routes */}
+          <Route path="/clinic" element={<ClinicLandingPage />} />
+          <Route path="/clinic/dashboard" element={<ClinicDashboard />} />
+          <Route path="/clinic/registration" element={<PatientRegistration />} />
+          <Route path="/clinic/queue" element={<PatientQueue />} />
+          <Route path="/clinic/efficiency" element={<ClinicEfficiencyDashboard />} />
+          <Route path="/clinic/symptom-tracker/:patientId" element={<ClinicSymptomTracker />} />
+          <Route path="/clinic/ai-reports" element={<ClinicAIReportsView />} />
+          <Route path="/clinic/video-call/:roomId/:patientId" element={<AssistedVideoCall />} />
 
         </Routes>
       </Suspense>
