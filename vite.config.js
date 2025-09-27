@@ -39,6 +39,16 @@ export default defineConfig({
             './src/pages/Jumba.jsx',
             './src/pages/ZumbaPractice.jsx',
             './src/pages/GymPractice.jsx'
+          ],
+          'clinic-features': [
+            './src/pages/clinic/ClinicLandingPage.jsx',
+            './src/pages/clinic/ClinicDashboardSimple.jsx',
+            './src/pages/clinic/PatientRegistrationSimple.jsx',
+            './src/pages/clinic/PatientQueueSimple.jsx',
+            './src/pages/clinic/ClinicEfficiencyDashboard.jsx',
+            './src/pages/clinic/ClinicSymptomTracker.jsx',
+            './src/pages/clinic/ClinicAIReportsView.jsx',
+            './src/pages/clinic/ClinicWorkerTraining.jsx'
           ]
         }
       }
