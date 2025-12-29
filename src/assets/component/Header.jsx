@@ -39,7 +39,7 @@ const Header = ({ user }) => {
       {/* Left Section: Logo and Brand */}
       <div className="flex items-center gap-3">
         <img src="/images/finalLogo.jpg" alt="Logo" className="h-14 w-auto" />
-        <span className="text-xl font-bold text-gray-800">Gramin Care</span>
+        <span className="text-xl font-bold text-gray-800">Sanctua</span>
       </div>
 
       {/* Center Section: Navigation */}
